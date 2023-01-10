@@ -1,0 +1,17 @@
+<div class="card">  
+  <div class="card-header"> 
+    <div class="card-title"> 
+      {{title}} 
+    </div>
+  </div>
+  <div class="card-body" style="height:340px"> 
+    <div *ngFor="let g of rastersgroup" class="card-title" >
+      <div id="el_{{g.id}}">
+        <span class="level01 treenode" (click)="onClicked($event, g.name);">></span> 
+        <span>{{g.name}} ({{g.size()}})</span>
+      </div>
+    </div>  
+  </div>
+  <div class="card-footer"> 
+  </div>
+</div> 
