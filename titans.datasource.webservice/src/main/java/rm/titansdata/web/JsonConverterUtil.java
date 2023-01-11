@@ -3,6 +3,7 @@ package rm.titansdata.web;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.vividsolutions.jts.geom.Point;
 import javax.measure.Measure;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
@@ -29,6 +30,7 @@ public class JsonConverterUtil {
 //      .registerTypeAdapter((new TypeToken<Measure<LinearPowerFlux>>() {}).getType(), new MeasureTypeAdapter())
       .registerTypeAdapter((new TypeToken<Measure<ElectricResistance>>() {}).getType(), new MeasureTypeAdapter())
       .registerTypeAdapter((new TypeToken<Measure<ElectricPotential>>() {}).getType(), new MeasureTypeAdapter())
+      .registerTypeAdapter((new TypeToken<Point>() {}).getType(), new PointTypeAdapter())
       .serializeSpecialFloatingPointValues()
       .create();
     return gson.toJson(obect); 

@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {jqxTreeModule} from 'jqwidgets-ng/jqxtree/';  
-import { jqxExpanderModule } from 'jqwidgets-ng/jqxexpander';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {ComponentsModule} from 'src/components/components.module';
+import {RastersService} from 'src/services/RastersService';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -14,10 +14,15 @@ import {ComponentsModule} from 'src/components/components.module';
     BrowserModule,
     AppRoutingModule
     , ComponentsModule
-    , jqxTreeModule 
-    , jqxExpanderModule 
+    , HttpClientModule 
   ],
-  providers: [],
+  providers: [
+    {
+      provide: RastersService
+      , useFactory: RastersService.singleton
+      , deps : [HttpClient]
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

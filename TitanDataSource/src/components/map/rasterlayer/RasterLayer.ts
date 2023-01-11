@@ -1,5 +1,6 @@
 import {RastersService} from 'src/services/RastersService';
 import {RastersVisibilityService} from 'src/services/RastersVisibilityService';
+import {RasterImage} from 'src/services/RasterImage';
 
 declare var dojo: any;
 declare var esri: any;
@@ -54,9 +55,20 @@ export class RasterLayer {
    * 
    */
   private createImage(rasterId: number, onReady: (img: any) => void): void {
-    this.service.getEsriMapImage(rasterId).subscribe((img) => {
+    this.service.getMapImage(rasterId).subscribe((img: RasterImage) => {
       if (img != null) {
-        onReady(img);
+        const imageURL = img.imageURL;
+        const image = esri.layers.MapImage({
+          'extent': {
+            'xmin': img.envelope.xmin,
+            'ymin': img.envelope.ymin,
+            'xmax': img.envelope.xmax,
+            'ymax': img.envelope.ymax,
+            'spatialReference': {'wkid': img.envelope.spatialReference}
+          },
+          'href': imageURL
+        });
+        onReady(image);
       }
     });
   }

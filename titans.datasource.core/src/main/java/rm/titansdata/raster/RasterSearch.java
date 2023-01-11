@@ -20,6 +20,7 @@ import rm.titansdata.properties.Dimensions;
  * @author Ricardo Marquez
  */
 public class RasterSearch {
+  
   private final Bounds bounds;
   private final Dimensions dims;
 
@@ -56,9 +57,9 @@ public class RasterSearch {
         Pair<Integer, Cell> pair = new Pair<>(i, new Cell(host, point, ij)); 
         builder.add(pair); 
       }
-      
     }
-    return builder.build();
+    Stream<Pair<Integer, Cell>> result = builder.build();
+    return result;
   }
   
 

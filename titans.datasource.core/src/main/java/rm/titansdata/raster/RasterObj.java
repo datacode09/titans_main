@@ -37,7 +37,7 @@ public class RasterObj {
   public Bounds getBounds() {
     return properties.getBounds();
   }
-
+  
   public int getNumPixels() {
     return getDimensions().numPixels();
   }
@@ -136,7 +136,8 @@ public class RasterObj {
    * @param cells
    * @return
    */
-  private RasterObj getSubsetRaster(String name1, Geometry correctedEnvelope, List<Cell> cells) {
+  private RasterObj getSubsetRaster(String name1, // 
+    Geometry correctedEnvelope, List<Cell> cells) {
     Dimensions dims = getDimensions();
     Measure<Length> dx = dims.x.length;
     Measure<Length> dy = dims.y.length;
@@ -157,19 +158,31 @@ public class RasterObj {
     List<Cell> cells = helper.getCells(envelope, point -> this.getValue(point));
     return cells;
   }
-
+  
+  /**
+   * 
+   * @param p
+   * @return 
+   */
   private Geometry correctEnvelopeSrid(Geometry p) {
-    Geometry envelope = SridUtils.transform(p, this.getFactory().getSRID()).getEnvelope();
+    int srid = this.getFactory().getSRID();
+    Geometry transformed = SridUtils.transform(p, srid);
+    Geometry envelope = transformed.getEnvelope();
     return envelope;
   }
-
+  
+  /**
+   * 
+   * @return 
+   */
   private GeometryFactory getFactory() {
-    return this.getBounds().getFactory();
+    GeometryFactory result = this.getBounds().getFactory();
+    return result;
   }
 
   @Override
   public String toString() {
-    return "RasterObj{" + "name=" + name + ", properties=" + properties + '}';
+    return "{" + "name=" + name + ", properties=" + properties + '}';
   }
 
   public static class Builder {

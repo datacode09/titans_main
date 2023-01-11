@@ -62,9 +62,10 @@ public class RasterFactorySupplier {
      */
     public Raster createRaster() {
       Raster result;
-      switch (Long.valueOf(this.typeId).intValue()) {
+      int intValue = Long.valueOf(this.typeId).intValue();
+      switch (intValue) {
         case 0:
-          result = rasterModelsRegistry.get(this.sourceTitle).create(bounds, dims);
+          result = this.rasterModelsRegistry.get(this.sourceTitle).create(bounds, dims);
           break;
         default:
           throw new RuntimeException();

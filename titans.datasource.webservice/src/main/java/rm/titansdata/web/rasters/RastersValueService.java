@@ -17,45 +17,54 @@ import rm.titansdata.raster.RasterObj;
  */
 @Component
 public class RastersValueService {
-  
+
   @Autowired
   private RastersSourceService sourceService;
-  
+
   @Autowired
   private RasterFactorySupplier supplier;
-  
+
   /**
-   * 
+   *
    * @param rasterId
    * @param geometry
-   * @return 
+   * @return
    */
   public RasterCells getRasterValues(Long rasterId, Geometry geometry) {
     RasterEntity rasterEntity = this.sourceService.getRaster(rasterId);
     String sourceTitle = rasterEntity.sourceTitle;
-    RasterObj rasterObj = getRasterObj(rasterEntity, sourceTitle);
+    RasterObj rasterObj = this.getRasterObj(rasterEntity, sourceTitle);
     if (geometry.getGeometryType().equals("Point")) {
-      throw new RuntimeException("Does not support 'Point' geometry type"); 
-    } 
+      throw new RuntimeException("Does not support 'Point' geometry type");
+    }
     RasterObj subset = rasterObj.getSubsetRaster(sourceTitle, geometry);
     RasterCells result = subset.interleave();
-    return result; 
+    return result;
   }
 
-  
   double getRasterValue(Long rasterId, Point point) {
+    RasterObj rasterObj = this.getRasterObj(rasterId);
+    double result = rasterObj.getValue(point);
+    return result;
+  }
+
+  /**
+   *
+   * @param rasterId
+   * @return
+   */
+  public RasterObj getRasterObj(Long rasterId) {
     RasterEntity rasterEntity = this.sourceService.getRaster(rasterId);
     String sourceTitle = rasterEntity.sourceTitle;
-    RasterObj rasterObj = getRasterObj(rasterEntity, sourceTitle);
-    double result = rasterObj.getValue(point);
-    return result; 
+    RasterObj result = getRasterObj(rasterEntity, sourceTitle);
+    return result;
   }
-  
+
   /**
-   * 
+   *
    * @param rasterEntity
    * @param sourceTitle
-   * @return 
+   * @return
    */
   private RasterObj getRasterObj(RasterEntity rasterEntity, String sourceTitle) {
     Bounds bounds = rasterEntity.getBounds();
@@ -67,9 +76,9 @@ public class RastersValueService {
       .setBounds(bounds)
       .setDimensions(dims)
       .createRaster();
-    Properties properties = new Properties(bounds, dims.x.length, dims.y.length); 
+    Properties properties = new Properties(bounds, dims.x.length, dims.y.length);
     RasterObj rasterObj = new RasterObj(sourceTitle, properties, raster);
-    return rasterObj; 
+    return rasterObj;
   }
-  
+
 }

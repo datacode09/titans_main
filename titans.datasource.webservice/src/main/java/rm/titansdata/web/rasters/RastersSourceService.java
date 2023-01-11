@@ -24,7 +24,12 @@ public class RastersSourceService {
   @Autowired
   @Qualifier("titans.db")
   private DbConnection dbconn;
-
+  
+  /**
+   * 
+   * @param userId
+   * @return 
+   */
   public Map<RasterGroupEntity, List<Long>> getRastersByUserId(Long userId) {
     String query = this.getRastersByUserIdQuery(userId);
     List<Pair<RasterGroupEntity, Long>> list = this.dbconn //

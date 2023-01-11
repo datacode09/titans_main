@@ -45,6 +45,7 @@ public class RastersServletIT {
       .setParam("jarfile", "C:\\Dev\\applications.personal\\titans\\test_source\\target\\test_source-1.0-SNAPSHOT.jar")
       .setParam("class", "rm.test_source.TestSourceRasterFactory")
       .perform(); 
+    
   }
 
   /**
@@ -107,7 +108,6 @@ public class RastersServletIT {
     "0, POINT(766962 4099080), 32610, 1", 
   })
   public void getRasterValue(Long rasterId, String geometry, int srid,  double value) throws Exception{
-    
     JSONObject jsonObj = new MockHelper(this.mockMvc, "/getRasterValue")
       .setParam("rasterId", String.valueOf(rasterId))
       .setParam("point", URLDecoder.decode(geometry, "UTF-8"))
@@ -115,6 +115,4 @@ public class RastersServletIT {
       .perform();
     System.out.println("jsonObj = " + jsonObj);
   }
-  
-  
 }

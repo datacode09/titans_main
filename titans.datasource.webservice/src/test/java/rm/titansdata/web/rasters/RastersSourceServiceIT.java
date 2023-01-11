@@ -41,7 +41,8 @@ public class RastersSourceServiceIT {
   @Parameters({
     "0, 1",
     "-1, 0",
-    "1, 0",})
+    "1, 0",
+  })
   public void getrasters_by_userid(Long userId, int expGroupSize) {
     Map<RasterGroupEntity, List<Long>> rasters = service.getRastersByUserId(userId);
     Assert.assertEquals(expGroupSize, rasters.keySet().size());
@@ -50,7 +51,8 @@ public class RastersSourceServiceIT {
   @Test
   @Parameters({
     "0, true",
-    "-1, false",})
+    "-1, false"
+  })
   public void getrasters_by_rasterid(Long rasterId, boolean exists) {
     RasterEntity e = this.service.getRaster(rasterId);
     Assert.assertEquals(exists, e != null);
@@ -59,7 +61,8 @@ public class RastersSourceServiceIT {
   @Test
   @Parameters({
     "0, 1",
-    "-1, 0",})
+    "-1, 0"
+  })
   public void getrasters_by_rastergroup_id(Long rasterGroupId, int expectedSize) {
     List<Long> e = this.service.getRastersByGroupId(rasterGroupId);
     Assert.assertEquals(expectedSize, e.size());

@@ -2,6 +2,12 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group name="rm.titandatasource"/>
+        <group name="rm.titandatasource">
+            <file>file:/C:/Dev/applications.personal/titans/TitanDataSource/src/services/delegates/HttpRastersDelegate.ts</file>
+            <file>file:/C:/Dev/applications.personal/titans/TitanDataSource/src/services/RasterEntity.ts</file>
+            <file>file:/C:/Dev/applications.personal/titans/TitanDataSource/src/services/RasterImage.ts</file>
+            <file>file:/C:/Dev/applications.personal/titans/TitanDataSource/src/components/map/rasterlayer/RasterLayer.ts</file>
+            <file>file:/C:/Dev/applications.personal/titans/TitanDataSource/src/services/delegates/RastersDelegate.ts</file>
+        </group>
     </open-files>
 </project-private>
