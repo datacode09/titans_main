@@ -9,7 +9,11 @@ import rm.titansdata.raster.Raster;
  * @author Ricardo Marquez
  */
 public interface RasterFactory {
-    
+      
+  /**
+   * 
+   * @return 
+   */
   public String key(); 
   
   /**

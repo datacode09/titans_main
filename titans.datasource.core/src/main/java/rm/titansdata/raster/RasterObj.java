@@ -184,6 +184,14 @@ public class RasterObj {
   public String toString() {
     return "{" + "name=" + name + ", properties=" + properties + '}';
   }
+  
+  /**
+   * 
+   * @return 
+   */
+  public Raster getRaster() {
+    return this.raster;
+  }
 
   public static class Builder {
 
