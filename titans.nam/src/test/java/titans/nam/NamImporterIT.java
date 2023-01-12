@@ -46,6 +46,7 @@ public class NamImporterIT {
     RasterImage image = new RasterImage(raster, cmap);
     File output = new File(gribRootFolder, "image.png"); 
     image.writeToFile("png", output);
+    importer.close();
     System.out.println("raster = " + raster);
   }
 }

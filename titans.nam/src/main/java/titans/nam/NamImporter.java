@@ -1,6 +1,8 @@
 package titans.nam;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -16,7 +18,7 @@ import titans.nam.netcdf.NetCdfRaster;
  *
  * @author Ricardo Marquez
  */
-public class NamImporter {
+public class NamImporter implements Closeable {
 
   private final NetCdfRaster rasterLoader = new NetCdfRaster();
   private final NamGribSource source = new NamGribSource();
@@ -56,7 +58,7 @@ public class NamImporter {
     String filename = this.getGribFileName(forecaststep, datetimeref);
     File grib = new File(this.root, filename);
     File gribIdx = new File(this.root, filename + ".idx");
-    GribFile result = new GribFile(datetimeref, forecaststep, grib, gribIdx); 
+    GribFile result = new GribFile(datetimeref, forecaststep, grib, gribIdx);
     return result;
   }
 
@@ -79,4 +81,14 @@ public class NamImporter {
       refdatetimetext, fcstHourTxt,});
     return filename;
   }
+
+  /**
+   *
+   * @throws IOException
+   */
+  @Override
+  public void close() throws IOException {
+    this.rasterLoader.close();
+  }
+
 }
