@@ -2,8 +2,13 @@ package rm.titansdata.images;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 import javafx.util.Pair;
+import javax.imageio.ImageIO;
 import rm.titansdata.colormap.ColorMap;
+import rm.titansdata.properties.Bounds;
+import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Cell;
 import rm.titansdata.raster.RasterObj;
 import rm.titansdata.raster.RasterSearch;
@@ -17,11 +22,11 @@ public class RasterImage {
   private final RasterObj r;
 
   private final ColorMap cmap;
-  
+
   /**
-   * 
+   *
    * @param r
-   * @param cmap 
+   * @param cmap
    */
   public RasterImage(RasterObj r, ColorMap cmap) {
     this.r = r;
@@ -37,11 +42,11 @@ public class RasterImage {
     result.setData(writableRaster);
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param img
-   * @return 
+   * @return
    */
   private WritableRaster asWritableRaster(BufferedImage img) {
     WritableRaster raster = img.getRaster();
@@ -52,24 +57,26 @@ public class RasterImage {
     });
     return writableRaster;
   }
-  
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   private BufferedImage getInitialBufferedImage() {
-    RasterSearch h = new RasterSearch(this.r.getBounds(), this.r.getDimensions());
+    Bounds bounds = this.r.getBounds();
+    Dimensions dimensions = this.r.getDimensions();
+    RasterSearch h = new RasterSearch(bounds, dimensions);
     int[] ij = h.maxIndices();
     int imax = ij[0];
     int jmax = ij[1];
     BufferedImage img = new BufferedImage(imax, jmax, BufferedImage.TYPE_INT_RGB);
     return img;
   }
-  
+
   /**
-   * 
+   *
    * @param p
-   * @param img 
+   * @param img
    */
   private void setImageValue(Pair<Integer, Cell> p, WritableRaster img) {
     try {
@@ -82,11 +89,11 @@ public class RasterImage {
       throw new RuntimeException(ex);
     }
   }
-  
+
   /**
-   * 
+   *
    * @param c
-   * @return 
+   * @return
    */
   private int[] getColorValue(Cell c) {
     double value = c.getValue();
@@ -99,16 +106,30 @@ public class RasterImage {
     }
     return dArray;
   }
-  
+
   /**
-   * 
+   *
    * @param dArray
-   * @return 
+   * @return
    */
   private boolean isValidRgb(int[] dArray) {
     boolean validRgb = 0 <= dArray[0] && dArray[0] <= 255
       && 0 <= dArray[1] && dArray[1] <= 255
       && 0 <= dArray[2] && dArray[2] <= 255;
     return validRgb;
+  }
+
+  /**
+   *
+   * @param type
+   * @param output
+   */
+  public void writeToFile(String type, File output) {
+    try {
+      BufferedImage img = this.asBufferedImage();
+      ImageIO.write(img, type, output);
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 }

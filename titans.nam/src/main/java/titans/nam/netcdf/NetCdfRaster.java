@@ -1,6 +1,9 @@
 package titans.nam.netcdf;
 
 import com.vividsolutions.jts.geom.Point;
+import java.io.Closeable;
+import java.io.IOException;
+import rm.titansdata.SridUtils;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.properties.Properties;
@@ -16,7 +19,9 @@ import ucar.nc2.dt.grid.GridDataset;
  *
  * @author Ricardo Marquez
  */
-public class NetCdfRaster {
+public class NetCdfRaster implements Closeable {
+
+  private GridDataset gds;
 
   public NetCdfRaster() {
   }
@@ -49,27 +54,90 @@ public class NetCdfRaster {
    * @return
    */
   public double getValue(NetCdfFile netCdfFile, Point point) {
+    this.initGridDataset(netCdfFile);
+    GridDatatype grid = getGridDatatype(netCdfFile);
+    int[] xyIndex = this.getQueryIndices(grid, point);
+    double result = this.readValueForIndices(grid, xyIndex);
+    return result;
+  }
+
+  /**
+   *
+   * @param grid
+   * @param xyIndex
+   * @return
+   * @throws IOException
+   */
+  private double readValueForIndices(GridDatatype grid, int[] xyIndex) {
     double value;
-    String varName = netCdfFile.getVarName();
-    String filepath = netCdfFile.file.getAbsolutePath();
-    try (GridDataset gds = GridDataset.open(filepath)) {
-      GridDatatype grid = gds.getGrids().stream()
-        .filter((g) -> g.getName().equals(varName))
-        .findFirst()
-        .orElse(gds.getGrids().get(0));
-      if (grid == null) {
-        throw new NullPointerException("Netcdf file '"
-          + gds.getNetcdfFile() + "' does not contain variable " + varName);
-      } GridCoordSystem gcs = grid.getCoordinateSystem();
-      int[] xyIndex = gcs.findXYindexFromLatLon(point.getY(), point.getX(), null);
-      if (xyIndex[0] == -1 || xyIndex[1] == -1) {
-        throw new RuntimeException("coordinate indices not found for lat, lon pair : '"
-          + point.getY() + ", " + point.getX() + "'");
-      } Array arr = grid.readDataSlice(1, 1, xyIndex[1], xyIndex[0]);
-      value = arr.getDouble(0);
-    } catch(Exception ex) {
-      throw new RuntimeException(ex); 
+    if (xyIndex[0] == -1 || xyIndex[1] == -1) {
+      value = Double.NaN;
+    } else {
+      try {
+        Array arr = grid.readDataSlice(1, 1, xyIndex[1], xyIndex[0]);
+        value = arr.getDouble(0);
+        return value;
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
     }
     return value;
   }
+
+  /**
+   *
+   * @param grid
+   * @param argpoint
+   * @return
+   */
+  private int[] getQueryIndices(GridDatatype grid, Point argpoint) {
+    Point point = SridUtils.transform(argpoint, 4326);
+    GridCoordSystem gcs = grid.getCoordinateSystem();
+    int[] xyIndex = gcs.findXYindexFromLatLon(point.getY(), point.getX(), null);
+    return xyIndex;
+  }
+
+  /**
+   *
+   * @param netCdfFile
+   * @return
+   * @throws NullPointerException
+   */
+  private GridDatatype getGridDatatype(NetCdfFile netCdfFile) throws NullPointerException {
+    String varName = netCdfFile.getVarName();
+    GridDatatype grid = this.gds.getGrids().stream()
+      .filter((g) -> g.getName().equals(varName))
+      .findFirst()
+      .orElse(gds.getGrids().get(0));
+    if (grid == null) {
+      throw new NullPointerException("Netcdf file '"
+        + gds.getNetcdfFile() + "' does not contain variable " + varName);
+    }
+    return grid;
+  }
+
+  /**
+   *
+   * @param netCdfFile
+   * @throws RuntimeException
+   */
+  private void initGridDataset(NetCdfFile netCdfFile) throws RuntimeException {
+    if (this.gds == null) {
+      String filepath = netCdfFile.file.getAbsolutePath();
+      try {
+        this.gds = GridDataset.open(filepath);
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+    }
+  }
+
+  @Override
+  public void close() throws IOException {
+    if (this.gds == null) {
+      this.gds.close();
+      this.gds = null;
+    }
+  }
+
 }

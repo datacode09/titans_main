@@ -1,14 +1,14 @@
 package titans.nam;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
 import java.io.File;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import rm.titansdata.SridUtils;
+import rm.titansdata.colormap.ColorMap;
+import rm.titansdata.images.RasterImage;
 import rm.titansdata.raster.RasterObj;
 
 /**
@@ -16,7 +16,12 @@ import rm.titansdata.raster.RasterObj;
  * @author Ricardo Marquez
  */
 public class NamImporterIT {
-
+  
+  @BeforeClass
+  public static void before() {
+    SridUtils.init();
+  }
+  
   /**
    *
    * @throws Exception
@@ -32,11 +37,15 @@ public class NamImporterIT {
       .truncatedTo(ChronoUnit.DAYS); 
     int forecastStep = 0; 
     RasterObj raster = importer.getRaster(forecastStep, refdate);
-    int srid = 4326;
-    PrecisionModel pm = new PrecisionModel(PrecisionModel.FLOATING); 
-    GeometryFactory factory = new GeometryFactory(pm, srid);
-    Point p = factory.createPoint(new Coordinate(-120.43, 37.36));
-    double value = raster.getValue(p);
+    ColorMap cmap = new ColorMap.Builder()
+      .setXmin(098000.0)
+      .setXmax(110000.0)
+      .setColorMin("#000")
+      .setColorMax("#fff")
+      .build();
+    RasterImage image = new RasterImage(raster, cmap);
+    File output = new File(gribRootFolder, "image.png"); 
+    image.writeToFile("png", output);
     System.out.println("raster = " + raster);
   }
 }

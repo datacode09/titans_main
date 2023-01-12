@@ -10,6 +10,7 @@ import org.apache.sis.referencing.CRS;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.CoordinateOperation;
+import org.opengis.util.FactoryException;
 
 /**
  *
@@ -61,6 +62,17 @@ public class SridUtils {
           String.format("Unsupported geometry type: '%s'", geometryType));
     }
     return result;
+  }
+  
+  /**
+   * 
+   */
+  public static void init() {
+    try {
+      CoordinateReferenceSystem target = CRS.forCode("EPSG:" + 4326);
+    } catch (FactoryException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
   public static Point transform(Point p, int targetSrid) {

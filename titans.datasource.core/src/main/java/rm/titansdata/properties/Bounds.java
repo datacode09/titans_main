@@ -197,6 +197,14 @@ public class Bounds implements Serializable{
     }
     Point result = this.centers.get(srid);
     return result;
+  } 
+  
+  /**
+   * 
+   * @return 
+   */
+  @Override
+  public String toString() {
+    return "{" + "lowerleft=" + lowerleft + ", upperright=" + upperright + '}';
   }
-
 }
