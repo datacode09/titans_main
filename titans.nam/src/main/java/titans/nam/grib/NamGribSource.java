@@ -1,23 +1,99 @@
 package titans.nam.grib;
 
+import common.http.RmHttpReader;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.commons.io.IOUtils;
+import titans.nam.NamParameter;
 
 /**
  *
  * @author Ricardo Marquez
  */
 public class NamGribSource {
-  
+
   private final String url = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/nam/prod/";
+
+  public List<NamParameter> getCurrentNamParameters() {
+    DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("yyyyMMdd").toFormatter();
+    ZonedDateTime date = ZonedDateTime.now(ZoneId.of("UTC"))
+      .minusDays(1l)
+      .truncatedTo(ChronoUnit.DAYS);
+    String datetext = date
+      .format(formatter);
+    String fullUrl = this.url + "nam." + datetext;
+    List<NamParameter> result = new ArrayList<>();
+    new RmHttpReader.Builder(fullUrl).read((text) -> {
+      Arrays.stream(text.split("\n")) //
+        .filter(this::isConusNestLine)
+        .map(this::toForecastTimeRef)
+        .map(d -> new NamParameter(date, d))
+        .forEach(result::add);
+    });
+    return result;
+  }
   
   /**
    * 
-   * @param gribFile 
+   * @param text
+   * @return 
+   */
+  private ForecastTimeReference toForecastTimeRef(String text) {
+    String r = text.replaceAll("<.*?>", "")
+      .replaceAll("\\s.*$", "");
+    int hour = this.parseLineToHour(r);
+    int fcststep = this.parseLineToForecastStep(r);
+    ForecastTimeReference result = new ForecastTimeReference(hour, fcststep);
+    return result;
+  }
+  
+  /**
+   * 
+   * @param r
+   * @return 
+   */
+  private int parseLineToForecastStep(String r) {
+    String trimmed = r.replaceAll(".*?tm", "").replace(".grib2", "");
+    int result = Integer.parseInt(trimmed);
+    return result;
+  }
+  /**
+   *
+   * @param line
+   * @return
+   */
+  private boolean isConusNestLine(String line) {
+    boolean isConusNest = line.contains(".conusnest.");
+    if (isConusNest) {
+      boolean isGribFile = line.contains(".grib2</a>");
+      return isGribFile;
+    }
+    return false;
+  }
+
+  /**
+   *
+   * @param text
+   * @return
+   */
+  private int parseLineToHour(String text) {
+    int result = Integer.parseInt(text.replaceFirst("nam.t", "")
+      .substring(0, 2));
+    return result;
+  }
+
+  /**
+   *
+   * @param gribFile
    */
   public void download(GribFile gribFile) {
     String urlText = this.createUrl(gribFile);
@@ -67,5 +143,7 @@ public class NamGribSource {
       this.url, dateTxt, gribFile.getBaseFileName());
     return result;
   }
+
+
 
 }

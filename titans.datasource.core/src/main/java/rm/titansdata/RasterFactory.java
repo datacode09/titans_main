@@ -9,17 +9,17 @@ import rm.titansdata.raster.Raster;
  * @author Ricardo Marquez
  */
 public interface RasterFactory {
-      
+  
   /**
    * 
    * @return 
    */
-  public String key(); 
+  public String key(Parameter param); 
   
   /**
    * 
    * @param bounds
    * @param dims 
    */
-  public Raster create(Bounds bounds, Dimensions dims); 
+  public Raster create(Parameter param, Bounds bounds, Dimensions dims); 
 }

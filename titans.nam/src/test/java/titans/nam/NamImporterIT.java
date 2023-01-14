@@ -30,23 +30,24 @@ public class NamImporterIT {
   public void testimport() throws Exception {
     File gribRootFolder = new File("G:\\tests\\data\\grib");
     File degribExe  = new File("C:\\ndfd\\degrib\\bin\\degrib.exe");
-    NamImporter importer = new NamImporter(gribRootFolder, degribExe); 
-    ZoneId timeZone = ZoneId.of("UTC"); 
-    ZonedDateTime refdate = ZonedDateTime  //
-      .now(timeZone)  //
-      .truncatedTo(ChronoUnit.DAYS); 
-    int forecastStep = 0; 
-    RasterObj raster = importer.getRaster(forecastStep, refdate);
-    ColorMap cmap = new ColorMap.Builder()
-      .setXmin(098000.0)
-      .setXmax(110000.0)
-      .setColorMin("#000")
-      .setColorMax("#fff")
-      .build();
-    RasterImage image = new RasterImage(raster, cmap);
-    File output = new File(gribRootFolder, "image.png"); 
-    image.writeToFile("png", output);
-    importer.close();
+    RasterObj raster;
+    try (NamImporter importer = new NamImporter(gribRootFolder, degribExe)) {
+      ZoneId timeZone = ZoneId.of("UTC");
+      ZonedDateTime refdate = ZonedDateTime  //
+        .now(timeZone)  //
+        .truncatedTo(ChronoUnit.DAYS);
+      int forecastStep = 0;
+      raster = importer.getRaster(forecastStep, refdate);
+      ColorMap cmap = new ColorMap.Builder()
+        .setXmin(098000.0)
+        .setXmax(110000.0)
+        .setColorMin("#000")
+        .setColorMax("#fff")
+        .build();
+      RasterImage image = new RasterImage(raster, cmap);
+      File output = new File(gribRootFolder, "image.png");
+      image.writeToFile("png", output);
+    }
     System.out.println("raster = " + raster);
   }
 }
