@@ -3,6 +3,7 @@ package titans.nam;
 import java.util.List;
 import javafx.beans.property.ListProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,7 +31,7 @@ public class NamPropertyUpdates implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     NamGribSource source = new NamGribSource();
     List<NamParameter> params = source.getCurrentNamParameters();
-    this.parameters.setValue(FXCollections.observableArrayList(params));
+    ObservableList<NamParameter> obsList = FXCollections.observableArrayList(params);
+    this.parameters.setValue(obsList);
   }
-
 }

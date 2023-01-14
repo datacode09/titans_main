@@ -5,7 +5,6 @@ import {RasterEntity} from '../RasterEntity';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {Observable, BehaviorSubject} from 'rxjs';
 import {RasterImage} from '../RasterImage';
-import {map} from 'rxjs/operators';
 import {Envelope} from '../Envelope';
 
 export class HttpRastersDelegate implements RastersDelegate {
@@ -108,5 +107,4 @@ export class HttpRastersDelegate implements RastersDelegate {
     const result: RasterImage = new RasterImage(imageUrl, envelope);
     return result;
   }
-
 }

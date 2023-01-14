@@ -26,7 +26,9 @@ import rm.titansdata.test.help.MockHelper;
 @WebAppConfiguration()
 @ContextHierarchy({
   @ContextConfiguration(
-    locations = "/dispatcher-servlet.xml"
+    locations = {
+      "/dispatcher-servlet.xml", "/applicationContext.xml"
+    }
   )
 })
 public class RastersServletIT {

@@ -20,9 +20,7 @@ public class CustomClassLoader {
   @Autowired
   private RasterModelsRegistry rasterModelsRegistry;
   
-  
-  
-  public synchronized void loadLibrary(File jar, String[] classes) {
+  public synchronized void loadLibrary(File jar, String... classes) {
     try {
       URL url = jar.toURI().toURL();
       Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});

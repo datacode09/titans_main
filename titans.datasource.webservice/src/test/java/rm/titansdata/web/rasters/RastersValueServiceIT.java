@@ -27,7 +27,7 @@ import rm.titansdata.raster.RasterCells;
 @ContextHierarchy({
   @ContextConfiguration(
     locations = {
-      "/dispatcher-servlet.xml"
+      "/dispatcher-servlet.xml", "/applicationContext.xml"
     }
   ),})
 public class RastersValueServiceIT {

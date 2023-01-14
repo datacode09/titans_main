@@ -23,7 +23,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @ContextHierarchy({
   @ContextConfiguration(
     locations = {
-      "/dispatcher-servlet.xml"
+      "/dispatcher-servlet.xml", "/applicationContext.xml"
     }
   ),})
 public class RastersSourceServiceIT {
