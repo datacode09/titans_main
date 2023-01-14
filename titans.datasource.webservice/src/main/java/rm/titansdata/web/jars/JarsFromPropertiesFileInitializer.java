@@ -1,7 +1,9 @@
 package rm.titansdata.web.jars;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,8 +30,11 @@ public class JarsFromPropertiesFileInitializer implements InitializingBean {
     for (String part : parts) {   
       String[] jarAndClass = part.replace("(", "").replace(")", "").split(","); 
       File jar = new File(jarAndClass[1].replaceAll("\"", "")); 
-      String classe = jarAndClass[0].replaceAll("\"", ""); 
-      this.jarClassLoader.loadLibrary(jar, classe);
+      
+      String[] classes = Arrays.stream(jarAndClass[0].split("/", -1))
+        .map(s->s.replaceAll("\"", ""))
+        .collect(Collectors.toList()).toArray(new String[0]);
+      this.jarClassLoader.loadLibrary(jar, classes);
     }
   }
 

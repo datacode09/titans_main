@@ -16,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestContextManager;
 import org.springframework.test.context.web.WebAppConfiguration;
+import rm.titansdata.Parameter;
 import rm.titansdata.raster.RasterCells;
 
 /**
@@ -50,7 +51,8 @@ public class RastersValueServiceIT {
     GeometryFactory factory = new GeometryFactory(pm, srid);
     String decodeWkt = URLDecoder.decode(wkt, StandardCharsets.UTF_8.toString());
     Geometry geom = new WKTReader(factory).read(decodeWkt);
-    RasterCells values = this.service.getRasterValues(rasterId, geom);
+    Parameter p = null;
+    RasterCells values = this.service.getRasterValues(rasterId, p, geom);
     System.out.println("values = " + values);
   }
 }

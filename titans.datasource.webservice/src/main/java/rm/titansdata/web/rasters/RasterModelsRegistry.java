@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
-import rm.titansdata.RasterFactory;
+import rm.titansdata.plugin.RasterFactory;
 
 /**
  *

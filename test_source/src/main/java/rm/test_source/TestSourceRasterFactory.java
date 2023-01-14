@@ -4,7 +4,8 @@ import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import rm.titansdata.RasterFactory;
+import rm.titansdata.Parameter;
+import rm.titansdata.plugin.RasterFactory;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.BasicRaster;
@@ -38,7 +39,7 @@ public class TestSourceRasterFactory implements InitializingBean, RasterFactory 
    * @return
    */
   @Override
-  public Raster create(Bounds bounds, Dimensions dims) {
+  public Raster create(Parameter r, Bounds bounds, Dimensions dims) {
     BasicRaster result = new BasicRaster(bounds, dims) {
       @Override
       public double getValue(Point point) {

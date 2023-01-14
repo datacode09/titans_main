@@ -2,6 +2,7 @@ package rm.titansdata.web.rasters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import rm.titansdata.Parameter;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
@@ -60,13 +61,13 @@ public class RasterFactorySupplier {
      *
      * @return
      */
-    public Raster createRaster() {
+    public Raster createRaster(Parameter p) {
       Raster result;
       int intValue = Long.valueOf(this.typeId).intValue();
       switch (intValue) {
         case 0:
           result = this.rasterModelsRegistry.get(this.sourceTitle)
-            .create(bounds, dims);
+            .create(p, bounds, dims);
           break;
         default:
           throw new RuntimeException();

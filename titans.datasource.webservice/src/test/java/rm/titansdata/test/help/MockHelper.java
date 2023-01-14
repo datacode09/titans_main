@@ -67,13 +67,10 @@ public class MockHelper {
   public JSONObject perform() {
     JSONObject jsonObj;
     try {
-      
       MvcResult result = this.mockMvc
-        
         .perform(builder)
         .andReturn();
       MockHttpServletResponse response = result.getResponse();
-      response.getCharacterEncoding();
       String text = java.net.URLDecoder.decode(
         response.getContentAsString(), response.getCharacterEncoding());
       jsonObj = new JSONObject(text);

@@ -46,8 +46,8 @@ public class RastersServletIT {
     MockHelper.asPost(this.mockMvc, "/registerJar")
       .setParam("jarfile", "C:\\Dev\\applications.personal\\titans\\test_source\\target\\test_source-1.0-SNAPSHOT.jar")
       .setParam("class", "rm.test_source.TestSourceRasterFactory")
-      .perform(); 
-    
+      .perform();
+
   }
 
   /**
@@ -64,7 +64,7 @@ public class RastersServletIT {
       .perform();
     System.out.println("jsonObj = " + jsonObj);
   }
-  
+
   /**
    *
    * @throws Exception
@@ -79,7 +79,7 @@ public class RastersServletIT {
       .perform();
     System.out.println("jsonObj = " + jsonObj);
   }
-  
+
   @Test
   @Parameters({
     "0", "-1"
@@ -90,30 +90,33 @@ public class RastersServletIT {
       .perform();
     System.out.println("jsonObj = " + jsonObj);
   }
-  
-  
+
   @Test
   @Parameters({
-    "0, POLYGON ((766962 4099080%2C 633468 4095923%2C 628042 4428834%2C 756099 4432069%2C 766962 4099080)), 32610, 1", 
-  })
-  public void getRasterValues(Long rasterId, String geometry, int srid,  double value) throws Exception{
+    "0, POLYGON ((766962 4099080%2C 633468 4095923%2C 628042 4428834%2C 756099 4432069%2C 766962 4099080)), 32610, 1",})
+  public void getRasterValues(Long rasterId, String geometry, int srid, double value) throws Exception {
+    JSONObject parameter = new JSONObject();
+    parameter.put("key", "test_source");
     JSONObject jsonObj = new MockHelper(this.mockMvc, "/getRasterValues")
       .setParam("rasterId", String.valueOf(rasterId))
       .setParam("geometry", URLDecoder.decode(geometry, "UTF-8"))
       .setParam("srid", String.valueOf(srid))
+      .setParam("parameter", parameter.toString())
       .perform();
     System.out.println("jsonObj = " + jsonObj);
   }
-  
+
   @Test
   @Parameters({
-    "0, POINT(766962 4099080), 32610, 1", 
-  })
-  public void getRasterValue(Long rasterId, String geometry, int srid,  double value) throws Exception{
+    "0, POINT(766962 4099080), 32610, 1",})
+  public void getRasterValue(Long rasterId, String geometry, int srid, double value) throws Exception {
+    JSONObject parameter = new JSONObject();
+    parameter.put("key", "test_source");
     JSONObject jsonObj = new MockHelper(this.mockMvc, "/getRasterValue")
       .setParam("rasterId", String.valueOf(rasterId))
       .setParam("point", URLDecoder.decode(geometry, "UTF-8"))
       .setParam("srid", String.valueOf(srid))
+      .setParam("parameter", parameter.toString())
       .perform();
     System.out.println("jsonObj = " + jsonObj);
   }

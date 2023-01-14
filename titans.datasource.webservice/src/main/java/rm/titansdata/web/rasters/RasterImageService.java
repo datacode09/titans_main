@@ -8,6 +8,7 @@ import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import rm.titansdata.Parameter;
 import rm.titansdata.SridUtils;
 import rm.titansdata.colormap.ColorMap;
 import rm.titansdata.images.RasterImage;
@@ -28,14 +29,14 @@ public class RasterImageService {
    * @param rasterId
    * @return
    */
-  public RasterImageResult getRasterImage(long rasterId) {
+  public RasterImageResult getRasterImage(long rasterId, Parameter p) {
     ColorMap cmap = new ColorMap.Builder()
       .setXmin(0)
       .setXmax(1.0)
       .setColorMin("#000")
       .setColorMax("#fff")
       .build();
-    RasterObj r = this.getRasterObj(rasterId);
+    RasterObj r = this.getRasterObj(rasterId, p);
     RasterImage img = new RasterImage(r, cmap);
     BufferedImage bufferedImg = img.asBufferedImage();
     int targetSrid = 3857;   
@@ -51,8 +52,8 @@ public class RasterImageService {
    * @param rasterId
    * @return
    */
-  private RasterObj getRasterObj(long rasterId) {
-    RasterObj result = this.rastersValueService.getRasterObj(rasterId); 
+  private RasterObj getRasterObj(long rasterId, Parameter p) {
+    RasterObj result = this.rastersValueService.getRasterObj(rasterId, p); 
     return result;
   }
 

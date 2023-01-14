@@ -4,6 +4,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import rm.titansdata.Parameter;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.properties.Properties;
@@ -30,10 +31,10 @@ public class RastersValueService {
    * @param geometry
    * @return
    */
-  public RasterCells getRasterValues(Long rasterId, Geometry geometry) {
+  public RasterCells getRasterValues(Long rasterId, Parameter p, Geometry geometry) {
     RasterEntity rasterEntity = this.sourceService.getRaster(rasterId);
     String sourceTitle = rasterEntity.sourceTitle;
-    RasterObj rasterObj = this.getRasterObj(rasterEntity, sourceTitle);
+    RasterObj rasterObj = this.getRasterObj(rasterEntity, sourceTitle, p);
     if (geometry.getGeometryType().equals("Point")) {
       throw new RuntimeException("Does not support 'Point' geometry type");
     }
@@ -42,8 +43,8 @@ public class RastersValueService {
     return result;
   }
 
-  double getRasterValue(Long rasterId, Point point) {
-    RasterObj rasterObj = this.getRasterObj(rasterId);
+  double getRasterValue(Long rasterId, Parameter p, Point point) {
+    RasterObj rasterObj = this.getRasterObj(rasterId, p);
     double result = rasterObj.getValue(point);
     return result;
   }
@@ -53,31 +54,31 @@ public class RastersValueService {
    * @param rasterId
    * @return
    */
-  public RasterObj getRasterObj(Long rasterId) {
+  public RasterObj getRasterObj(Long rasterId, Parameter p) {
     RasterEntity rasterEntity = this.sourceService.getRaster(rasterId);
     String sourceTitle = rasterEntity.sourceTitle;
-    RasterObj result = getRasterObj(rasterEntity, sourceTitle);
+    RasterObj result = getRasterObj(rasterEntity, sourceTitle, p);
     return result;
   }
 
   /**
    *
    * @param rasterEntity
-   * @param sourceTitle
+   * @param key
    * @return
    */
-  private RasterObj getRasterObj(RasterEntity rasterEntity, String sourceTitle) {
+  private RasterObj getRasterObj(RasterEntity rasterEntity, String key, Parameter p) {
     Bounds bounds = rasterEntity.getBounds();
     Dimensions dims = rasterEntity.getDimensions();
     long typeId = rasterEntity.rasterTypeId;
     Raster raster = this.supplier.builder()
       .setTypeId(typeId)
-      .setSourceTitle(sourceTitle)
+      .setSourceTitle(key)
       .setBounds(bounds)
       .setDimensions(dims)
-      .createRaster();
+      .createRaster(p);
     Properties properties = new Properties(bounds, dims.x.length, dims.y.length);
-    RasterObj rasterObj = new RasterObj(sourceTitle, properties, raster);
+    RasterObj rasterObj = new RasterObj(key, properties, raster);
     return rasterObj;
   }
 

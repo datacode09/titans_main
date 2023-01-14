@@ -1,5 +1,6 @@
-package rm.titansdata;
+package rm.titansdata.plugin;
 
+import rm.titansdata.Parameter;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
@@ -14,7 +15,7 @@ public interface RasterFactory {
    * 
    * @return 
    */
-  public String key(Parameter param); 
+  public String key(); 
   
   /**
    * 

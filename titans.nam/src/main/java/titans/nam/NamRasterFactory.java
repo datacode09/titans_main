@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
-import rm.titansdata.RasterFactory;
+import rm.titansdata.plugin.RasterFactory;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
@@ -37,8 +37,8 @@ public class NamRasterFactory implements RasterFactory {
    * @return
    */
   @Override
-  public String key(Parameter p) {
-    String key = "North American Model (Forecast) 01";
+  public String key() {
+    String key = "North American Model Forecasts";
     return key;
   }
 

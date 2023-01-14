@@ -8,11 +8,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import rm.titansdata.Parameter;
 import rm.titansdata.raster.RasterCells;
 import rm.titansdata.web.RequestParser;
 import rm.titansdata.web.ResponseHelper;
@@ -35,6 +37,9 @@ public class RastersServlet {
 
   @Autowired
   private RasterImageService rastersImageService;
+
+  @Autowired
+  private AbstractParameterFactory parameterFactory;
 
   /**
    *
@@ -120,32 +125,52 @@ public class RastersServlet {
 
   @RequestMapping(
     path = "/getRasterValues",
-    params = {"rasterId", "geometry", "srid"}, method = RequestMethod.GET)
+    params = {"rasterId", "geometry", "parameter", "srid"}, method = RequestMethod.GET)
   public void getRasterValues(HttpServletRequest req, HttpServletResponse res) {
     RequestParser parser = new RequestParser(req);
     Long rasterId = parser.getLong("rasterId");
     int srid = parser.getInteger("srid");
     Geometry geometry = parser.parseGeometry("geometry", srid);
+    JSONObject jsonObject = this.getParameterJson(parser);
+    Parameter param = parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
-    RasterCells values = this.rastersValueService.getRasterValues(rasterId, geometry);
+    RasterCells values = this.rastersValueService.getRasterValues(rasterId, param, geometry);
     map.put("values", values);
     this.responseHelper.send(map, res);
   }
 
   @RequestMapping(
     path = "/getRasterValue",
-    params = {"rasterId", "point", "srid"}, 
+    params = {"rasterId", "point", "parameter", "srid"},
     method = RequestMethod.GET
   )
   public void getRasterValue(HttpServletRequest req, HttpServletResponse res) {
     RequestParser parser = new RequestParser(req);
     long rasterId = parser.getLong("rasterId");
     int srid = parser.getInteger("srid");
-    Point geometry = (Point) parser.parseGeometry("point", srid);
+    Point point = (Point) parser.parseGeometry("point", srid);
+    JSONObject jsonObject = this.getParameterJson(parser);
+    Parameter param = parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
-    double value = this.rastersValueService.getRasterValue(rasterId, geometry);
+    double value = this.rastersValueService.getRasterValue(rasterId, param, point);
     map.put("value", value);
     this.responseHelper.send(map, res);
+  }
+
+  /**
+   *
+   * @param parser
+   * @return
+   */
+  private JSONObject getParameterJson(RequestParser parser) {
+    JSONObject result;
+    try {
+      String string = parser.getString("parameter");
+      result = new JSONObject(string);
+    } catch (JSONException ex) {
+      throw new RuntimeException(ex);
+    }
+    return result;
   }
 
   @RequestMapping(
@@ -156,7 +181,9 @@ public class RastersServlet {
   public void getRasterImage(HttpServletRequest req, HttpServletResponse res) {
     RequestParser parser = new RequestParser(req);
     long rasterId = parser.getLong("rasterId");
-    RasterImageResult image = this.rastersImageService.getRasterImage(rasterId);
+    JSONObject jsonObject = this.getParameterJson(parser);
+    Parameter param = parameterFactory.get(jsonObject);
+    RasterImageResult image = this.rastersImageService.getRasterImage(rasterId, param);
     Map<String, Object> map = new HashMap<>();
     map.put("value", image);
     this.responseHelper.send(map, res);
