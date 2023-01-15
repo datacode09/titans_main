@@ -30,7 +30,6 @@ export class AppComponent implements OnInit {
     const div = $("#plot-area");
     const o = $("<div></div>");
     div.append(o);
-    console.log(o);
     o.highcharts({
       series: [{
         data: [[0, 0], [1, -2], [2, 3], [4, 2], [5, 1]]

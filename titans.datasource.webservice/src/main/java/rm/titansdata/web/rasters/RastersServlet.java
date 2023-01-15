@@ -5,6 +5,7 @@ import com.vividsolutions.jts.geom.Point;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
@@ -57,6 +58,29 @@ public class RastersServlet {
     Map<String, Object> map = new HashMap<>();
     JSONObject obj = toJson(values);
     map.put("values", obj.toString());
+    this.responseHelper.send(map, response);
+  }
+  
+  /**
+   * 
+   * @param req
+   * @param response 
+   */
+  @RequestMapping(path="/getRasterParameters", //
+    method = RequestMethod.GET, //
+    params = {"rasterId"})//
+  public void getRasterParameters(HttpServletRequest req, HttpServletResponse response) {
+    RequestParser parser = new RequestParser(req);
+    Long rasterId = parser.getLong("rasterId");
+    RasterEntity raster = this.rastersSourceService.getRaster(rasterId);
+    String sourceTitle = raster.sourceTitle;
+    List<JSONObject> params = this.parameterFactory.getParameters(sourceTitle)
+      .stream()
+      .map(p->p.toJSONObject())
+      .collect(Collectors.toList())
+      ;
+    Map<String, Object> map = new HashMap<>();
+    map.put("values", params); 
     this.responseHelper.send(map, response);
   }
 
@@ -175,13 +199,13 @@ public class RastersServlet {
 
   @RequestMapping(
     path = "/getRasterImage",
-    params = {"rasterId"},
+    params = {"rasterId", "parameter"},
     method = RequestMethod.GET
   )
   public void getRasterImage(HttpServletRequest req, HttpServletResponse res) {
     RequestParser parser = new RequestParser(req);
     long rasterId = parser.getLong("rasterId");
-    JSONObject jsonObject = this.getParameterJson(parser);
+    JSONObject jsonObject = this.getParameterJson(parser); 
     Parameter param = parameterFactory.get(jsonObject);
     RasterImageResult image = this.rastersImageService.getRasterImage(rasterId, param);
     Map<String, Object> map = new HashMap<>();

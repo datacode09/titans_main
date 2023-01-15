@@ -1,7 +1,6 @@
 /* global Objects */
 
 function onEsriLoad(callback) {
-  console.log("esri load");
   const a  = setInterval(()=>{
     if (window["require"] !== undefined) {
       console.log("'require' does exist")

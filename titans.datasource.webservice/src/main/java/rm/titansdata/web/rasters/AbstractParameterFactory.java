@@ -1,6 +1,7 @@
 package rm.titansdata.web.rasters;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +65,20 @@ public class AbstractParameterFactory {
       throw new RuntimeException(ex);
     }
     return key;
+  }
+  
+  /**
+   * 
+   * @param key
+   * @return 
+   */
+  List<Parameter> getParameters(String key) {
+    if (!this.factories.containsKey(key)) {
+      throw new RuntimeException(String.format("Invalid key '%s'", key)); 
+    }
+    ParameterFactory factory = this.factories.get(key);
+    List<Parameter> result = factory.getParameters();
+    return result;
   }
   
 }

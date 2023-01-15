@@ -1,6 +1,7 @@
 import {RastersService} from 'src/services/RastersService';
 import {RastersVisibilityService} from 'src/services/RastersVisibilityService';
 import {RasterImage} from 'src/services/RasterImage';
+import {RasterParameter} from 'src/services/RasterParameter';
 
 declare var dojo: any;
 declare var esri: any;
@@ -11,25 +12,33 @@ declare var $: any;
  */
 export class RasterLayer {
   private map: any;
-  private layers: Map<number, any> = new Map();
+  private layers: Map<RasterParameter, any> = new Map();
+
+  /**
+   * 
+   */
   public constructor(private service: RastersService, //
     private visibilityService: RastersVisibilityService) {
   }
 
-  public onMapReady(map: any, rasterId: number): void {
+  public onMapReady(map: any, param: RasterParameter): void {
     this.map = map;
-    this.visibilityService.getVisibility(rasterId).subscribe(v => {
-      if (v && !this.layers.has(rasterId)) {
-        this.addLayer(rasterId);
+    this.visibilityService.getVisibility(param).subscribe(visible => {
+      if (visible && !this.layers.has(param)) {
+        this.addLayer(param);
       }
-      this.updateLayerVisibility(rasterId);
+      console.log(visible);
+      this.updateLayerVisibility(param);
     });
   }
 
-  private updateLayerVisibility(rasterId: number) {
-    if (this.layers.has(rasterId)) {
-      const visible = this.visibilityService.getVisibility(rasterId).value;
-      const layer = this.layers.get(rasterId);
+  /**
+   * 
+   */
+  private updateLayerVisibility(param: RasterParameter) {
+    if (this.layers.has(param)) {
+      const visible = this.visibilityService.getVisibility(param).value;
+      const layer = this.layers.get(param);
       layer.setVisibility(visible);
     }
   }
@@ -37,25 +46,32 @@ export class RasterLayer {
   /**
    * 
    */
-  private addLayer(rasterId: number): any {
+  private addLayer(param: RasterParameter): any {
     const options = {
-      'id': "customimage_" + rasterId
+      'id': this.toMapLayerId(param)
     };
     const layer = new esri.layers.MapImageLayer(options);
     this.map.addLayer(layer);
     const onReady = (image: any) => layer.addImage(image);
-    this.createImage(rasterId, onReady);
-    this.layers.set(rasterId, layer);
-    this.updateLayerVisibility(rasterId);
+    this.createImage(param, onReady);
+    this.layers.set(param, layer);
+    this.updateLayerVisibility(param);
     return layer;
+  }
+  
+  /**
+   * 
+   */
+  private toMapLayerId(param: RasterParameter): string {
+    return "customimage_" + param.rasterId + "_" + param.parameter.key;
   }
 
 
   /**
    * 
    */
-  private createImage(rasterId: number, onReady: (img: any) => void): void {
-    this.service.getMapImage(rasterId).subscribe((img: RasterImage) => {
+  private createImage(param: RasterParameter, onReady: (img: any) => void): void {
+    this.service.getMapImage(param).subscribe((img: RasterImage) => {
       if (img != null) {
         const imageURL = img.imageURL;
         const image = esri.layers.MapImage({

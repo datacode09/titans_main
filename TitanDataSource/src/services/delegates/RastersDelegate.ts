@@ -1,5 +1,6 @@
 import {Observable} from 'rxjs';
 import {RasterImage} from '../RasterImage';
+import {RasterParameter} from '../RasterParameter';
 
 /**
  * 
@@ -20,5 +21,13 @@ export interface RastersDelegate {
   loadRasterEntity(rasterId: number, callback: any): void
   
   
-  getRasterImage(rasterId: number): Observable<RasterImage>;
+  /**
+   * 
+   */
+  getRasterImage(param: RasterParameter): Observable<RasterImage>;
+  
+  /**
+   * 
+   */
+  getParameters(rasterId: number): Observable<RasterParameter[]>; 
 }

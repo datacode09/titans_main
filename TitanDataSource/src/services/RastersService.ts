@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {Observable, BehaviorSubject, Subject} from 'rxjs';
+import {Observable, BehaviorSubject, Subject } from 'rxjs';
+import {map} from 'rxjs/operators/';
 import {RastersGroup} from './RastersGroup';
 import {RasterEntity} from './RasterEntity';
 import {RastersDelegate} from './delegates/RastersDelegate';
 import {InternalRastersDelegate} from './delegates/InternalRastersDelegate';
 import {HttpRastersDelegate} from './delegates/HttpRastersDelegate';
 import {RasterImage} from './RasterImage';
-declare var esri: any;
+import {RasterParameter} from './RasterParameter';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +25,8 @@ export class RastersService {
    * 
    */
   public static singleton(http: HttpClient): RastersService {
-    //    return new RastersService(new InternalRastersDelegate());
-    return new RastersService(new HttpRastersDelegate(http));
+        return new RastersService(new InternalRastersDelegate());
+//    return new RastersService(new HttpRastersDelegate(http));
   }
 
   /**
@@ -57,8 +57,8 @@ export class RastersService {
   /**
    * 
    */
-  public getMapImage(rasterId: number): Observable<RasterImage> {
-    return this.rastersDelegate.getRasterImage(rasterId);
+  public getMapImage(param: RasterParameter): Observable<RasterImage> {
+    return this.rastersDelegate.getRasterImage(param);
   }
 
   /**
@@ -67,6 +67,15 @@ export class RastersService {
   public getRasters(): Observable<RastersGroup[]> {
     return this.rasterGroups;
   }
-
+  
+    
+  /**
+   * 
+   */
+  public getParameters(rasterId: number): Observable<RasterParameter[]> {
+    const result:Observable<RasterParameter[]> 
+    = this.rastersDelegate.getParameters(rasterId);
+    return result;
+  } 
 }
 

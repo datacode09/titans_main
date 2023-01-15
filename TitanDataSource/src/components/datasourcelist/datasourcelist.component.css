@@ -1,9 +1,29 @@
 .treenode {
-  width: 120px;
+  width: 20px;
   height: 20px;
   cursor: pointer;
+  display: inline-block  
 }
 
 .treenode:hover{
-  
+}
+
+.node {
+  background-color: white; 
+}
+.node.selected {
+  background-color: #dbdbdb; 
+}
+
+.grouptreenode .rasterdiv{
+  /*display: block;*/
+  padding-left: 20px;
+}
+.grouptreenode .parameterdiv {
+  /*display: block;*/ 
+  padding-left: 40px;  
+}
+
+.grouptreenode .parameterdiv>span {
+  padding-left: 10px;  
 }

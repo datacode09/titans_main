@@ -4,21 +4,27 @@ import {RastersGroup} from 'src/services/RastersGroup';
 import {ViewEncapsulation} from '@angular/compiler/src/core';
 import {RasterEntity} from 'src/services/RasterEntity';
 import {RastersVisibilityService} from 'src/services/RastersVisibilityService';
+import {RasterParameter} from 'src/services/RasterParameter';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'datasourcelist',
   templateUrl: './datasourcelist.component.html',
-  styleUrls: ['../../app/app.component.css', './datasourcelist.component.css'],
+  styleUrls: ['../../app/app.component.css', 'datasourcelist.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class DataSourceList implements OnInit {
   @Input()
   public title: string;
   public rastersgroup: RastersGroup[];
+  private selectedTreeNode: BehaviorSubject<any> = new BehaviorSubject(null);
+  private tabindex = -1;
 
+  /**
+   * 
+   */
   public constructor(private service: RastersService,
     private visibilityService: RastersVisibilityService) {
-
   }
 
 
@@ -29,13 +35,47 @@ export class DataSourceList implements OnInit {
     this.service.getRasters().subscribe(e => {
       this.rastersgroup = e;
     });
+    this.selectedTreeNode.subscribe(s => {
+      $(".node").removeClass("selected")
+      if (s != null) {
+        s.addClass("selected");
+      }
+    });
   }
+
+  public onClickedForSelection(evt: any, name: string) {
+    const node: any = this.groupNameToEntity(name);
+    const el = $("#el_" + node.id + "  .level01");
+    this.selectedTreeNode.next(el.parent());
+    evt.preventDefault();
+    evt.stopPropagation();
+  }
+
   /**
    * 
    */
   public onClicked(evt: any, name: string): void {
     const node: any = this.groupNameToEntity(name);
-    this.expandNode(node);
+    const el = $("#el_" + node.id + "  .level01");
+    const visible: boolean = JSON.parse(el.attr("data-visible"));
+    el.attr("data-visible", (!visible).toString());
+    this.updateIcon(el);
+    this.expandGroupNode(node);
+    this.selectedTreeNode.next(el.parent());
+    evt.preventDefault();
+    evt.stopPropagation();
+  }
+
+  /**
+   * 
+   */
+  private updateIcon(el: any): void {
+    const visible: boolean = JSON.parse(el.attr("data-visible"));
+    if (visible) {
+      el.html("-");
+    } else {
+      el.html("+");
+    }
   }
 
   /**
@@ -49,53 +89,120 @@ export class DataSourceList implements OnInit {
   /**
    * 
    */
-  public expandNode(node: RastersGroup): void {
+  public expandGroupNode(node: RastersGroup): void {
     node.rasterIds.forEach((rasterId) => {
-      const subscription = this.service.getRasterEntity(rasterId);
-      subscription.subscribe((raster) => {
-        if (raster != null) {
-          this.addNode(node, raster);
-          subscription.unsubscribe();
-        }
-      });
+      this.loadRasterNode(node, rasterId);
     });
   }
+
   /**
    * 
    */
-  public addNode(node: RastersGroup, raster: RasterEntity): void {
+  private loadRasterNode(node: RastersGroup, rasterId: number): void {
+    const subscription = this.service.getRasterEntity(rasterId);
+    subscription.subscribe((raster) => {
+      if (raster != null) {
+        this.addRasterNode(node, raster);
+        this.service.getParameters(rasterId).subscribe(params => {
+          params.forEach((p) => this.addRasterParamNode(p));
+        });
+        subscription.unsubscribe();
+      }
+    });
+  }
+
+  /**
+   * 
+   */
+  private addRasterNode(node: RastersGroup, raster: RasterEntity): any {
     const rasterId = raster.rasterId;
     const parentEl = $("#el_" + node.id);
-    const newelement = "el_" + node.id + "_" + rasterId;
+    const newelement = this.getRasterElementId(rasterId);
     if ($("#" + newelement).length == 0) {
-      const text = $("<div>").text("Raster : " + rasterId + "")
-        .css("display", "inline-block");
-      const checkbox = $("<input type='checkbox'>")
+      const textdiv = $("<div>").text("Raster : " + rasterId + "")
         .css("display", "inline-block")
+        .addClass("rasterdiv")
         ;
-      checkbox.on("change", (evt)=>{
-        const newvalue = checkbox.is(":checked");
-        this.visibilityService.getVisibility(rasterId).next(newvalue);        
-      }); 
-      this.visibilityService.getVisibility(rasterId).subscribe((v)=>{
-        checkbox.prop('checked', v);
-      })
-      $("<div>").attr("id", newelement)
-        .append(checkbox)
-        .append(text)
+      const c = $("<div>").attr("id", newelement)
+        .addClass("node")
+        .append(textdiv)
         .appendTo(parentEl)
+        .click((e: any) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.selectedTreeNode.next(c);
+        })
         .css("whitespace", "none")
     } else {
       $("#" + newelement).toggle();
     }
+    return newelement;
   }
+
+  /**
+   * 
+   */
+  private getRasterElementId(rasterId: number): string {
+    const index = this.rastersgroup.findIndex((g) => g.contains(rasterId));
+    const g = this.rastersgroup[index];
+    return "el_" + g.id + "_" + rasterId;
+  }
+
+
+  /**
+   * 
+   */
+  private addRasterParamNode(param: RasterParameter): void {
+    const id = this.getRasterParamNodeElementId(param);
+    if ($("#" + id).length > 0) {
+      return;
+    }
+    const rasterId = param.rasterId;
+    const parentEl = $("#" + this.getRasterElementId(rasterId));
+    const checkbox = $("<input type='checkbox'>")
+      .css("display", "inline-block");
+    checkbox.on("click", (evt) => {
+      const newvalue = checkbox.is(":checked");
+      this.visibilityService.getVisibility(param).next(newvalue);
+    });
+    this.visibilityService.getVisibility(param).subscribe((v) => {
+      setTimeout(() => {
+        const a: any = checkbox[0];
+        a.checked = v;
+      })
+
+    });
+    const key = param.parameter.key;
+    const textdiv = $("<span>").html(key);
+    const c = $("<div>").attr("id", id)
+      .addClass("parameterdiv")
+      .addClass("node")
+      .append(checkbox)
+      .append(textdiv)
+      .on("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.selectedTreeNode.next(c);
+      })
+      .appendTo(parentEl);
+  }
+
+  /**
+   * 
+   */
+  private getRasterParamNodeElementId(param: RasterParameter): string {
+    const rasterId = param.rasterId;
+    const key = param.parameter.key;
+    const id = this.getRasterElementId(rasterId) + "_" + key;
+    return id;
+  }
+
 
   /**
    * 
    */
   public onSelect(event: any): void {
     console.log(event);
-    
   }
 }
 

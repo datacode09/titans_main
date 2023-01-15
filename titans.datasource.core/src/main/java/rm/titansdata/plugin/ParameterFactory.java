@@ -1,5 +1,6 @@
 package rm.titansdata.plugin;
 
+import java.util.List;
 import org.json.JSONObject;
 import rm.titansdata.Parameter;
 
@@ -19,5 +20,7 @@ public interface ParameterFactory {
    * @return 
    */
   public Parameter create(JSONObject obj); 
+
+  public List<Parameter> getParameters();
   
 }

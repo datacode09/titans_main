@@ -13,6 +13,17 @@ export class RastersGroup {
     this.rasterIds = rasterIds;
   }
   
+  /**
+   * 
+   */
+  public contains(rasterId:number):boolean {
+    const index = this.rasterIds.findIndex(v => v == rasterId);
+    return index != -1;
+  }
+  
+  /**
+   * 
+   */
   public size():number {
     return this.rasterIds.length;
   }

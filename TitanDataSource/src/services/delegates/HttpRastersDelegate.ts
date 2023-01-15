@@ -6,9 +6,11 @@ import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {Observable, BehaviorSubject} from 'rxjs';
 import {RasterImage} from '../RasterImage';
 import {Envelope} from '../Envelope';
+import {RasterParameter} from '../RasterParameter';
 
 export class HttpRastersDelegate implements RastersDelegate {
-
+  private baseUrl: string = "http://localhost:8081/titansdata.web"
+  private patterns: Map<number, BehaviorSubject<RasterParameter[]>> = new Map();
   private host: RastersService;
 
   /**
@@ -28,7 +30,7 @@ export class HttpRastersDelegate implements RastersDelegate {
    * 
    */
   public loadRasters(): void {
-    const url = "http://localhost:8081/titansdata.web/getRasters";
+    const url = this.baseUrl + "/getRasters";
     const params = new HttpParams().set("userId", "0");
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
@@ -49,18 +51,20 @@ export class HttpRastersDelegate implements RastersDelegate {
   /**
    * 
    */
-  public loadRasterEntity(rasterId: number, callback: any): void {
-    const url = "http://localhost:8081/titansdata.web/getRaster";
+  public loadRasterEntity(rasterId: number, callback: (v: any) => void): void {
+    const url = this.baseUrl + "/getRaster";
     const params = new HttpParams()
       .set("rasterId", rasterId.toString())
       ;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-    this.http.get(url, {params: params, headers: headers}).subscribe((response: any) => {
+    const options = {params: params, headers: headers};
+    this.http.get(url, options).subscribe((response: any) => {
       const v: any = response.value;
       const e = this.mapToEntity(v);
       this.host.rastersmap.set(v.rasterId, e);
+      callback(e);
     });
   }
 
@@ -72,13 +76,19 @@ export class HttpRastersDelegate implements RastersDelegate {
     return e;
   }
 
+
+
   /**
    * 
    */
-  public getRasterImage(rasterId: number): Observable<RasterImage> {
-    const url = "http://localhost:8081/titansdata.web/getRasterImage";
+  public getRasterImage(param: RasterParameter): Observable<RasterImage> {
+    const url = this.baseUrl + "/getRasterImage";
+    const rasterId = param.rasterId;
+    const parameter = param.parameter;
     const params = new HttpParams()
-      .set("rasterId", rasterId.toString());
+      .set("rasterId", rasterId.toString())
+      .set("parameter", parameter)
+      ;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
@@ -107,4 +117,36 @@ export class HttpRastersDelegate implements RastersDelegate {
     const result: RasterImage = new RasterImage(imageUrl, envelope);
     return result;
   }
+
+  /**
+   * 
+   */
+  public getParameters(rasterId: number): Observable<any[]> {
+    if (!this.patterns.has(rasterId)) {
+      const value = new BehaviorSubject([]);
+      const url = this.baseUrl + "/getRasterParameters";
+      const params = new HttpParams()
+        .set("rasterId", rasterId.toString());
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json'
+      });
+      const options = {params: params, headers: headers};
+      this.http.get(url, options).subscribe((response) => {
+        const patternsArray = this.responseToPatterns(rasterId, response);
+        value.next(patternsArray);
+      });
+    }
+    const result = this.patterns.get(rasterId);
+    return result;
+  }
+
+  /**
+   * 
+   */
+  private responseToPatterns(rasterId:number, response: any): RasterParameter[] {
+    const values:any[] = response.values;
+    const result = values.map(v => new RasterParameter(rasterId, v));
+    return result;
+  }
+
 }
