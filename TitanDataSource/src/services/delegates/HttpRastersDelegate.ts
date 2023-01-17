@@ -1,12 +1,13 @@
 import {RastersDelegate} from './RastersDelegate';
 import {RastersService} from '../RastersService';
-import {RastersGroup} from '../RastersGroup';
-import {RasterEntity} from '../RasterEntity';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {Observable, BehaviorSubject} from 'rxjs';
-import {RasterImage} from '../RasterImage';
-import {Envelope} from '../Envelope';
-import {RasterParameter} from '../RasterParameter';
+import {RastersGroup} from 'src/core/rasters/RastersGroup';
+import {RasterParameter} from 'src/core/rasters/RasterParameter';
+import {RasterEntity} from 'src/core/rasters/RasterEntity';
+import {RasterImage} from 'src/core/rasters/RasterImage';
+import {Envelope} from 'src/core/types/Envelope';
+
 
 export class HttpRastersDelegate implements RastersDelegate {
   private baseUrl: string = "http://localhost:8081/titansdata.web"

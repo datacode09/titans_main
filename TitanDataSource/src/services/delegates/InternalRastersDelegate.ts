@@ -1,11 +1,11 @@
 import {RastersDelegate} from './RastersDelegate';
 import {RastersService} from '../RastersService';
-import {RastersGroup} from '../RastersGroup';
-import {RasterEntity} from '../RasterEntity';
 import {Observable, BehaviorSubject} from 'rxjs';
-import {RasterImage} from '../RasterImage';
-import {Envelope} from '../Envelope';
-import {RasterParameter} from '../RasterParameter';
+import {RasterEntity} from 'src/core/rasters/RasterEntity';
+import {RasterParameter} from 'src/core/rasters/RasterParameter';
+import {RasterImage} from 'src/core/rasters/RasterImage';
+import {RastersGroup} from 'src/core/rasters/RastersGroup';
+import {Envelope} from 'src/core/types/Envelope';
 
 export class InternalRastersDelegate implements RastersDelegate {
 
@@ -71,7 +71,10 @@ export class InternalRastersDelegate implements RastersDelegate {
     }, 10);
   }
 
-
+  
+  /**
+   * 
+   */
   public getRasterImage(param: RasterParameter): Observable<RasterImage> {
     const imageUrl = this.rasterImages.get(param);
     const xmin = -13525318;

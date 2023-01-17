@@ -1,11 +1,11 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {RastersService} from 'src/services/RastersService';
-import {RastersGroup} from 'src/services/RastersGroup';
 import {ViewEncapsulation} from '@angular/compiler/src/core';
-import {RasterEntity} from 'src/services/RasterEntity';
 import {RastersVisibilityService} from 'src/services/RastersVisibilityService';
-import {RasterParameter} from 'src/services/RasterParameter';
 import {BehaviorSubject} from 'rxjs';
+import {RastersGroup} from 'src/core/rasters/RastersGroup';
+import {RasterEntity} from 'src/core/rasters/RasterEntity';
+import {RasterParameter} from 'src/core/rasters/RasterParameter';
 
 @Component({
   selector: 'datasourcelist',
@@ -18,7 +18,7 @@ export class DataSourceList implements OnInit {
   public title: string;
   public rastersgroup: RastersGroup[];
   private selectedTreeNode: BehaviorSubject<any> = new BehaviorSubject(null);
-  private tabindex = -1;
+  private elements: Map<String, any> = new Map();
 
   /**
    * 
@@ -39,13 +39,23 @@ export class DataSourceList implements OnInit {
       $(".node").removeClass("selected")
       if (s != null) {
         s.addClass("selected");
+        this.setSelectItem();
       }
     });
   }
 
+  private setSelectItem(): void {
+    const elId = $(".node.selected").attr("id");
+    const element = this.elements.get(elId);
+    this.service.setSelectedItem(element); 
+  }
+
   public onClickedForSelection(evt: any, name: string) {
     const node: any = this.groupNameToEntity(name);
-    const el = $("#el_" + node.id + "  .level01");
+    const elementId = "el_" + node.id;
+    const el = $("#" + elementId  + "  .level01");
+    const group = this.rastersgroup.find(g => g.id == node.id); 
+    this.elements.set(elementId, group); 
     this.selectedTreeNode.next(el.parent());
     evt.preventDefault();
     evt.stopPropagation();
@@ -102,9 +112,14 @@ export class DataSourceList implements OnInit {
     const subscription = this.service.getRasterEntity(rasterId);
     subscription.subscribe((raster) => {
       if (raster != null) {
-        this.addRasterNode(node, raster);
+        const rasternodeid = this.addRasterNode(node, raster);
+        this.elements.set(rasternodeid, raster);
         this.service.getParameters(rasterId).subscribe(params => {
-          params.forEach((p) => this.addRasterParamNode(p));
+          params.forEach((p) => {
+            const rasterParamNodeId = this.addRasterParamNode(p);
+            this.elements.set(rasterParamNodeId, p); 
+          });
+
         });
         subscription.unsubscribe();
       }
@@ -152,7 +167,7 @@ export class DataSourceList implements OnInit {
   /**
    * 
    */
-  private addRasterParamNode(param: RasterParameter): void {
+  private addRasterParamNode(param: RasterParameter): string {
     const id = this.getRasterParamNodeElementId(param);
     if ($("#" + id).length > 0) {
       return;
@@ -185,6 +200,8 @@ export class DataSourceList implements OnInit {
         this.selectedTreeNode.next(c);
       })
       .appendTo(parentEl);
+
+    return id;
   }
 
   /**

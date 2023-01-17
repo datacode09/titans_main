@@ -1,6 +1,7 @@
 import {Observable} from 'rxjs';
-import {RasterImage} from '../RasterImage';
-import {RasterParameter} from '../RasterParameter';
+import {RasterParameter} from 'src/core/rasters/RasterParameter';
+import {RasterImage} from 'src/core/rasters/RasterImage';
+
 
 /**
  * 

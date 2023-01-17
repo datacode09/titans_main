@@ -1,7 +1,7 @@
 import {RastersService} from 'src/services/RastersService';
 import {RastersVisibilityService} from 'src/services/RastersVisibilityService';
-import {RasterImage} from 'src/services/RasterImage';
-import {RasterParameter} from 'src/services/RasterParameter';
+import {RasterParameter} from 'src/core/rasters/RasterParameter';
+import {RasterImage} from 'src/core/rasters/RasterImage';
 
 declare var dojo: any;
 declare var esri: any;
@@ -27,7 +27,6 @@ export class RasterLayer {
       if (visible && !this.layers.has(param)) {
         this.addLayer(param);
       }
-      console.log(visible);
       this.updateLayerVisibility(param);
     });
   }

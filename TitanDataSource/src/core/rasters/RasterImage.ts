@@ -1,11 +1,12 @@
-import {Envelope} from './Envelope';
+import {Envelope} from '../types/Envelope';
+
 
 export class RasterImage {
   
   public imageURL:string;
   public envelope:Envelope;
   
-  constructor(imageURL: string, envelope: Envelope) {
+  public constructor(imageURL: string, envelope: Envelope) {
     this.imageURL = imageURL;
     this.envelope = envelope;
   }

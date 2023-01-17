@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, BehaviorSubject, Subject } from 'rxjs';
-import {map} from 'rxjs/operators/';
-import {RastersGroup} from './RastersGroup';
-import {RasterEntity} from './RasterEntity';
+import {Observable, BehaviorSubject, Subject} from 'rxjs';
 import {RastersDelegate} from './delegates/RastersDelegate';
 import {InternalRastersDelegate} from './delegates/InternalRastersDelegate';
 import {HttpRastersDelegate} from './delegates/HttpRastersDelegate';
-import {RasterImage} from './RasterImage';
-import {RasterParameter} from './RasterParameter';
+import {RastersGroup} from 'src/core/rasters/RastersGroup';
+import {RasterEntity} from 'src/core/rasters/RasterEntity';
+import {RasterImage} from 'src/core/rasters/RasterImage';
+import {RasterParameter} from 'src/core/rasters/RasterParameter';
+
 
 @Injectable({
   providedIn: 'root'
@@ -20,13 +20,28 @@ export class RastersService {
   rasterGroups: BehaviorSubject<RastersGroup[]> = new BehaviorSubject<RastersGroup[]>([]);
   rastersmap: Map<number, any> = new Map();
   rasterProperties: Map<number, any> = new Map();
+  private selectedItem: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  /**
+   * 
+   */
+  public getSelectedItem(): Observable<any> {
+    return this.selectedItem;
+  }
+  
+  /**
+   * 
+   */
+  public setSelectedItem(item:any):void {
+    this.selectedItem.next(item); 
+  }
 
   /**
    * 
    */
   public static singleton(http: HttpClient): RastersService {
-        return new RastersService(new InternalRastersDelegate());
-//    return new RastersService(new HttpRastersDelegate(http));
+    
+    return new RastersService(new InternalRastersDelegate());
   }
 
   /**
@@ -67,15 +82,15 @@ export class RastersService {
   public getRasters(): Observable<RastersGroup[]> {
     return this.rasterGroups;
   }
-  
-    
+
+
   /**
    * 
    */
   public getParameters(rasterId: number): Observable<RasterParameter[]> {
-    const result:Observable<RasterParameter[]> 
-    = this.rastersDelegate.getParameters(rasterId);
+    const result: Observable<RasterParameter[]>
+      = this.rastersDelegate.getParameters(rasterId);
     return result;
-  } 
+  }
 }
 

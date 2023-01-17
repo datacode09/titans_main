@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http/http';
 import {Router} from '@angular/router';
 import {BehaviorSubject, Subject} from 'rxjs';
-import {RasterParameter} from './RasterParameter';
+import {RasterParameter} from 'src/core/rasters/RasterParameter';
 
 /**
  * 
