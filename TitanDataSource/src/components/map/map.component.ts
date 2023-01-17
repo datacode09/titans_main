@@ -1,7 +1,7 @@
 import {OnInit, ViewEncapsulation, Component} from '@angular/core';
 import {RasterLayer} from './rasterlayer/RasterLayer';
-import {RastersService} from 'src/services/RastersService';
-import {RastersVisibilityService} from 'src/services/RastersVisibilityService';
+import {RastersService} from 'src/services/rasterservices/RastersService';
+import {RastersVisibilityService} from 'src/services/rasterstates/RastersVisibilityService';
 
 declare var dojo: any;
 declare var esri: any;

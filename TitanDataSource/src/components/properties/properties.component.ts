@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation, OnInit} from '@angular/core';
-import {RastersService} from 'src/services/RastersService';
 import {PropertyDetailsViewFactory} from './PropertyDetailsViewFactory';
+import {RastersService} from 'src/services/rasterservices/RastersService';
 
 
 @Component({

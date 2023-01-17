@@ -1,7 +1,7 @@
-import {RastersService} from 'src/services/RastersService';
-import {RastersVisibilityService} from 'src/services/RastersVisibilityService';
 import {RasterParameter} from 'src/core/rasters/RasterParameter';
 import {RasterImage} from 'src/core/rasters/RasterImage';
+import {RastersService} from 'src/services/rasterservices/RastersService';
+import {RastersVisibilityService} from 'src/services/rasterstates/RastersVisibilityService';
 
 declare var dojo: any;
 declare var esri: any;

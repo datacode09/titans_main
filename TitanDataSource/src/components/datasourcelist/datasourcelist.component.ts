@@ -1,11 +1,11 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {RastersService} from 'src/services/RastersService';
 import {ViewEncapsulation} from '@angular/compiler/src/core';
-import {RastersVisibilityService} from 'src/services/RastersVisibilityService';
 import {BehaviorSubject} from 'rxjs';
 import {RastersGroup} from 'src/core/rasters/RastersGroup';
 import {RasterEntity} from 'src/core/rasters/RasterEntity';
 import {RasterParameter} from 'src/core/rasters/RasterParameter';
+import {RastersService} from 'src/services/rasterservices/RastersService';
+import {RastersVisibilityService} from 'src/services/rasterstates/RastersVisibilityService';
 
 @Component({
   selector: 'datasourcelist',
