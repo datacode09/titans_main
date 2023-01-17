@@ -1,5 +1,6 @@
 package titans.nam;
 
+import titans.nam.core.NamImporter;
 import java.io.File;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

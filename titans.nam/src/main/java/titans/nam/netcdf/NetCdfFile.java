@@ -74,7 +74,11 @@ public class NetCdfFile {
       throw new RuntimeException(ex);
     }
   }
-
+  
+  /**
+   * 
+   * @return 
+   */
   String getVarName() {
     return this.varName;
   }

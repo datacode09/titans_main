@@ -1,4 +1,4 @@
-package titans.nam;
+package titans.nam.core;
 
 import java.io.Closeable;
 import java.io.File;

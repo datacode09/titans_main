@@ -1,4 +1,6 @@
-package titans.nam;
+package titans.nam.utils;
+
+import titans.nam.NamParameter;
 
 /**
  *

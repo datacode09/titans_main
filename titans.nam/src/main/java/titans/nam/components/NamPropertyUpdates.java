@@ -1,4 +1,4 @@
-package titans.nam;
+package titans.nam.components;
 
 import java.util.List;
 import javafx.beans.property.ListProperty;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import titans.nam.NamParameter;
 import titans.nam.grib.NamGribSource;
 
 /**
@@ -18,7 +19,10 @@ import titans.nam.grib.NamGribSource;
 @Component
 @Lazy(false)
 public class NamPropertyUpdates implements InitializingBean {
-
+  
+  /**
+   * 
+   */
   @Autowired
   @Qualifier("nam.parameters")
   private ListProperty<NamParameter> parameters;
