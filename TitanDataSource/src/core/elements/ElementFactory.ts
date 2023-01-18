@@ -11,7 +11,6 @@ export class ElementFactory {
    * 
    */
   public static toJquery(settings: any): any {
-    console.log(settings);
     const namediv = $("<span>")
       .css("margin-right: ", "10px")
       .css("display", "inline-block")

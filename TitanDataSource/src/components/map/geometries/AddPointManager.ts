@@ -116,7 +116,6 @@ export class AddPointManager {
    * 
    */
   public setSelectedQueryPoint(newvalue: QueryPoint): void {
-    console.log(newvalue);
     const currentvalue = this.selectQueryPoint.value;
     if (!(currentvalue === null && newvalue === null)) {
       if (newvalue !== null && currentvalue === null) {
@@ -134,7 +133,18 @@ export class AddPointManager {
    */
   private handleClickEvent(e: any) {
     if (this.queryPointActivated.value) {
-      const queryPoint = QueryPoint.create(e.mapPoint);
+      const view: any[] = [];
+      const queryPoint = QueryPoint.create(e.mapPoint, view);
+      view.push({
+        type: 'label',
+        name: "ID",
+        value: "Point "  + queryPoint.id
+      });
+      view.push({
+        type: 'label',
+        name: "Point",
+        value: e.mapPoint.x.toFixed(0) + ", " + e.mapPoint.y.toFixed(0)
+      });
       const newarr: QueryPoint[] = this.queryPoints.value.concat(queryPoint);
       this.queryPoints.next(newarr);
       this.setQueryPointActivated(false);

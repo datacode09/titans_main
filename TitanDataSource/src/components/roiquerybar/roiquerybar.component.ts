@@ -29,10 +29,7 @@ export class RoiQueryBarComponent implements OnInit {
     this.addPointManager.getQueryPoints().subscribe(this.onQueryPointsChanged.bind(this));
     this.addPointManager.getSelectedQueryPoint().subscribe((newvalue)=>{
       this.selectQueryPoint = newvalue;
-    })
-    $("#queryPointsList").on("change", evt => {
-      console.log(evt);
-    });
+    }); 
   }
   
   /**
