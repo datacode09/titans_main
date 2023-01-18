@@ -28,19 +28,21 @@ export class RastersService {
   public getSelectedItem(): Observable<any> {
     return this.selectedItem;
   }
-  
+
   /**
    * 
    */
-  public setSelectedItem(item:any):void {
-    this.selectedItem.next(item); 
+  public setSelectedItem(item: any): void {
+    if (!(item === null && this.selectedItem.value === null)) {
+      this.selectedItem.next(item);
+    }
   }
 
   /**
    * 
    */
   public static singleton(http: HttpClient): RastersService {
-    
+
     return new RastersService(new InternalRastersDelegate());
   }
 

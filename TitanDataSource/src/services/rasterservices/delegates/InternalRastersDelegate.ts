@@ -71,7 +71,7 @@ export class InternalRastersDelegate implements RastersDelegate {
     }, 10);
   }
 
-  
+
   /**
    * 
    */
@@ -93,9 +93,35 @@ export class InternalRastersDelegate implements RastersDelegate {
    */
   public getParameters(rasterId: number): Observable<RasterParameter[]> {
     if (!this.patterns.has(rasterId)) {
-      const value = new BehaviorSubject([
-        new RasterParameter(rasterId, {key: "test_source"})
-      ]);
+      const parameter = {
+        key: "test_source",
+        view: [
+          {
+            type: 'label'
+            , name: 'Raster ID'
+            , value: rasterId
+          }
+          , {
+            type: 'label'
+            , name: 'Time Stamp'
+            , value: 'Jan. 17, 2023'
+          }
+          , {
+            type: 'label'
+            , name: 'latitude-range '
+            , value: '2222.0, 2222.0'
+          }
+          , {
+            type: 'label'
+            , name: 'longitude-range '
+            , value: '2222.0, 2222.0'
+          }
+        ]
+      };
+      const arr = [
+        new RasterParameter(rasterId, parameter)
+      ]
+      const value = new BehaviorSubject(arr);
       this.patterns.set(rasterId, value);
     }
     const result = this.patterns.get(rasterId);

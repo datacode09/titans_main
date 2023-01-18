@@ -1,6 +1,21 @@
 <div class="card-title" style="white-space: nowrap" > 
   <div style="display: inline-block">Map</div> 
-  <div style="display: inline-block; float:right">
-    <input type="reset" value="Point" style=""/>
+  <div style="display: inline-block; float:right; white-space: nowrap">
+    <div style="display: inline-block" *ngIf="selectQueryPoint !== null">  
+      <select id="queryPointsList" [(model)]="selectQueryPoint.id" (change)="onQueryPointChange($event)">
+        <option *ngFor="let q of queryPointsArr" style="display:inline-block;" 
+          [value]="q.id"
+          [selected]="q.id === selectQueryPoint.id"
+          
+          > 
+      <span> Point {{q.id}} </span> 
+      </option>
+    </select>
+    </div>
+    <div style="margin-left: 10px; display: inline-block" > 
+      <input id="query_point" type="reset" value="Add ROI Point" style="" 
+           (click)="onPointBtnClicked($event);"/>
+    </div>
+
   </div>  
 </div>

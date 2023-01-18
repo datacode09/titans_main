@@ -10,8 +10,9 @@ import {RastersService} from 'src/services/rasterservices/RastersService';
   encapsulation: ViewEncapsulation.None
 })
 export class PropertiesComponent implements OnInit {
-  
+
   public title: string = "Regions/Points of Interests";
+
   /**
    * 
    */

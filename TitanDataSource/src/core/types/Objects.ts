@@ -11,7 +11,7 @@ export class Objects {
    * 
    */
   public static isNull(obj:any):boolean {
-    return obj !== undefined && obj !== null;
+    return obj === undefined && obj === null;
   }
 
   /**

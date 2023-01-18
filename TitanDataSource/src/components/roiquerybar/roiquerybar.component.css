@@ -1,5 +1,9 @@
-/* 
-    Created on : Jan 16, 2023, 11:24:15 PM
-    Author     : Ricardo Marquez
-*/
+input {
+  /*border-style: initial;*/ 
+}
+
+.activated {
+  border-style: inset;
+  background-color: darkgray;
+}
 

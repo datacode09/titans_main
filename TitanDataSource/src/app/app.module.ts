@@ -23,6 +23,7 @@ import {RastersService} from 'src/services/rasterservices/RastersService';
       , deps : [HttpClient]
     }
   ],
+  
   bootstrap: [AppComponent]
 })
 export class AppModule { }

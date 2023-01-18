@@ -2,6 +2,7 @@ import {OnInit, ViewEncapsulation, Component} from '@angular/core';
 import {RasterLayer} from './rasterlayer/RasterLayer';
 import {RastersService} from 'src/services/rasterservices/RastersService';
 import {RastersVisibilityService} from 'src/services/rasterstates/RastersVisibilityService';
+import {AddPointManager} from './geometries/AddPointManager';
 
 declare var dojo: any;
 declare var esri: any;
@@ -16,9 +17,10 @@ declare var $: any;
 })
 export class MapComponent implements OnInit {
   
-  
   public constructor(private service:RastersService, 
-    private visibilityService: RastersVisibilityService) {
+    private visibilityService: RastersVisibilityService, 
+    private addPointManager: AddPointManager
+    ) {
   }
 
   /**
@@ -58,6 +60,7 @@ export class MapComponent implements OnInit {
    * 
    */
   private onMapReady(map: any): void {
+    this.addPointManager.setMap(map); 
     const layer = new RasterLayer(this.service, this.visibilityService);
     this.service.getRasters().subscribe(groups=>{
       groups.forEach(g=>{

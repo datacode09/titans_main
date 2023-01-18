@@ -28,6 +28,7 @@ export class RasterParameterPropertyDetailsView implements DetailsView {
   public getElement(): any {
     const parameter = this.a.parameter;
     const result = $("<div>");
+    console.log(parameter); 
     this.addProperties(result, parameter);
     result;
     return result;
@@ -36,7 +37,8 @@ export class RasterParameterPropertyDetailsView implements DetailsView {
   private addProperties(result: any, parameter: any): void {
     if (Objects.isNotNull(parameter.view)) {
       const view = parameter.view;
-      view.elements.forEach((setting: any) => {
+      console.log(parameter); 
+      view.forEach((setting: any) => {
         const element: any = ElementFactory.toJquery(setting);
         result.append(element);
       });
