@@ -22,8 +22,6 @@ export class AppComponent implements OnInit {
    */
   private onChartReady(c: Object) {
     this.chart = c;
-    //    this.addLayersToPlot();
-    //    this.plotService.onChartReady(c);
   }
 
   private initChart() {

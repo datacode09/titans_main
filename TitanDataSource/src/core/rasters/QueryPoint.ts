@@ -4,8 +4,8 @@
  * 
  */
 export class QueryPoint {
-  private static ids = 0;
   
+  private static ids = 0;
   public id:number;
   public mapPoint:any;
   public view:any;
@@ -15,7 +15,7 @@ export class QueryPoint {
    */
   public constructor(id:number, point:any, view:any) {
     this.id = id;
-    this.mapPoint = point;
+    this.mapPoint = point; 
     this.view = view;
   }
   

@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation, OnInit} from '@angular/core';
-import {AddPointManager} from '../map/geometries/AddPointManager';
-import {QueryPoint} from '../map/geometries/QueryPoint';
+import {AddPointManager} from 'src/services/addpoints/AddPointManager';
+import {QueryPoint} from 'src/core/rasters/QueryPoint';
 
 @Component({
   selector: 'roiquerybar',

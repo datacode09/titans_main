@@ -1,7 +1,7 @@
 import {DetailsView} from './DetailsView';
-import {QueryPoint} from '../map/geometries/QueryPoint';
 import {Objects} from 'src/core/types/Objects';
 import {ElementFactory} from 'src/core/elements/ElementFactory';
+import {QueryPoint} from 'src/core/rasters/QueryPoint';
 
 /**
  * 
