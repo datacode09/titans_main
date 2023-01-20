@@ -9,7 +9,6 @@ import {RasterParameter} from 'src/core/rasters/RasterParameter';
  */
 @Injectable({
   providedIn: 'root'
-  , deps: [HttpClient, Router]
 })
 export class RastersVisibilityService {
 

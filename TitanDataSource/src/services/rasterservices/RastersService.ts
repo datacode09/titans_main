@@ -8,6 +8,7 @@ import {RastersGroup} from 'src/core/rasters/RastersGroup';
 import {RasterEntity} from 'src/core/rasters/RasterEntity';
 import {RasterImage} from 'src/core/rasters/RasterImage';
 import {RasterParameter} from 'src/core/rasters/RasterParameter';
+import {httpsources} from 'src/conf/conf.json';
 
 
 @Injectable({
@@ -42,8 +43,13 @@ export class RastersService {
    * 
    */
   public static singleton(http: HttpClient): RastersService {
-
-    return new RastersService(new InternalRastersDelegate());
+    let result: RastersService;
+    if (httpsources) {
+      result = new RastersService(new HttpRastersDelegate(http));
+    } else {
+      result = new RastersService(new InternalRastersDelegate());
+    }
+    return result;
   }
 
   /**
@@ -84,15 +90,15 @@ export class RastersService {
   public getRasters(): Observable<RastersGroup[]> {
     return this.rasterGroups;
   }
-  
+
   /**
    * 
    */
   public getRastersValues(): RastersGroup[] {
     return this.rasterGroups.value;
   }
-  
-  
+
+
 
 
   /**

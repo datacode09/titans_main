@@ -80,7 +80,7 @@ export class PointLayer {
   private zoomToSelected(selected: QueryPoint):void {
     const notNull = Objects.isNotNull(selected); 
     if (notNull){
-      this.map.centerAndZoom(selected.mapPoint); 
+      this.map.centerAt(selected.mapPoint); 
     }
   }
   

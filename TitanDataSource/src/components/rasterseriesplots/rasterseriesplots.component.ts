@@ -5,6 +5,8 @@ import {RastersService} from 'src/services/rasterservices/RastersService';
 import {QueryPoint} from 'src/core/rasters/QueryPoint';
 import {Subscription, Observable} from 'rxjs';
 import {Objects} from 'src/core/types/Objects';
+import {RasterSeriesService} from 'src/services/rasterseries/RasterSeriesService';
+import {RasterSeries} from 'src/core/rasters/RasterSeries';
 
 declare var $: any;
 @Component({
@@ -23,7 +25,9 @@ export class RasterSeriesPlots implements OnInit {
    */
   public constructor(private manager: AddPointManager,
     private associations: PointAndRasterAssociations,
-    private service: RastersService) {
+    private service: RastersService,
+    private seriesService: RasterSeriesService
+  ) {
   }
 
 
@@ -39,11 +43,11 @@ export class RasterSeriesPlots implements OnInit {
    */
   private onQueryPointSelected(queryPoint: QueryPoint): void {
     this.handlers.forEach(h => h.setActiveIfMatching(queryPoint.id));
-    this.handlers.filter(h=>h.isActive())
-      .forEach(handler=>{
+    this.handlers.filter(h => h.isActive())
+      .forEach(handler => {
         handler.subscribe(this.associations.getAssociations(queryPoint.id));
       })
-    
+
 
   }
 
@@ -53,7 +57,8 @@ export class RasterSeriesPlots implements OnInit {
   private onQueryPointsChanged(points: QueryPoint[]): void {
     this.handlers.forEach(h => h.unsubscribe());
     points.forEach((p) => {
-      const handler = new AssociationsHandler(this.chart, p.id);
+      const handler = new AssociationsHandler( //
+        this.seriesService, this.chart, p.id);
       handler.subscribe(this.associations.getAssociations(p.id));
       this.handlers.push(handler);
     });
@@ -77,9 +82,10 @@ export class RasterSeriesPlots implements OnInit {
       series: this.series,
       tooltip: {
         headerFormat: '<span style="font-size: 10px">',
-        pointFormat: '<b>{point.y}</b> A'
-      },
-      chart: {
+        pointFormat: '<b>{point.y}</b>'
+      }
+      , title: ""
+      , chart: {
         type: 'line'
         , backgroundColor: null
         , borderWidth: 0
@@ -91,6 +97,7 @@ export class RasterSeriesPlots implements OnInit {
         , events: {
           load: (evt: any) => this.onChartReady(evt.target)
         }
+        , animation: false
       }
     });
   }
@@ -99,22 +106,23 @@ export class RasterSeriesPlots implements OnInit {
 class AssociationsHandler {
 
   private subscription: Subscription;
-  private series: any[] = [];
+  private series: Map<number, any> = new Map();
   private active: boolean = false;
 
   /**
    * 
    */
-  public constructor(private chart: any, private pointId: number) {
+  public constructor(
+    private seriesservice: RasterSeriesService, private chart: any, private pointId: number) {
   }
-  
+
   /**
    * 
    */
-  public isActive():boolean {
+  public isActive(): boolean {
     return this.active;
   }
-  
+
 
   /**
    * 
@@ -131,7 +139,9 @@ class AssociationsHandler {
     if (this.isActive) {
       this.deleteAllSeries();
     }
-    this.series = arr.map(this.toSeries.bind(this));
+    arr.map(this.toSeries.bind(this)).forEach((s: any) => {
+      this.series.set(Number(s.id.replace('series-', "")), s)
+    });
     this.show(this.active);
   }
 
@@ -141,7 +151,11 @@ class AssociationsHandler {
   private show(show: boolean): void {
     if (show) {
       this.series.forEach(s => {
-        this.chart.addSeries(s, true);
+        if (Objects.isNull(this.chart.get(s.id))) {
+          this.chart.addSeries(s, true);
+        } else {
+          this.chart.get(s.id).setData(s.data);
+        }
       });
     } else {
       this.deleteAllSeries();
@@ -152,12 +166,13 @@ class AssociationsHandler {
    * 
    */
   private toSeries(rasterId: number): any {
-    const data = [];
-    for (let i = 0; i < 10; i++) {
-      data.push(Math.random());
-    }
+    const data: any[] = [];
+    this.seriesservice.getSeries(rasterId).subscribe(rasterSeries => {
+      this.onSeriesLoaded(rasterId, rasterSeries);
+    });
     const result = {
       id: 'series-' + rasterId,
+      name: 'Raster ' + rasterId, 
       data: data
     };
     return result;
@@ -166,8 +181,23 @@ class AssociationsHandler {
   /**
    * 
    */
+  private onSeriesLoaded(rasterId: number, e: RasterSeries): void {
+    console.log(e);
+    if (e != null) {
+      const series = this.series.get(rasterId);
+      console.log(series);
+      const data = series.data;
+      data.length = 0;
+      e.toData().forEach(d => data.push(d));
+    }
+    this.show(this.active);
+  }
+
+  /**
+   * 
+   */
   private deleteAllSeries(): void {
-    this.series = [];
+    this.series.clear();
     var seriesLength = this.chart.series.length;
     for (var i = seriesLength - 1; i > -1; i--) {
       this.chart.series[i].remove();
