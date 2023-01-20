@@ -70,6 +70,24 @@ export class PointLayer {
    * 
    */
   private onSelectedQueryPointChanged(newvalue: QueryPoint): void {
+    this.updateGraphicsSymbology(newvalue);
+    this.zoomToSelected(newvalue); 
+  }
+  
+  /**
+   * 
+   */
+  private zoomToSelected(selected: QueryPoint):void {
+    const notNull = Objects.isNotNull(selected); 
+    if (notNull){
+      this.map.centerAndZoom(selected.mapPoint); 
+    }
+  }
+  
+  /**
+   * 
+   */
+  private updateGraphicsSymbology(newvalue:QueryPoint) :void {
     const graphics = this.graphicsLayer.graphics;
     graphics.forEach((g: any) => {
       g.symbol.color.a = 0.3;
