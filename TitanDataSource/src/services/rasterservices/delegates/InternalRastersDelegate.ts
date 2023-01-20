@@ -140,7 +140,7 @@ export class InternalRastersDelegate implements RastersDelegate {
             , {
               type: 'label'
               , name: 'Time Stamp'
-              , value: 'Jan. 17, 2023'
+              , value: 'Jan. 18, 2023'
             }
             , {
               type: 'label'
@@ -190,7 +190,7 @@ export class InternalRastersDelegate implements RastersDelegate {
             , {
               type: 'label'
               , name: 'Time Stamp'
-              , value: 'Jan. 17, 2023'
+              , value: 'Jan. 16, 2023'
             }
             , {
               type: 'label'

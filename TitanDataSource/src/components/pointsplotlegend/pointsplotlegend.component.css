@@ -1,0 +1,17 @@
+
+.closeBtn {
+  color: white;
+}
+
+.closeBtn:hover {
+  cursor: pointer;
+  color: gray !important;  
+}
+
+.buttonRow {
+  
+}
+
+.point-row.selected {
+  background-color: #ebebeb;  
+}

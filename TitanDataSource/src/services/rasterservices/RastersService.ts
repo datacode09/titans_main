@@ -84,6 +84,15 @@ export class RastersService {
   public getRasters(): Observable<RastersGroup[]> {
     return this.rasterGroups;
   }
+  
+  /**
+   * 
+   */
+  public getRastersValues(): RastersGroup[] {
+    return this.rasterGroups.value;
+  }
+  
+  
 
 
   /**

@@ -1,0 +1,21 @@
+<div class="card-title"> 
+  <div style="float:right"> 
+      
+  </div>
+  <div style="overflow-y:auto; height:240px">  
+        <div *ngFor="let q of queryPoints" 
+          style="white-space:nowrap; min-height: 28px;height:auto" id="legenditem_{{q.id}}" 
+          (click)="onRowClicked($evt, q.id);">
+          <div class="point-row" data-querypointid="{{q.id}}">
+            <div style="display:inline-block"> Point {{q.id}} </div> 
+            <div style="display:inline-block; float:right;"> 
+              <button id="btn-addraster-for-querypoint-{{q.id}}" 
+                      (click)="onAddButtonClicked($event, q.id);" 
+                      >+</button>
+            </div>
+           </div>
+          <div id="legenditem_rasters_for_{{q.id}}"> 
+          </div>
+        </div>
+    </div>
+</div>

@@ -18,7 +18,7 @@ export class RoiQueryBarComponent implements OnInit {
   /**
    * 
    */
-  public ngOnInit(): void {
+  public ngOnInit(): void { 
     this.addPointManager.getQueryPointActivated().subscribe(b => {
       if (b) {
         $("#query_point").addClass("activated");

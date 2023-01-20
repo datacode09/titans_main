@@ -4,7 +4,7 @@ import {DataSourceList} from './datasourcelist/datasourcelist.component';
 import {MapComponent} from './map/map.component';
 import {PropertiesComponent} from './properties/properties.component';
 import {RoiQueryBarComponent} from './roiquerybar/roiquerybar.component';
-
+import {PointsPlotLegendComponent} from './pointsplotlegend/pointsplotlegend.component';
 
 @NgModule({
   declarations: [
@@ -12,6 +12,7 @@ import {RoiQueryBarComponent} from './roiquerybar/roiquerybar.component';
     , MapComponent
     , PropertiesComponent
     , RoiQueryBarComponent
+    , PointsPlotLegendComponent
   ],
   imports: [
     CommonModule
@@ -24,7 +25,8 @@ import {RoiQueryBarComponent} from './roiquerybar/roiquerybar.component';
     DataSourceList
     , MapComponent
     , PropertiesComponent
-    , RoiQueryBarComponent
+    , RoiQueryBarComponent  
+    , PointsPlotLegendComponent  
   ]
 })
 export class ComponentsModule {
