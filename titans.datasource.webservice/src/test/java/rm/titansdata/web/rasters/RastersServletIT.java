@@ -43,11 +43,6 @@ public class RastersServletIT {
     testContextManager.prepareTestInstance(this);
     MockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.wac);
     this.mockMvc = builder.build();
-    MockHelper.asPost(this.mockMvc, "/registerJar")
-      .setParam("jarfile", "C:\\Dev\\applications.personal\\titans\\test_source\\target\\test_source-1.0-SNAPSHOT.jar")
-      .setParam("class", "rm.test_source.TestSourceRasterFactory")
-      .perform();
-
   }
 
   /**
@@ -117,6 +112,16 @@ public class RastersServletIT {
       .setParam("point", URLDecoder.decode(geometry, "UTF-8"))
       .setParam("srid", String.valueOf(srid))
       .setParam("parameter", parameter.toString())
+      .perform();
+    System.out.println("jsonObj = " + jsonObj);
+  }
+  
+  
+  @Test
+  @Parameters({"1"})
+  public void getPatterns(long rasterId) {
+    JSONObject jsonObj = new MockHelper(this.mockMvc, "/getRasterParameters")
+      .setParam("rasterId", String.valueOf(rasterId))
       .perform();
     System.out.println("jsonObj = " + jsonObj);
   }

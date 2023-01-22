@@ -1,11 +1,9 @@
 package titans.nam;
 
-import titans.nam.core.NamImporter;
-import titans.nam.utils.InvalidArgumentTypeException;
 import java.io.File;
 import java.time.ZonedDateTime;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
 import rm.titansdata.plugin.RasterFactory;
@@ -13,13 +11,15 @@ import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
 import rm.titansdata.raster.RasterObj;
+import titans.nam.core.NamImporter;
+import titans.nam.utils.InvalidArgumentTypeException;
 
 /**
  *
  * @author Ricardo Marquez
  */
 @Component
-@Scope("prototype")
+@DependsOn({"nam.gribRootFolder", "nam.degribExe"}) 
 public class NamRasterFactory implements RasterFactory {
   private final NamImporter namImporter;
   

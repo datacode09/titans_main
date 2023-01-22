@@ -23,7 +23,7 @@ public class NamGribSource {
 
   private final String url = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/nam/prod/";
 
-  public List<NamParameter> getCurrentNamParameters() {
+  public List<NamParameter> getCurrentNamParameters(String parentKey) {
     DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("yyyyMMdd").toFormatter();
     ZonedDateTime date = ZonedDateTime.now(ZoneId.of("UTC"))
       .minusDays(1l)
@@ -36,7 +36,7 @@ public class NamGribSource {
       Arrays.stream(text.split("\n")) //
         .filter(this::isConusNestLine)
         .map(this::toForecastTimeRef)
-        .map(d -> new NamParameter(date, d))
+        .map(d -> new NamParameter(parentKey, date, d))
         .forEach(result::add);
     });
     return result;

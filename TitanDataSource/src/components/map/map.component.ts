@@ -67,7 +67,8 @@ export class MapComponent implements OnInit {
     this.service.getRasters().subscribe(groups=>{
       groups.forEach(g=>{
         g.rasterIds.forEach(rasterId=>{
-          this.service.getParameters(rasterId).subscribe((params)=>{
+          const params = this.service.getParameters(rasterId); 
+          params.subscribe((params)=>{
             params.forEach((p)=>{
               layer.onMapReady(map, p);
             }); 

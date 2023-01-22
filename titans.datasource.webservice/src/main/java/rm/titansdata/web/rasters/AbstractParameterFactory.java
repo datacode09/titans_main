@@ -32,14 +32,19 @@ public class AbstractParameterFactory {
    * @param string
    * @return 
    */
-  public Parameter get(JSONObject obj) {
-    ParameterFactory factory = this.getFactory(obj);
-    Parameter result = factory.create(obj);
+  public Parameter get(JSONObject parameter) {
+    ParameterFactory factory = this.getFactory(parameter);
+    Parameter result = factory.create(parameter);
     return result;
   }
-
+  
+  /**
+   * 
+   * @param obj
+   * @return 
+   */
   private ParameterFactory getFactory(JSONObject obj) {
-    String key = this.getKey(obj);
+    String key = this.getParentKey(obj);
     if (!this.factories.containsKey(key)) {
       throw new RuntimeException( //
         String.format("Factory for key '%s' doesn't exist", key)); 
@@ -54,13 +59,13 @@ public class AbstractParameterFactory {
    * @return
    * @throws RuntimeException 
    */
-  private String getKey(JSONObject obj) {
-    if (!obj.has("key")) {
+  private String getParentKey(JSONObject obj) {
+    if (!obj.has("parentKey")) {
       throw new RuntimeException("JSON serialized parameter doesn't contain key");
     }
-    String key;
+    String key;   
     try {
-      key = obj.getString("key");
+      key = obj.getString("parentKey");
     } catch (JSONException ex) {
       throw new RuntimeException(ex);
     }

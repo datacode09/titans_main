@@ -15,6 +15,8 @@ import titans.nam.grib.ForecastTimeReference;
  */
 public class NamParameter implements Parameter {
 
+  private final String parentKey;
+
   public ZonedDateTime datetime;
   public int fcststep;
   
@@ -23,7 +25,8 @@ public class NamParameter implements Parameter {
    * @param datetime
    * @param d 
    */
-  public NamParameter(ZonedDateTime datetime, ForecastTimeReference d) {
+  public NamParameter(String parentKey, ZonedDateTime datetime, ForecastTimeReference d) {
+    this.parentKey = parentKey;
     this.datetime = datetime.plusHours(d.refhour);
     this.fcststep = d.fcsthourAhead;
   }
@@ -45,8 +48,11 @@ public class NamParameter implements Parameter {
   public JSONObject toJSONObject() {
     JSONObject result = new JSONObject();
     try {
+      String format = this.datetime.format(getDateTimeFormatter());
+      result.put("key",  format + "-" + this.fcststep); 
+      result.put("parentKey", this.parentKey);
       result.put("fcststep", this.fcststep); 
-      result.put("datetime", this.datetime.format(getDateTimeFormatter()));
+      result.put("datetime", format);
       result.put("zoneid", this.datetime.getZone().getId());
     } catch(Exception ex) {
       throw new RuntimeException(ex); 
@@ -61,6 +67,7 @@ public class NamParameter implements Parameter {
    */
   public static NamParameter create(JSONObject obj) {
     try {
+      String parentKey = obj.getString("parentKey");
       int fcststep = obj.getInt("fcststep");
       String datetimetext = obj.getString("datetime");
       ZoneId zoneId = ZoneId.of(obj.getString("zoneid"));
@@ -68,7 +75,7 @@ public class NamParameter implements Parameter {
         .parse(datetimetext, LocalDateTime::from);
       ZonedDateTime datetime = ZonedDateTime.of(localdatetime, zoneId);
       ForecastTimeReference d = new ForecastTimeReference(0, fcststep);
-      NamParameter result = new NamParameter(datetime, d);
+      NamParameter result = new NamParameter(parentKey, datetime, d);
       return result;
     } catch (Exception ex) {
       throw new RuntimeException(ex);

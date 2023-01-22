@@ -22,16 +22,16 @@ public class WebConfig implements WebMvcConfigurer {
 //  private String[] consumerUiOrigins;
 
   @Bean
-  public MappedInterceptor myInterceptor(
+  public MappedInterceptor myInterceptor(  
     @Autowired AuthenticationHandlerInterceptor bean) {
-    return new MappedInterceptor(null, bean);  
+    return new MappedInterceptor(null, bean);    
   }
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     WebMvcConfigurer.super.addCorsMappings(registry);  
     registry.addMapping("/**")     
-      .allowCredentials(true)
+      .allowCredentials(true)    
       .allowedOrigins("http://localhost:4200")
 //      .allowedOrigins(this.consumerUiOrigins)
       ;

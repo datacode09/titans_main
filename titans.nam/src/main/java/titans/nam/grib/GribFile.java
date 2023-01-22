@@ -65,5 +65,13 @@ public class GribFile {
         String.format("Deleting grib file '%s'", this.grib), ex);
     }
   }
+  
+  /**
+   * 
+   * @return 
+   */
+  public boolean notExists() {
+    return !this.grib.exists();
+  }
 
 }

@@ -88,7 +88,7 @@ export class HttpRastersDelegate implements RastersDelegate {
     const parameter = param.parameter;
     const params = new HttpParams()
       .set("rasterId", rasterId.toString())
-      .set("parameter", parameter)
+      .set("parameter", JSON.stringify(parameter))
       ;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
@@ -136,6 +136,7 @@ export class HttpRastersDelegate implements RastersDelegate {
         const patternsArray = this.responseToPatterns(rasterId, response);
         value.next(patternsArray);
       });
+      this.patterns.set(rasterId, value); 
     }
     const result = this.patterns.get(rasterId);
     return result;
@@ -146,7 +147,7 @@ export class HttpRastersDelegate implements RastersDelegate {
    */
   private responseToPatterns(rasterId:number, response: any): RasterParameter[] {
     const values:any[] = response.values;
-    const result = values.map(v => new RasterParameter(rasterId, v));
+    const result = values.map(v => new RasterParameter(rasterId, v.map));
     return result;
   }
 

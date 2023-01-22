@@ -15,15 +15,15 @@ public class Dimensions implements Serializable{
   /**
    * 
    * @param bounds
-   * @param lenthx
-   * @param lenthy
+   * @param dx
+   * @param dy
    * @return 
    */
-  public static Dimensions create(Bounds bounds, Measure<Length> lenthx, Measure<Length> lenthy) {
-    double pixelsx = ((bounds.getMaxX() - bounds.getMinX())/lenthx.doubleValue(SI.METRE));
-    double pixelsy = ((bounds.getMaxY() - bounds.getMinY())/lenthy.doubleValue(SI.METRE));
-    Dimension dimx = new Dimension(lenthx, (int) pixelsx);
-    Dimension dimy = new Dimension(lenthy, (int) pixelsy);
+  public static Dimensions create(Bounds bounds, Measure<Length> dx, Measure<Length> dy) {
+    double pixelsx = ((bounds.getMaxX() - bounds.getMinX())/dx.doubleValue(SI.METRE));
+    double pixelsy = ((bounds.getMaxY() - bounds.getMinY())/dy.doubleValue(SI.METRE));
+    Dimension dimx = new Dimension(dx, (int) pixelsx);
+    Dimension dimy = new Dimension(dy, (int) pixelsy);
     Dimensions result = new Dimensions(dimx, dimy); 
     return result; 
     

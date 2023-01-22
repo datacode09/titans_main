@@ -46,9 +46,7 @@ export class RasterSeriesPlots implements OnInit {
     this.handlers.filter(h => h.isActive())
       .forEach(handler => {
         handler.subscribe(this.associations.getAssociations(queryPoint.id));
-      })
-
-
+      });
   }
 
   /**
@@ -112,8 +110,9 @@ class AssociationsHandler {
   /**
    * 
    */
-  public constructor(
-    private seriesservice: RasterSeriesService, private chart: any, private pointId: number) {
+  public constructor( //
+    private seriesservice: RasterSeriesService, 
+    private chart: any, private pointId: number) {
   }
 
   /**
@@ -182,10 +181,8 @@ class AssociationsHandler {
    * 
    */
   private onSeriesLoaded(rasterId: number, e: RasterSeries): void {
-    console.log(e);
     if (e != null) {
       const series = this.series.get(rasterId);
-      console.log(series);
       const data = series.data;
       data.length = 0;
       e.toData().forEach(d => data.push(d));

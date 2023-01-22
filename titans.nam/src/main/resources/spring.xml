@@ -8,12 +8,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans classpath:./spring/spring-beans.xsd
           http://www.springframework.org/schema/context classpath:./spring/spring-context.xsd   
 ">  
-  
-  <context:component-scan base-package="titans.nam"/>
   <bean id="nam.gribRootFolder" class="java.io.File">
     <constructor-arg value="G:\tests\data\grib"/>
   </bean>
   <bean id="nam.degribExe" class="java.io.File">
     <constructor-arg value="C:\\ndfd\\degrib\\bin\\degrib.exe"/>
   </bean>
+  <context:component-scan base-package="titans.nam"/>
 </beans>

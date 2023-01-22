@@ -42,7 +42,9 @@ public class NamImporter implements Closeable {
    */
   public RasterObj getRaster(int forecaststep, ZonedDateTime datetimeref) {
     GribFile gribFile = this.getGribFile(forecaststep, datetimeref);
-    this.source.download(gribFile);
+    if (gribFile.notExists()) {
+      this.source.download(gribFile);
+    }
     NetCdfFile netCdfFile = this.extractor.extract(gribFile);
     RasterObj result = this.rasterLoader.getRaster(netCdfFile);
     return result;

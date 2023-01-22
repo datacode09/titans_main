@@ -13,7 +13,7 @@ public class NamGribSourceIT {
   @Test
   public void test01() {
     NamGribSource source = new NamGribSource();
-    List<NamParameter> list = source.getCurrentNamParameters();
+    List<NamParameter> list = source.getCurrentNamParameters("NAM");
     list.forEach(System.out::println);
   }
   

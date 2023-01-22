@@ -17,8 +17,6 @@ public class RunningServletSetUp {
       .setRequestParam("jarfile", "C:\\Dev\\applications.personal\\titans\\test_source\\target\\test_source-1.0-SNAPSHOT.jar")
       .setRequestParam("class", "rm.test_source.TestSourceRasterFactory")
       .post()
-      ; 
-    
-    
+      ;
   }
 }

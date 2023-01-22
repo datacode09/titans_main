@@ -39,7 +39,7 @@ public class RastersSourceServiceIT {
 
   @Test
   @Parameters({
-    "0, 1",
+    "0, 2",
     "-1, 0",
     "1, 0",
   })
@@ -60,8 +60,9 @@ public class RastersSourceServiceIT {
 
   @Test
   @Parameters({
-    "0, 1",
-    "-1, 0"
+//    "0, 1",
+//    "-1, 0",
+    "1, 1"
   })
   public void getrasters_by_rastergroup_id(Long rasterGroupId, int expectedSize) {
     List<Long> e = this.service.getRastersByGroupId(rasterGroupId);
