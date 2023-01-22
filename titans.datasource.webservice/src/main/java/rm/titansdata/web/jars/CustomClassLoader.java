@@ -1,5 +1,6 @@
 package rm.titansdata.web.jars;
 
+import com.vividsolutions.jts.awt.PointShapeFactory.X;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -21,7 +23,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.xml.sax.InputSource;
 import rm.titansdata.plugin.ParameterFactory;
 import rm.titansdata.plugin.RasterFactory;
@@ -47,14 +48,14 @@ public class CustomClassLoader {
    */
   public synchronized void loadLibrary(File jar, String... classes) {
     try {
-      URL url = jar.toURI().toURL();
+      URL url = jar.toURI().toURL();    
       Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
       method.setAccessible(true);
       method.invoke(Thread.currentThread().getContextClassLoader(), new Object[]{url});
-      ConfigurableListableBeanFactory beanFactory = this.applicationContext.getBeanFactory();
+      DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) this.applicationContext.getBeanFactory();
       for (String classe : classes) {
         if (classe.endsWith(".xml")) {
-          this.loadSpringXml(jar, classe);
+          this.loadSpringXml(jar, classe);  
         } else {
           this.loadByClass(classe, beanFactory);
         }
@@ -62,7 +63,7 @@ public class CustomClassLoader {
     } catch (Exception ex) {
       throw new RuntimeException(//
         String.format("Cannot load library from jar file '%s'. Reason: %s",
-          jar.getAbsolutePath(), ex.getMessage()));
+          jar.getAbsolutePath(), ex.getMessage()), ex);
     }
   }
   
@@ -105,11 +106,13 @@ public class CustomClassLoader {
     context.setParent(this.applicationContext);
     context.getBeanFactory().getBean("nam.parameters");
 
-    GenericWebApplicationContext genericcontext = (GenericWebApplicationContext) applicationContext;
+    
     String className = c.getSimpleName();
     className = className.substring(0, 1).toLowerCase() + className.substring(1);
-    genericcontext.registerBeanDefinition(className, context.getBeanDefinition(className));
-
+    DefaultListableBeanFactory factory = (DefaultListableBeanFactory) this.applicationContext.getBeanFactory();
+    
+    factory.registerBeanDefinition(className, context.getBeanDefinition(className));
+    
     Method[] m = c.getDeclaredMethods();
     for (Method method : m) {
       Bean beanannotation = method.getDeclaredAnnotation(Bean.class);
@@ -117,8 +120,7 @@ public class CustomClassLoader {
         String[] beannames = beanannotation.value();
         for (String beanname : beannames) {
           BeanDefinition beanDefinition = context.getBeanDefinition(beanname);
-          genericcontext.registerBeanDefinition(beanname, beanDefinition);
-          genericcontext.getBean(beanname);
+          factory.registerBeanDefinition(beanname, beanDefinition);
         }
       }
     }
@@ -132,17 +134,18 @@ public class CustomClassLoader {
    */
   private void loadSpringXml(File jar, String beansXml) {
     GenericApplicationContext createdContext
-      = new GenericApplicationContext();
+      = new GenericApplicationContext(); 
     XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(createdContext);
     reader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_XSD);
     InputSource inputSource = this.getSpringXmlInputSource(jar, beansXml);
     reader.loadBeanDefinitions(inputSource);
     String[] names = createdContext.getBeanDefinitionNames();
-    GenericApplicationContext genericAppContext = (GenericApplicationContext) this.applicationContext;
+    ConfigurableApplicationContext genericAppContext = this.applicationContext;
     Stream.of(names).filter(n -> !n.contains("org.spring"))
       .forEach(beanname -> {
         BeanDefinition definition = createdContext.getBeanDefinition(beanname);
-        genericAppContext.registerBeanDefinition(beanname, definition);
+        DefaultListableBeanFactory factory = (DefaultListableBeanFactory) genericAppContext.getBeanFactory();
+        factory.registerBeanDefinition(beanname, definition);  
       });
   }
 

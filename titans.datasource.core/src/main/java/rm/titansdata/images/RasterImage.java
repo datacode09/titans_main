@@ -84,7 +84,7 @@ public class RasterImage {
       int[] dArray = this.getColorValue(c);
       int i = c.ij[0];
       int j = c.ij[1];
-      img.setPixel(i, j, dArray);
+      img.setPixel(i, img.getHeight() - (j  + 1), dArray);
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }

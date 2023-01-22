@@ -13,6 +13,7 @@ import rm.titansdata.SridUtils;
 import rm.titansdata.colormap.ColorMap;
 import rm.titansdata.images.RasterImage;
 import rm.titansdata.raster.RasterObj;
+import rm.titansdata.raster.RasterSearch;
 
 /**
  *
@@ -29,14 +30,25 @@ public class RasterImageService {
    * @param rasterId
    * @return
    */
-  public RasterImageResult getRasterImage(long rasterId, Parameter p) {
+  public RasterImageResult getRasterImage(long rasterId, Parameter param) {
+    RasterObj r = this.getRasterObj(rasterId, param);
+    RasterSearch s = new RasterSearch(r.getBounds(), r.getDimensions()); 
+    s.maxIndices(); 
+    double max = s.stream(b->r.getValue(b))
+      .mapToDouble(i->i.getValue().getValue())
+      .max()
+      .orElseThrow(()->new RuntimeException());
+    double min = s.stream(b->r.getValue(b))
+      .mapToDouble(i->i.getValue().getValue())
+      .min()
+      .orElseThrow(()->new RuntimeException());
+    
     ColorMap cmap = new ColorMap.Builder()
-      .setXmin(0)
-      .setXmax(1.0)
+      .setXmin(min)
+      .setXmax(max)
       .setColorMin("#000")
       .setColorMax("#fff")
       .build();
-    RasterObj r = this.getRasterObj(rasterId, p);
     RasterImage img = new RasterImage(r, cmap);
     BufferedImage bufferedImg = img.asBufferedImage();
     int targetSrid = 3857;   

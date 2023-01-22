@@ -2,6 +2,7 @@ package rm.titansdata.web.rasters;
 
 import com.vividsolutions.jts.geom.Point;
 import javax.measure.Measure;
+import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimension;
@@ -60,8 +61,10 @@ public class RasterEntity {
   public Dimensions getDimensions() {
     int numpixelsx = Double.valueOf((upperright.getX() - lowerleft.getX())/this.dx).intValue();
     int numpixelsy = Double.valueOf( (upperright.getY() - lowerleft.getY())/this.dy).intValue();
-    Dimension dimensionx = new Dimension(Measure.valueOf(dx, SI.METRE), numpixelsx);
-    Dimension dimensiony = new Dimension(Measure.valueOf(dy, SI.METRE), numpixelsy);
+    Measure<Length> dxMeasure = Measure.valueOf(dx, SI.METRE);
+    Measure<Length> dyMeasure = Measure.valueOf(dy, SI.METRE);
+    Dimension dimensiony = new Dimension(dyMeasure, numpixelsy);
+    Dimension dimensionx = new Dimension(dxMeasure, numpixelsx);
     Dimensions result = new Dimensions(dimensionx, dimensiony); 
     return result; 
   }
@@ -98,7 +101,7 @@ public class RasterEntity {
     }
 
     public Builder setDx(double dx) {
-      this.dx = dx;
+      this.dx = dx;  
       return this;
     }
 

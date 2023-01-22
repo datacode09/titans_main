@@ -12,6 +12,9 @@ public final class Dimension {
   public final Measure<Length> length;
 
   public Dimension(Measure<Length> length, int pixels) {
+    if (pixels <= 0) {
+      throw new RuntimeException("Invalid pixels size"); 
+    }
     this.pixels = pixels;
     this.length = length;
   }

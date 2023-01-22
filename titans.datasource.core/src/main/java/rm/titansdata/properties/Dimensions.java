@@ -33,6 +33,12 @@ public class Dimensions implements Serializable{
   public final Dimension y;
 
   public Dimensions(Dimension dimensionx, Dimension dimensiony) {
+    if (dimensionx.length.getValue().doubleValue() <= 0) {  
+      throw new RuntimeException("Invalid dimenion value"); 
+    }
+    if (dimensiony.length.getValue().doubleValue() <= 0) {
+      throw new RuntimeException("Invalid dimenion value");
+    }
     this.x = dimensionx;
     this.y = dimensiony;
   }
@@ -63,6 +69,15 @@ public class Dimensions implements Serializable{
   public int numPixels() {
     int result = this.x.pixels*this.y.pixels;
     return result;
+  }
+  
+  /**
+   * 
+   * @return 
+   */
+  @Override
+  public String toString() {
+    return "{" + "x=" + x + ", y=" + y + '}';
   }
   
   
