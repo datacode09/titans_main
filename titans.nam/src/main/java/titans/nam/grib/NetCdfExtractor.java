@@ -48,6 +48,28 @@ public class NetCdfExtractor {
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
+    NetCdfFile netCdfFile = this.getNetCdfFile(workingDirectory);
+    return netCdfFile;
+  }
+    
+  /**
+   * 
+   * @param workingDirectory The working directory is typically the parent directory 
+   * of the grib directory (gribFile.getParentFile()) 
+   * @return 
+   */
+  public boolean netCdfFileExists(File workingDirectory) {
+    boolean result = this.getNetCdfFile(workingDirectory).exists();
+    return result;
+  }
+  
+  
+  /**
+   * 
+   * @param workingDirectory
+   * @return 
+   */
+  public NetCdfFile getNetCdfFile(File workingDirectory) {
     File file = new File(workingDirectory, "PRMSL_01120000.nc");
     String varName = "PRMSL_0_MSL";
     NetCdfFile netCdfFile = new NetCdfFile(file, varName);

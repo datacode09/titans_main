@@ -62,7 +62,7 @@ public class NamGribSource {
    * @return 
    */
   private int parseLineToForecastStep(String r) {
-    String trimmed = r.replaceAll(".*?tm", "").replace(".grib2", "");
+    String trimmed = r.replaceAll(".*?hiresf", "").replace(".tm00.grib2", "");
     int result = Integer.parseInt(trimmed);
     return result;
   }

@@ -132,4 +132,12 @@ public class RasterImage {
       throw new RuntimeException(ex);
     }
   }
+
+  /**
+   * 
+   * @return 
+   */
+  public Bounds getBounds() {
+    return this.r.getBounds();
+  }
 }

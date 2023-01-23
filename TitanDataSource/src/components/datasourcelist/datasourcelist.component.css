@@ -27,3 +27,8 @@
 .grouptreenode .parameterdiv>span {
   padding-left: 10px;  
 }
+
+.rasterelements {
+  overflow-y: auto;
+  max-height: 110px;
+}

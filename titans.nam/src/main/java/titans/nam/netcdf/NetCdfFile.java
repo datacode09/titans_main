@@ -83,4 +83,12 @@ public class NetCdfFile {
     return this.varName;
   }
 
+  /**
+   * 
+   * @return 
+   */
+  public boolean exists() {
+    return this.file.exists();
+  }
+
 }

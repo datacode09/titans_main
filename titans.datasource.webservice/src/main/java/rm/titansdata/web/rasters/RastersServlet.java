@@ -71,11 +71,11 @@ public class RastersServlet {
     params = {"rasterId"})//
   public void getRasterParameters(HttpServletRequest req, HttpServletResponse response) {
     RequestParser parser = new RequestParser(req);
-    Long rasterId = parser.getLong("rasterId");
+    Long rasterId = parser.getLong("rasterId");  
     RasterEntity raster = this.rastersSourceService.getRaster(rasterId);
-    String sourceTitle = raster.sourceTitle;
+    String sourceTitle = raster.sourceTitle; 
     List<JSONObject> params = this.parameterFactory.getParameters(sourceTitle)
-      .stream()
+      .stream()    
       .map(p->p.toJSONObject())
       .collect(Collectors.toList())
       ;

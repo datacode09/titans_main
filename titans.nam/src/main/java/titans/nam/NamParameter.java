@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import rm.titansdata.Parameter;
 import titans.nam.grib.ForecastTimeReference;
@@ -36,7 +37,7 @@ public class NamParameter implements Parameter {
    * @return 
    */
   @Override
-  public String toString() {
+  public String toString() {  
     return "{" + "datetime=" + datetime + ", fcststep=" + fcststep + '}';
   }
   
@@ -54,6 +55,23 @@ public class NamParameter implements Parameter {
       result.put("fcststep", this.fcststep); 
       result.put("datetime", format);
       result.put("zoneid", this.datetime.getZone().getId());
+      JSONArray view = new JSONArray(); 
+      view.put(0, new JSONObject(){{
+        put("type", "label"); 
+        put("name", "key"); 
+        put("value", format + "-" + fcststep); 
+      }}); 
+      view.put(1, new JSONObject(){{
+        put("type", "label"); 
+        put("name", "Reference Date"); 
+        put("value", datetime.toString()); 
+      }}); 
+      view.put(2, new JSONObject(){{
+        put("type", "label"); 
+        put("name", "Forecast Step"); 
+        put("value", fcststep); 
+      }}); 
+      result.put("view", view.toString()); 
     } catch(Exception ex) {
       throw new RuntimeException(ex); 
     }

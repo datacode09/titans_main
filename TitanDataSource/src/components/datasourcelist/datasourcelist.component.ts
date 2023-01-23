@@ -141,6 +141,7 @@ export class DataSourceList implements OnInit {
       const c = $("<div>").attr("id", newelement)
         .addClass("node")
         .append(textdiv)
+        .append($("<div>").addClass("rasterelements"))
         .appendTo(parentEl)
         .click((e: any) => {
           e.preventDefault();
@@ -173,7 +174,7 @@ export class DataSourceList implements OnInit {
       return;
     }
     const rasterId = param.rasterId;
-    const parentEl = $("#" + this.getRasterElementId(rasterId));
+    const parentEl = $("#" + this.getRasterElementId(rasterId) + " .rasterelements");
     const checkbox = $("<input type='checkbox'>")
       .css("display", "inline-block");
     checkbox.on("click", (evt) => {
