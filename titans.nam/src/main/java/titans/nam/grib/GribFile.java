@@ -55,8 +55,11 @@ public class GribFile {
     }
     return result;
   }
-
-  void delete() {
+  
+  /**
+   * 
+   */
+  public void delete() {
     try {
       this.grib.delete();
       this.gribIdx.delete();

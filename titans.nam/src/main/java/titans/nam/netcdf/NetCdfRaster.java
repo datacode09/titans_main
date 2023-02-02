@@ -1,6 +1,6 @@
 package titans.nam.netcdf;
 
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 import java.io.Closeable;
 import java.io.IOException;
 import rm.titansdata.SridUtils;

@@ -56,7 +56,7 @@ public class NamRasterFactory implements RasterFactory {
       NamParameter namparam = (NamParameter) p;
       int fcststep = namparam.fcststep;
       ZonedDateTime datetime = namparam.datetime;
-      RasterObj rasterObj = this.namImporter.getRaster(fcststep, datetime);
+      RasterObj rasterObj = this.namImporter.getRaster(datetime, fcststep);
       Raster result = rasterObj.getRaster();
       return result;
     } else {

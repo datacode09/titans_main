@@ -61,7 +61,7 @@ public class AbstractParameterFactory {
    */
   private String getParentKey(JSONObject obj) {
     if (!obj.has("parentKey")) {
-      throw new RuntimeException("JSON serialized parameter doesn't contain key");
+      throw new RuntimeException("JSON serialized parameter doesn't contain parentKey");
     }
     String key;   
     try {

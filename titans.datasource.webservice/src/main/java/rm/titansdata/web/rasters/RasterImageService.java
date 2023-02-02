@@ -1,6 +1,6 @@
 package rm.titansdata.web.rasters;
 
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;

@@ -1,7 +1,7 @@
 package rm.titansdata.raster;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import java.util.List;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;

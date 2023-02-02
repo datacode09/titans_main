@@ -40,19 +40,41 @@ public class NamImporter implements Closeable {
    * @param datetimeref
    * @return
    */
-  public RasterObj getRaster(int forecaststep, ZonedDateTime datetimeref) {
+  public RasterObj getRaster(ZonedDateTime datetimeref, int forecaststep) {
     NetCdfFile netCdfFile;
     if (!this.extractor.netCdfFileExists(root)) {
-      GribFile gribFile = this.getGribFile(forecaststep, datetimeref);
-      if (gribFile.notExists()) {
-        this.source.download(gribFile);
-      }
-      netCdfFile = this.extractor.extract(gribFile);
+      GribFile gribFile = this.downloadGribFile(datetimeref, forecaststep); 
+      netCdfFile = this.extractNetCdfFile(gribFile);
+      gribFile.delete(); 
     } else {
       netCdfFile = this.extractor.getNetCdfFile(root);
     }
     RasterObj result = this.rasterLoader.getRaster(netCdfFile);
     return result;
+  }
+  
+  /**
+   * 
+   * @param gribFile
+   * @return 
+   */
+  private NetCdfFile extractNetCdfFile(GribFile gribFile) {
+    NetCdfFile result = this.extractor.extract(gribFile);
+    return result;
+  }
+  
+  /**
+   * 
+   * @param forecaststep
+   * @param datetimeref
+   * @return 
+   */
+  private GribFile downloadGribFile(ZonedDateTime datetimeref, int forecaststep) {
+    GribFile gribFile = this.getGribFile(datetimeref, forecaststep);
+    if (gribFile.notExists()) {
+      this.source.download(gribFile);
+    }
+    return gribFile;
   }
 
   /**
@@ -61,7 +83,7 @@ public class NamImporter implements Closeable {
    * @param datetimeref
    * @return
    */
-  private GribFile getGribFile(int forecaststep, ZonedDateTime datetimeref) {
+  private GribFile getGribFile(ZonedDateTime datetimeref, int forecaststep) {
     String filename = this.getGribFileName(forecaststep, datetimeref);
     File grib = new File(this.root, filename);
     File gribIdx = new File(this.root, filename + ".idx");

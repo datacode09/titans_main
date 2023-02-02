@@ -1,6 +1,5 @@
 package titans.nam;
 
-import titans.nam.core.NamImporter;
 import java.io.File;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -11,6 +10,7 @@ import rm.titansdata.SridUtils;
 import rm.titansdata.colormap.ColorMap;
 import rm.titansdata.images.RasterImage;
 import rm.titansdata.raster.RasterObj;
+import titans.nam.core.NamImporter;
 
 /**
  *
@@ -18,6 +18,9 @@ import rm.titansdata.raster.RasterObj;
  */
 public class NamImporterIT {
   
+  /**
+   * 
+   */
   @BeforeClass
   public static void before() {
     SridUtils.init();
@@ -38,7 +41,7 @@ public class NamImporterIT {
         .now(timeZone)  //
         .truncatedTo(ChronoUnit.DAYS);
       int forecastStep = 0;
-      raster = importer.getRaster(forecastStep, refdate);
+      raster = importer.getRaster(refdate, forecastStep);
       ColorMap cmap = new ColorMap.Builder()
         .setXmin(098000.0)
         .setXmax(110000.0)

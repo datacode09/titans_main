@@ -1,6 +1,6 @@
 package rm.titansdata.web.jars;
 
-import com.vividsolutions.jts.awt.PointShapeFactory.X;
+import org.locationtech.jts.awt.PointShapeFactory.X;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

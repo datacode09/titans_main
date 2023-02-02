@@ -1,6 +1,6 @@
 package rm.titansdata.web.rasters;
 
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;

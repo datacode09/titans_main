@@ -1,9 +1,9 @@
 package rm.titansdata.web.rasters;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.WKTReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import junitparams.JUnitParamsRunner;

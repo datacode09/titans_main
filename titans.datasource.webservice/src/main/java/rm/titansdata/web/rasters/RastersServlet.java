@@ -1,7 +1,7 @@
 package rm.titansdata.web.rasters;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

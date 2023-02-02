@@ -38,12 +38,6 @@
       <version>0.8</version>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>com.vividsolutions</groupId>
-      <artifactId>jts</artifactId>
-      <version>1.13</version>
-      <type>jar</type>
-    </dependency>
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

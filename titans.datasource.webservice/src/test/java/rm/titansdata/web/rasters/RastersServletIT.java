@@ -92,6 +92,7 @@ public class RastersServletIT {
   public void getRasterValues(Long rasterId, String geometry, int srid, double value) throws Exception {
     JSONObject parameter = new JSONObject();
     parameter.put("key", "test_source");
+    parameter.put("parentKey", "test_source");
     JSONObject jsonObj = new MockHelper(this.mockMvc, "/getRasterValues")
       .setParam("rasterId", String.valueOf(rasterId))
       .setParam("geometry", URLDecoder.decode(geometry, "UTF-8"))
@@ -107,6 +108,7 @@ public class RastersServletIT {
   public void getRasterValue(Long rasterId, String geometry, int srid, double value) throws Exception {
     JSONObject parameter = new JSONObject();
     parameter.put("key", "test_source");
+    parameter.put("parentKey", "test_source"); 
     JSONObject jsonObj = new MockHelper(this.mockMvc, "/getRasterValue")
       .setParam("rasterId", String.valueOf(rasterId))
       .setParam("point", URLDecoder.decode(geometry, "UTF-8"))
@@ -116,7 +118,10 @@ public class RastersServletIT {
     System.out.println("jsonObj = " + jsonObj);
   }
   
-  
+  /**
+   * 
+   * @param rasterId 
+   */
   @Test
   @Parameters({"1"})
   public void getPatterns(long rasterId) {

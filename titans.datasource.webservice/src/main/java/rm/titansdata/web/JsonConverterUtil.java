@@ -3,7 +3,7 @@ package rm.titansdata.web;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 import javax.measure.Measure;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;

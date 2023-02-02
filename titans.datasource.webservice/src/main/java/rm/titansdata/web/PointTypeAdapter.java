@@ -3,7 +3,7 @@ package rm.titansdata.web;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 import java.io.IOException;
 
 /**

@@ -1,6 +1,6 @@
 package rm.test_source;
 
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
