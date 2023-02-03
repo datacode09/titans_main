@@ -31,4 +31,7 @@ export interface RastersDelegate {
    * 
    */
   getParameters(rasterId: number): Observable<RasterParameter[]>; 
+  
+  
+  
 }

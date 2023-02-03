@@ -1,7 +1,5 @@
 package rm.titansdata.web.rasters;
 
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.Point;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -163,6 +163,11 @@ public class RastersServlet {
     this.responseHelper.send(map, res);
   }
 
+  /**
+   * 
+   * @param req
+   * @param res 
+   */
   @RequestMapping(
     path = "/getRasterValue",
     params = {"rasterId", "point", "parameter", "srid"},
@@ -178,6 +183,30 @@ public class RastersServlet {
     Map<String, Object> map = new HashMap<>();
     double value = this.rastersValueService.getRasterValue(rasterId, param, point);
     map.put("value", value);
+    map.put("values", value);  
+    this.responseHelper.send(map, res);
+  }
+    
+  /**
+   * 
+   * @param req
+   * @param res 
+   */
+  @RequestMapping(
+    path = "/getRasterPointValues",
+    params = {"rasterId", "point", "parameters", "srid"},
+    method = RequestMethod.GET
+  )
+  public void getRasterPointValues(HttpServletRequest req, HttpServletResponse res) {
+    RequestParser parser = new RequestParser(req);
+    long rasterId = parser.getLong("rasterId");
+    int srid = parser.getInteger("srid");
+    Point point = (Point) parser.parseGeometry("point", srid);
+    JSONArray jsonObject = this.getParametersJsonArray(parser);
+    List<Parameter> param = this.parameterFactory.get(jsonObject);
+    Map<String, Object> map = new HashMap<>();
+    Map<Parameter, Double> values = this.rastersValueService.getPointRasterValues(rasterId, param, point);
+    map.put("values", values);
     this.responseHelper.send(map, res);
   }
 
@@ -191,6 +220,22 @@ public class RastersServlet {
     try {
       String string = parser.getString("parameter");
       result = new JSONObject(string);
+    } catch (JSONException ex) {
+      throw new RuntimeException(ex);
+    }
+    return result;
+  }
+  
+  /**
+   *
+   * @param parser
+   * @return
+   */
+  private JSONArray getParametersJsonArray(RequestParser parser) {
+    JSONArray result;
+    try {
+      String string = parser.getString("parameters");
+      result = new JSONArray(string); 
     } catch (JSONException ex) {
       throw new RuntimeException(ex);
     }

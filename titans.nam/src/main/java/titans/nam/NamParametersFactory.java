@@ -37,7 +37,21 @@ public class NamParametersFactory implements ParameterFactory {
    */
   @Override
   public Parameter create(JSONObject obj) {
-    NamParameter param = NamParameter.create(obj);
+    NamParameter param;
+    if (obj.has("key")) {
+      try {
+        String key = obj.getString("key");
+        param = this.parameters.stream() 
+          .filter(e -> e.getKey().equals(key)) 
+          .findFirst()
+          .orElseGet(() -> NamParameter.create(obj));
+      } catch (Exception ex) {
+        throw new RuntimeException(ex);
+      }
+    } else {
+      param = NamParameter.create(obj);
+    }
+
     return param;
   }
 

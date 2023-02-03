@@ -21,6 +21,17 @@ export class AddPointManager {
   /**
    * 
    */
+  public getQueryPoint(pointId: number): QueryPoint {
+    const arr = this.queryPoints.value;
+    const index = arr.findIndex(p => p.id == pointId); 
+    const result = index === -1 ? null : arr[index]; 
+    return result;
+  }
+  
+  
+  /**
+   * 
+   */
   public getQueryPoints(): Observable<QueryPoint[]> {
     return this.queryPoints;
   }

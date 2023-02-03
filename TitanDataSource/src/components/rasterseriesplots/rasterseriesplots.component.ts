@@ -111,7 +111,7 @@ class AssociationsHandler {
    * 
    */
   public constructor( //
-    private seriesservice: RasterSeriesService, 
+    private seriesservice: RasterSeriesService,
     private chart: any, private pointId: number) {
   }
 
@@ -139,7 +139,8 @@ class AssociationsHandler {
       this.deleteAllSeries();
     }
     arr.map(this.toSeries.bind(this)).forEach((s: any) => {
-      this.series.set(Number(s.id.replace('series-', "")), s)
+      const seriesId = Number(s.id.replace('series-', ""));
+      this.series.set(seriesId, s)
     });
     this.show(this.active);
   }
@@ -166,12 +167,12 @@ class AssociationsHandler {
    */
   private toSeries(rasterId: number): any {
     const data: any[] = [];
-    this.seriesservice.getSeries(rasterId).subscribe(rasterSeries => {
+    this.seriesservice.getSeries(this.pointId, rasterId).subscribe(rasterSeries => {
       this.onSeriesLoaded(rasterId, rasterSeries);
     });
     const result = {
       id: 'series-' + rasterId,
-      name: 'Raster ' + rasterId, 
+      name: 'Raster ' + rasterId,
       data: data
     };
     return result;
@@ -182,10 +183,12 @@ class AssociationsHandler {
    */
   private onSeriesLoaded(rasterId: number, e: RasterSeries): void {
     if (e != null) {
-      const series = this.series.get(rasterId);
-      const data = series.data;
-      data.length = 0;
-      e.toData().forEach(d => data.push(d));
+      if (this.series.has(rasterId)) {
+        const series = this.series.get(rasterId);
+        const data = series.data;
+        data.length = 0;
+        e.toData().forEach(d => data.push(d));
+      }
     }
     this.show(this.active);
   }

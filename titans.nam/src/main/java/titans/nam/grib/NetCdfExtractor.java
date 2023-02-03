@@ -3,6 +3,7 @@ package titans.nam.grib;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
 import titans.nam.netcdf.NetCdfFile;
@@ -48,7 +49,9 @@ public class NetCdfExtractor {
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
-    NetCdfFile netCdfFile = this.getNetCdfFile(workingDirectory);
+    ZonedDateTime datetimeref = gribFile.datetimeref;
+    int fcststep = gribFile.fcststep;
+    NetCdfFile netCdfFile = this.getNetCdfFile(workingDirectory, datetimeref, fcststep);
     return netCdfFile;
   }
     
@@ -58,8 +61,9 @@ public class NetCdfExtractor {
    * of the grib directory (gribFile.getParentFile()) 
    * @return 
    */
-  public boolean netCdfFileExists(File workingDirectory) {
-    boolean result = this.getNetCdfFile(workingDirectory).exists();
+  public boolean netCdfFileExists(File workingDirectory, ZonedDateTime datetimeref, int forecaststep) {
+    NetCdfFile netCdfFile = this.getNetCdfFile(workingDirectory, datetimeref, forecaststep);
+    boolean result = netCdfFile.exists();
     return result;
   }
   
@@ -69,7 +73,7 @@ public class NetCdfExtractor {
    * @param workingDirectory
    * @return 
    */
-  public NetCdfFile getNetCdfFile(File workingDirectory) {
+  public NetCdfFile getNetCdfFile(File workingDirectory, ZonedDateTime datetimeref, int forecaststep) {
     File file = new File(workingDirectory, "PRMSL_01120000.nc");
     String varName = "PRMSL_0_MSL";
     NetCdfFile netCdfFile = new NetCdfFile(file, varName);

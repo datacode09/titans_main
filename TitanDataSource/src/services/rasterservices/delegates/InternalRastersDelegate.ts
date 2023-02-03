@@ -13,7 +13,6 @@ export class InternalRastersDelegate implements RastersDelegate {
   private rasterImages: Map<RasterParameter, any> = new Map();
   private host: RastersService;
 
-
   /**
    * 
    */

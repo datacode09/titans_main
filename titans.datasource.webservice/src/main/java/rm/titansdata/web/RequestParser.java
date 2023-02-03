@@ -1,10 +1,5 @@
 package rm.titansdata.web;
 
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.PrecisionModel;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import common.types.DateTimeRange;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -14,6 +9,11 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 
 /**
  *
@@ -139,7 +139,8 @@ public class RequestParser {
     try {
       GeometryFactory factory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), srid);
       WKTReader reader = new WKTReader(factory);
-      Geometry result = reader.read(this.request.getParameter(geometry));
+      String text = this.request.getParameter(geometry);
+      Geometry result = reader.read(text);
       return result;
     } catch (ParseException ex) {
       throw new RuntimeException(ex); 

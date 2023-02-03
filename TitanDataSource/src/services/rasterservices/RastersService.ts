@@ -22,6 +22,7 @@ export class RastersService {
   rastersmap: Map<number, any> = new Map();
   rasterProperties: Map<number, any> = new Map();
   private selectedItem: BehaviorSubject<any> = new BehaviorSubject(null);
+  private rasterParameters: Map<number, BehaviorSubject<RasterParameter[]>> = new Map();
 
   /**
    * 
@@ -97,16 +98,27 @@ export class RastersService {
   public getRastersValues(): RastersGroup[] {
     return this.rasterGroups.value;
   }
-
-
-
+  
+  /**
+   * 
+   */
+  public getParametersValue(rasterId: number): RasterParameter[] {
+    const result = this.rasterParameters.get(rasterId).value;
+    return result;
+  }
 
   /**
    * 
    */
   public getParameters(rasterId: number): Observable<RasterParameter[]> {
-    const result: Observable<RasterParameter[]>
-      = this.rastersDelegate.getParameters(rasterId);
+    if (!this.rasterParameters.has(rasterId)) {
+      const r: Observable<RasterParameter[]>
+        = this.rastersDelegate.getParameters(rasterId);
+      const value = new BehaviorSubject(null);
+      r.subscribe(e => value.next(e)); 
+      this.rasterParameters.set(rasterId, value);
+    }
+    const result = this.rasterParameters.get(rasterId); 
     return result;
   }
 }

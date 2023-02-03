@@ -39,13 +39,17 @@ public class NamGribSource {
         .map(d -> new NamParameter(parentKey, date, d))
         .forEach(result::add);
     });
+    result.stream()
+      .sorted((o1, o2) -> -o1.datetime.compareTo(o2.datetime))
+      .findFirst()
+      .ifPresent(maxparameter -> result.removeIf(e -> !e.datetime.equals(maxparameter.datetime)));
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param text
-   * @return 
+   * @return
    */
   private ForecastTimeReference toForecastTimeRef(String text) {
     String r = text.replaceAll("<.*?>", "")
@@ -55,17 +59,18 @@ public class NamGribSource {
     ForecastTimeReference result = new ForecastTimeReference(hour, fcststep);
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param r
-   * @return 
+   * @return
    */
   private int parseLineToForecastStep(String r) {
     String trimmed = r.replaceAll(".*?hiresf", "").replace(".tm00.grib2", "");
     int result = Integer.parseInt(trimmed);
     return result;
   }
+
   /**
    *
    * @param line
@@ -143,7 +148,5 @@ public class NamGribSource {
       this.url, dateTxt, gribFile.getBaseFileName());
     return result;
   }
-
-
 
 }

@@ -1,5 +1,9 @@
 package rm.titansdata.web.rasters;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.apache.commons.math3.util.Pair;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,5 +85,18 @@ public class RastersValueService {
     RasterObj rasterObj = new RasterObj(key, properties, raster);
     return rasterObj;
   }
-
+  
+  /**
+   * 
+   * @param rasterId
+   * @param parameters
+   * @param point
+   * @return 
+   */
+  Map<Parameter, Double> getPointRasterValues(long rasterId, List<Parameter> parameters, Point point) {
+    Map<Parameter, Double> result = parameters.stream()
+      .map(param -> Pair.create(param, this.getRasterValue(rasterId, param, point)))
+      .collect(Collectors.toMap(pair -> pair.getKey(), pair -> pair.getValue()));
+    return result;
+  }
 }
