@@ -60,7 +60,10 @@ export class HttpRasterSeriesDelegate implements SeriesDelegate {
    */
   private toRasterSeries(rasterId: number, response: any): RasterSeries {
     const keys = Object.keys(response.values);
-    const values = keys.map(k => response.values[k]);
+    const values = keys.map(k => {
+      console.log(JSON.parse(k)); 
+      response.values[k]
+    });
     const result = new RasterSeries(rasterId, values);
     return result;
   }

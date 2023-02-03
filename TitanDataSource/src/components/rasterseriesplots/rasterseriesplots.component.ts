@@ -3,10 +3,11 @@ import {AddPointManager} from 'src/services/addpoints/AddPointManager';
 import {PointAndRasterAssociations} from 'src/services/rasterassociations/PointAndRasterAssociations';
 import {RastersService} from 'src/services/rasterservices/RastersService';
 import {QueryPoint} from 'src/core/rasters/QueryPoint';
-import {Subscription, Observable} from 'rxjs';
-import {Objects} from 'src/core/types/Objects';
 import {RasterSeriesService} from 'src/services/rasterseries/RasterSeriesService';
-import {RasterSeries} from 'src/core/rasters/RasterSeries';
+import {RastersVisibilityService} from 'src/services/rasterstates/RastersVisibilityService';
+import {RasterParameter} from 'src/core/rasters/RasterParameter';
+import {AssociationsChartSeries} from './AssociationsChartSeries';
+import {Objects} from 'src/core/types/Objects';
 
 declare var $: any;
 @Component({
@@ -17,8 +18,7 @@ declare var $: any;
 })
 export class RasterSeriesPlots implements OnInit {
   private chart: any;
-  private series: [];
-  private handlers: AssociationsHandler[] = [];
+  private handlers: Map<number, AssociationsChartSeries> = new Map();
 
   /**
    * 
@@ -26,40 +26,62 @@ export class RasterSeriesPlots implements OnInit {
   public constructor(private manager: AddPointManager,
     private associations: PointAndRasterAssociations,
     private service: RastersService,
-    private seriesService: RasterSeriesService
+    private seriesService: RasterSeriesService,
+    private visibilityService: RastersVisibilityService
   ) {
+
   }
-
-
-  public ngOnInit(): void {
-    this.initChart();
-    this.manager.getQueryPoints().subscribe(this.onQueryPointsChanged.bind(this));
-    this.manager.getSelectedQueryPoint().subscribe(this.onQueryPointSelected.bind(this));
-  }
-
 
   /**
    * 
    */
-  private onQueryPointSelected(queryPoint: QueryPoint): void {
-    this.handlers.forEach(h => h.setActiveIfMatching(queryPoint.id));
-    this.handlers.filter(h => h.isActive())
-      .forEach(handler => {
-        handler.subscribe(this.associations.getAssociations(queryPoint.id));
-      });
+  public ngOnInit(): void {
+    this.initChart();
+    this.manager.getQueryPoints().subscribe(this.onQueryPointsChanged.bind(this));
+    this.service.getSelectedItem().subscribe(this.onSelectedItem.bind(this));
+  }
+
+  /**
+   * 
+   */
+  private onSelectedItem(item: any) {
+    if (item instanceof RasterParameter) {
+      this.selectPointOnChart(<RasterParameter> item);
+    }
+  }
+
+  /**
+   * 
+   */
+  private selectPointOnChart(item: RasterParameter): void {
+    this.chart.series.forEach((s: any) => {
+      const index = s.data.findIndex((p: any) => p.param === item);
+      if (index !== -1) {
+        const point = s.data[index];
+        point.select(true);
+      }
+    });
   }
 
   /**
    * 
    */
   private onQueryPointsChanged(points: QueryPoint[]): void {
-    this.handlers.forEach(h => h.unsubscribe());
-    points.forEach((p) => {
-      const handler = new AssociationsHandler( //
-        this.seriesService, this.chart, p.id);
-      handler.subscribe(this.associations.getAssociations(p.id));
-      this.handlers.push(handler);
-    });
+    points.forEach(this.addAssociationsChartSeries.bind(this));
+  }
+
+  /**
+   * 
+   */
+  private addAssociationsChartSeries(point: QueryPoint): void {
+    if (!this.handlers.has(point.id)) {
+      const handler = new AssociationsChartSeries( //
+        point.id, this.seriesService, this.associations, this.manager);
+      if (Objects.isNotNull(this.chart)) {
+        handler.init(this.chart);
+      }
+      this.handlers.set(point.id, handler);
+    }
   }
 
   /**
@@ -67,6 +89,7 @@ export class RasterSeriesPlots implements OnInit {
   */
   private onChartReady(c: Object) {
     this.chart = c;
+    this.handlers.forEach(c => c.init(this.chart));
   }
 
   /**
@@ -76,11 +99,36 @@ export class RasterSeriesPlots implements OnInit {
     const div = $("#plot-area");
     const o = $("<div></div>");
     div.append(o);
-    o.highcharts({
-      series: this.series,
-      tooltip: {
+    o.highcharts(this.getChartsConfig(div));
+  }
+
+  /**
+   * 
+   */
+  private getChartsConfig(div: any): any {
+    const result = {
+      series: []
+      , tooltip: {
         headerFormat: '<span style="font-size: 10px">',
         pointFormat: '<b>{point.y}</b>'
+      }
+      , plotOptions: {
+        series: {
+          cursor: 'pointer'
+          , events: {
+            click: this.onSeriesPointClicked.bind(this)
+          }
+          , allowPointSelect: true
+          , marker: {
+            states: {
+              select: {
+                fillColor: '#FF0000',
+                lineWidth: 3,
+                lineColor: '#FF0000'
+              }
+            }
+          }
+        }
       }
       , title: ""
       , chart: {
@@ -97,83 +145,6 @@ export class RasterSeriesPlots implements OnInit {
         }
         , animation: false
       }
-    });
-  }
-}
-
-class AssociationsHandler {
-
-  private subscription: Subscription;
-  private series: Map<number, any> = new Map();
-  private active: boolean = false;
-
-  /**
-   * 
-   */
-  public constructor( //
-    private seriesservice: RasterSeriesService,
-    private chart: any, private pointId: number) {
-  }
-
-  /**
-   * 
-   */
-  public isActive(): boolean {
-    return this.active;
-  }
-
-
-  /**
-   * 
-   */
-  public setActiveIfMatching(id: number): void {
-    this.active = id === this.pointId;
-    this.show(this.active);
-  }
-
-  /**
-   * 
-   */
-  private onAssociationsChanged(arr: number[]) {
-    if (this.isActive) {
-      this.deleteAllSeries();
-    }
-    arr.map(this.toSeries.bind(this)).forEach((s: any) => {
-      const seriesId = Number(s.id.replace('series-', ""));
-      this.series.set(seriesId, s)
-    });
-    this.show(this.active);
-  }
-
-  /**
-   * 
-   */
-  private show(show: boolean): void {
-    if (show) {
-      this.series.forEach(s => {
-        if (Objects.isNull(this.chart.get(s.id))) {
-          this.chart.addSeries(s, true);
-        } else {
-          this.chart.get(s.id).setData(s.data);
-        }
-      });
-    } else {
-      this.deleteAllSeries();
-    }
-  }
-
-  /**
-   * 
-   */
-  private toSeries(rasterId: number): any {
-    const data: any[] = [];
-    this.seriesservice.getSeries(this.pointId, rasterId).subscribe(rasterSeries => {
-      this.onSeriesLoaded(rasterId, rasterSeries);
-    });
-    const result = {
-      id: 'series-' + rasterId,
-      name: 'Raster ' + rasterId,
-      data: data
     };
     return result;
   }
@@ -181,43 +152,19 @@ class AssociationsHandler {
   /**
    * 
    */
-  private onSeriesLoaded(rasterId: number, e: RasterSeries): void {
-    if (e != null) {
-      if (this.series.has(rasterId)) {
-        const series = this.series.get(rasterId);
-        const data = series.data;
-        data.length = 0;
-        e.toData().forEach(d => data.push(d));
-      }
-    }
-    this.show(this.active);
+  private onSeriesPointClicked(event: any): void {
+    setTimeout(() => this.setVisibilityBasedOnClickEvent(event));
   }
 
   /**
    * 
    */
-  private deleteAllSeries(): void {
-    this.series.clear();
-    var seriesLength = this.chart.series.length;
-    for (var i = seriesLength - 1; i > -1; i--) {
-      this.chart.series[i].remove();
-    }
-  }
-
-  /**
-   * 
-   */
-  public subscribe(arg0: Observable<number[]>) {
-    this.subscription = arg0.subscribe(this.onAssociationsChanged.bind(this));
-  }
-
-  /**
-   * 
-   */
-  public unsubscribe(): void {
-    if (Objects.isNotNull(this.subscription)) {
-      this.subscription.unsubscribe();
-      this.subscription = null;
-    }
+  private setVisibilityBasedOnClickEvent(event: any) {
+    const param = event.point.param;
+    const newvalue = !this.visibilityService.getVisibility(param).value;
+    this.visibilityService.getVisibility(param).next(newvalue);
   }
 }
+
+
+

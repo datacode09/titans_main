@@ -6,6 +6,7 @@ import {RasterEntity} from 'src/core/rasters/RasterEntity';
 import {RasterParameter} from 'src/core/rasters/RasterParameter';
 import {RastersService} from 'src/services/rasterservices/RastersService';
 import {RastersVisibilityService} from 'src/services/rasterstates/RastersVisibilityService';
+import {Objects} from 'src/core/types/Objects';
 
 @Component({
   selector: 'datasourcelist',
@@ -35,27 +36,59 @@ export class DataSourceList implements OnInit {
     this.service.getRasters().subscribe(e => {
       this.rastersgroup = e;
     });
-    this.selectedTreeNode.subscribe(s => {
-      $(".node").removeClass("selected")
-      if (s != null) {
-        s.addClass("selected");
-        this.setSelectItem();
-      }
-    });
+    this.selectedTreeNode.subscribe(this.selectTreeNodeBasedOnElement.bind(this));
+    this.service.getSelectedItem().subscribe(this.onSelectedItemChanged.bind(this));
   }
 
+  /**
+   * 
+   */
+  private selectTreeNodeBasedOnElement(s: any): void {
+    if (Objects.isNull(s) || !s.hasClass("selected")) {
+      $(".node").removeClass("selected")
+      if (Objects.isNotNull(s)) {
+        s.addClass("selected");
+        if (s.length > 0) {
+          s[0].scrollIntoViewIfNeeded(true)
+        }
+        this.setSelectItem();
+      }
+    }
+  }
+
+  /**
+   * 
+   */
+  private onSelectedItemChanged(item: any): void {
+    if (item instanceof RasterParameter) {
+      const id = this.getRasterParamNodeElementId(<RasterParameter> item);
+      const element = $("#" + id);
+      this.selectTreeNodeBasedOnElement(element);
+    } else if (item instanceof RasterEntity) {
+      const id = this.getRasterElementId((<RasterEntity> item).rasterId);
+      const element = $("#" + id);
+      this.selectTreeNodeBasedOnElement(element);
+    }
+  }
+
+  /**
+   * 
+   */
   private setSelectItem(): void {
     const elId = $(".node.selected").attr("id");
     const element = this.elements.get(elId);
-    this.service.setSelectedItem(element); 
+    this.service.setSelectedItem(element);
   }
 
+  /**
+   * 
+   */
   public onClickedForSelection(evt: any, name: string) {
     const node: any = this.groupNameToEntity(name);
     const elementId = "el_" + node.id;
-    const el = $("#" + elementId  + "  .level01");
-    const group = this.rastersgroup.find(g => g.id == node.id); 
-    this.elements.set(elementId, group); 
+    const el = $("#" + elementId + "  .level01");
+    const group = this.rastersgroup.find(g => g.id == node.id);
+    this.elements.set(elementId, group);
     this.selectedTreeNode.next(el.parent());
     evt.preventDefault();
     evt.stopPropagation();
@@ -115,9 +148,9 @@ export class DataSourceList implements OnInit {
         const rasternodeid = this.addRasterNode(node, raster);
         this.elements.set(rasternodeid, raster);
         this.service.getParameters(rasterId).subscribe(params => {
-          params.forEach((p) => {
-            const rasterParamNodeId = this.addRasterParamNode(p);
-            this.elements.set(rasterParamNodeId, p); 
+          params.forEach((param) => {
+            const rasterParamNodeId = this.addRasterParamNode(param);
+            this.elements.set(rasterParamNodeId, param);
           });
 
         });

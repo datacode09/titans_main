@@ -29,7 +29,8 @@ export class RasterSeriesService {
    * 
    */
   public static singleton(http: HttpClient, s: RastersService, m: AddPointManager): RasterSeriesService {
-    const del = new HttpRasterSeriesDelegate(http);
+    const del = new InternalRasterSeriesDelegate();
+//    const del = new HttpRasterSeriesDelegate(http);
     const instance = new RasterSeriesService(del, s, m);
     return instance;
 

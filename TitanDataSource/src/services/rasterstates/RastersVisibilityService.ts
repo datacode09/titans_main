@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http/http';
-import {Router} from '@angular/router';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {RasterParameter} from 'src/core/rasters/RasterParameter';
+import {RastersService} from '../rasterservices/RastersService';
 
 /**
  * 
  */
 @Injectable({
   providedIn: 'root'
+  , deps : [RastersService]
 })
 export class RastersVisibilityService {
 
@@ -17,7 +17,7 @@ export class RastersVisibilityService {
   /**
    * 
    */
-  public constructor() {
+  public constructor(private service:RastersService) {
   }
 
   /**
@@ -26,11 +26,21 @@ export class RastersVisibilityService {
   public getVisibility(rasterParam: RasterParameter): BehaviorSubject<boolean> {
     if (!this.map.has(rasterParam)) {
       const instance: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+      instance.subscribe(s => {
+        if (s) {
+          this.map.forEach(v => {
+            if (v != instance) {
+              v.next(false);
+            }
+          });
+          this.service.setSelectedItem(rasterParam); 
+        }
+      });
       this.map.set(rasterParam, instance);
     }
-    const result = this.map.get(rasterParam); 
+    const result = this.map.get(rasterParam);
     return result;
   }
-  
+
 }
 
