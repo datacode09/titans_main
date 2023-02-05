@@ -20,6 +20,10 @@ public class Dimensions implements Serializable{
    * @return 
    */
   public static Dimensions create(Bounds bounds, Measure<Length> dx, Measure<Length> dy) {
+    int srid = bounds.getFactory().getSRID();
+    if (srid == 4326) {
+      throw new RuntimeException("Cannot calculate dimensions. The bounds are in srid = '4326'"); 
+    }
     double pixelsx = ((bounds.getMaxX() - bounds.getMinX())/dx.doubleValue(SI.METRE));
     double pixelsy = ((bounds.getMaxY() - bounds.getMinY())/dy.doubleValue(SI.METRE));
     Dimension dimx = new Dimension(dx, (int) pixelsx);

@@ -1,9 +1,5 @@
 package titans.nam;
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.PrecisionModel;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -15,6 +11,10 @@ import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
@@ -58,7 +58,10 @@ public class NamRasterFactoryIT {
     GeometryFactory geomfactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326); 
     Point p1 = geomfactory.createPoint(new Coordinate(-119.43, 42.26));
     Point p2 = geomfactory.createPoint(new Coordinate(-121.43, 44.26));
-    Bounds b = Bounds.fromPoints(p1, p2);
+    int targetSrid = 32610;    
+    Bounds b = Bounds.fromPoints( //
+      SridUtils.transform(p1, targetSrid), //
+      SridUtils.transform(p2, targetSrid));    
     Measure<Length> dx = Measure.valueOf(1000.0, SI.METRE);
     Measure<Length> dy = Measure.valueOf(1000.0, SI.METRE);
     Dimensions dims = Dimensions.create(b, dx, dy);
@@ -67,9 +70,12 @@ public class NamRasterFactoryIT {
       .truncatedTo(ChronoUnit.DAYS)
       .minusDays(1);
     ForecastTimeReference d = new ForecastTimeReference(0, 0);
-    NamParameter p = new NamParameter("NAM", datetime, d);
+    String var = "TMP_2-HTGL";
+    NamParameter p = new NamParameter("NAM", datetime, d, var);
     Raster r = factory.create(p, b, dims);
-    r.getValue(geomfactory.createPoint(new Coordinate(-120.43, 43.26)));
+    Point point = geomfactory.createPoint(new Coordinate(-120.43, 43.26));
+    double value = r.getValue(SridUtils.transform(point, targetSrid));
+    System.out.println("value = " + value);
     System.out.println("elapsed time: " + (System.currentTimeMillis() - ms)/1000.0);
     
   }

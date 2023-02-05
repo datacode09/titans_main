@@ -13,4 +13,12 @@ public interface Parameter {
    * @return 
    */
   public JSONObject toJSONObject(); 
+  
+  /**
+   * 
+   * @return 
+   */
+  public String getKey();
+  
+  
 }

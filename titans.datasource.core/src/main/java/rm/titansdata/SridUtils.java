@@ -10,7 +10,6 @@ import org.apache.sis.referencing.CRS;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.CoordinateOperation;
-import org.opengis.util.FactoryException;
 
 /**
  *
@@ -69,8 +68,10 @@ public class SridUtils {
    */
   public static void init() {
     try {
-      CoordinateReferenceSystem target = CRS.forCode("EPSG:" + 4326);
-    } catch (FactoryException ex) {
+      GeometryFactory f = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326);
+      Point p = f.createPoint(new Coordinate(-121.43, 36.37));
+      transform(p, 3857); 
+    } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
   }

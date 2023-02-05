@@ -9,7 +9,7 @@ import {QueryPoint} from 'src/core/rasters/QueryPoint';
 import {RastersService} from '../rasterservices/RastersService';
 import {RasterParameter} from 'src/core/rasters/RasterParameter';
 import {HttpRasterSeriesDelegate} from './delegates/HttpRasterSeriesDelegate';
-
+import {httpsources} from 'src/conf/conf.json';
 /**
  * 
  */
@@ -29,9 +29,13 @@ export class RasterSeriesService {
    * 
    */
   public static singleton(http: HttpClient, s: RastersService, m: AddPointManager): RasterSeriesService {
-    const del = new InternalRasterSeriesDelegate();
-//    const del = new HttpRasterSeriesDelegate(http);
-    const instance = new RasterSeriesService(del, s, m);
+    let delegate;
+    if (false) {
+      delegate = new HttpRasterSeriesDelegate(http);
+    } else {
+      delegate = new InternalRasterSeriesDelegate();
+    }
+    const instance = new RasterSeriesService(delegate, s, m);
     return instance;
 
   }

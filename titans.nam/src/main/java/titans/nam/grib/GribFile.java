@@ -39,7 +39,8 @@ public class GribFile {
    * @return
    */
   boolean exists() {
-    return this.grib.exists();
+    boolean result = this.grib.exists();
+    return result;
   }
 
   /**

@@ -49,7 +49,7 @@ export class HttpRasterSeriesDelegate implements SeriesDelegate {
     });
     const result: BehaviorSubject<RasterSeries> = new BehaviorSubject(null);
     this.http.get(url, {params: params, headers: headers}).subscribe((response: any) => {
-      const rasterSeries = this.toRasterSeries(rasterId, response);
+      const rasterSeries = this.toRasterSeries(rasterId, response, rasterparams);
       result.next(rasterSeries);
     });
     return result;
@@ -58,11 +58,17 @@ export class HttpRasterSeriesDelegate implements SeriesDelegate {
   /**
    * 
    */
-  private toRasterSeries(rasterId: number, response: any): RasterSeries {
+  private toRasterSeries(rasterId: number, response: any, rasterparams: RasterParameter[]): RasterSeries {
     const keys = Object.keys(response.values);
-    const values = keys.map(k => {
-      console.log(JSON.parse(k)); 
-      response.values[k]
+    const values = keys.map((k, i) => {
+      const index = rasterparams.findIndex(f => f.parameter.key === k);
+      const param = rasterparams[index];
+      const result = {
+        x: i
+        , y: response.values[k]
+        , param: param
+      };
+      return result;
     });
     const result = new RasterSeries(rasterId, values);
     return result;

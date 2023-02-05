@@ -182,8 +182,7 @@ public class RastersServlet {
     Parameter param = parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
     double value = this.rastersValueService.getRasterValue(rasterId, param, point);
-    map.put("value", value);
-    map.put("values", value);  
+    map.put("value", value);  
     this.responseHelper.send(map, res);
   }
     
@@ -203,10 +202,12 @@ public class RastersServlet {
     int srid = parser.getInteger("srid");
     Point point = (Point) parser.parseGeometry("point", srid);
     JSONArray jsonObject = this.getParametersJsonArray(parser);
-    List<Parameter> param = this.parameterFactory.get(jsonObject);
-    Map<String, Object> map = new HashMap<>();
+    List<Parameter> param = this.parameterFactory.get(jsonObject);  
+    Map<String, Object> map = new HashMap<>();  
     Map<Parameter, Double> values = this.rastersValueService.getPointRasterValues(rasterId, param, point);
-    map.put("values", values);
+    Map<String, Double> s = values.entrySet().stream()
+      .collect(Collectors.toMap(d->d.getKey().getKey(), d->d.getValue()));
+    map.put("values", s);    
     this.responseHelper.send(map, res);
   }
 

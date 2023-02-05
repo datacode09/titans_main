@@ -1,18 +1,23 @@
 package titans.nam.netcdf;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
+import javax.measure.Measure;
+import javax.measure.quantity.Length;
+import javax.measure.unit.SI;
+import org.apache.commons.lang.math.DoubleRange;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
-import java.io.File;
-import java.io.IOException;
-import javax.measure.Measure;
-import javax.measure.quantity.Length;
-import javax.measure.unit.SI;
 import rm.titansdata.SridUtils;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimension;
 import rm.titansdata.properties.Dimensions;
+import titans.nam.NamParameter;
+import titans.nam.core.NamVariable;
+import ucar.nc2.dataset.VariableDS;
 import ucar.nc2.dt.GridDataset.Gridset;
 import ucar.nc2.dt.grid.GridDataset;
 import ucar.unidata.geoloc.LatLonRect;
@@ -23,7 +28,7 @@ import ucar.unidata.geoloc.LatLonRect;
  */
 public class NetCdfFile {
 
-  final File file;
+  public final File file;
   private final String varName;
 
   public NetCdfFile(File file, String varName) {
@@ -42,8 +47,8 @@ public class NetCdfFile {
       ucar.nc2.Dimension y = gridSet.getGeoCoordSystem().getDomain().get(1);
       int pixelsX = x.getLength();
       int pixelsY = y.getLength();
-      double width = this.getBounds().getLengthX()/pixelsX;
-      double height = this.getBounds().getLengthY()/pixelsY;
+      double width = this.getBounds().getLengthX() / pixelsX;
+      double height = this.getBounds().getLengthY() / pixelsY;
       Measure<Length> measureX = Measure.valueOf(width, SI.METRE);
       Measure<Length> measureY = Measure.valueOf(height, SI.METRE);
       Dimension dimensionx = new Dimension(measureX, pixelsX);
@@ -74,21 +79,87 @@ public class NetCdfFile {
       throw new RuntimeException(ex);
     }
   }
-  
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   String getVarName() {
     return this.varName;
   }
 
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   public boolean exists() {
     return this.file.exists();
   }
 
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 53 * hash + Objects.hashCode(this.file);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final NetCdfFile other = (NetCdfFile) obj;
+    if (!Objects.equals(this.file, other.file)) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   *
+   * @return
+   */
+  public DoubleRange getValueRange() {
+    try (GridDataset gds = GridDataset.open(file.getAbsolutePath())) {
+      VariableDS datavariable = this.getDataVariable(gds);
+      double min = datavariable.getValidMin(); 
+      double max = datavariable.getValidMax();
+      DoubleRange result = new DoubleRange(min, max);
+      return result;
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+  
+  /**
+   * 
+   * @param gds
+   * @return 
+   */
+  private VariableDS getDataVariable(final GridDataset gds) {
+    String replace = varName.replace("-", "_");
+    VariableDS result = (VariableDS) gds.getDataVariable(replace);
+    return result;
+  }
+
+  /**
+   *
+   * @param baseFolder
+   * @param namParameter
+   * @return
+   */
+  public static NetCdfFile create(File baseFolder, NamParameter namParameter) {
+    NamVariable var = new NamVariable(namParameter.namVar);
+    NetCdfFileOrganization org = new NetCdfFileOrganization(
+      baseFolder, namParameter.fcststep, namParameter.datetime, var);
+    File file = org.getFile();
+    NetCdfFile instance = new NetCdfFile(file, var.getGribVarName());
+    return instance;
+  }
 }

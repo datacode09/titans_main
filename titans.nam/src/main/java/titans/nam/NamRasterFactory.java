@@ -12,6 +12,7 @@ import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
 import rm.titansdata.raster.RasterObj;
 import titans.nam.core.NamImporter;
+import titans.nam.core.NamVariable;
 import titans.nam.utils.InvalidArgumentTypeException;
 
 /**
@@ -30,8 +31,9 @@ public class NamRasterFactory implements RasterFactory {
    */
   public NamRasterFactory(
     @Qualifier("nam.gribRootFolder") File gribRootFolder, 
+    @Qualifier("nam.netCdfRootFolder") File netCdfRootFolder, 
     @Qualifier("nam.degribExe") File degribExe) {
-    this.namImporter = new NamImporter(gribRootFolder, degribExe); 
+    this.namImporter = new NamImporter(gribRootFolder, netCdfRootFolder, degribExe); 
   }
   
   /**
@@ -56,7 +58,8 @@ public class NamRasterFactory implements RasterFactory {
       NamParameter namparam = (NamParameter) p;
       int fcststep = namparam.fcststep;
       ZonedDateTime datetime = namparam.datetime;
-      RasterObj rasterObj = this.namImporter.getRaster(datetime, fcststep);
+      NamVariable var = new NamVariable("TMP_2-HTGL");
+      RasterObj rasterObj = this.namImporter.getRaster(var, datetime, fcststep);
       Raster result = rasterObj.getRaster();
       return result;
     } else {

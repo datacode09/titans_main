@@ -38,7 +38,16 @@ export class RasterSeriesPlots implements OnInit {
   public ngOnInit(): void {
     this.initChart();
     this.manager.getQueryPoints().subscribe(this.onQueryPointsChanged.bind(this));
+    this.manager.getSelectedQueryPoint().subscribe(this.onSelectedPoint.bind(this)); 
     this.service.getSelectedItem().subscribe(this.onSelectedItem.bind(this));
+  }
+  
+  
+  /**
+   * 
+   */
+  private onSelectedPoint(qp:QueryPoint):void  {
+    this.resetSelectedItem(); 
   }
 
   /**
@@ -56,7 +65,7 @@ export class RasterSeriesPlots implements OnInit {
   private selectPointOnChart(item: RasterParameter): void {
     this.chart.series.forEach((s: any) => {
       const index = s.data.findIndex((p: any) => p.param === item);
-      if (index !== -1) {
+      if (index !== -1 && s.visible) {
         const point = s.data[index];
         point.select(true);
       }
@@ -68,6 +77,17 @@ export class RasterSeriesPlots implements OnInit {
    */
   private onQueryPointsChanged(points: QueryPoint[]): void {
     points.forEach(this.addAssociationsChartSeries.bind(this));
+    this.resetSelectedItem(); 
+  }
+  
+  /**
+   * 
+   */
+  private resetSelectedItem():void {
+    setTimeout(() => {
+      const item = this.service.getSelectedItemValue(); 
+      this.onSelectedItem(item);
+    })
   }
 
   /**

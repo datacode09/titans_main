@@ -1,8 +1,12 @@
 package titans.nam.netcdf;
 
-import org.locationtech.jts.geom.Point;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.locationtech.jts.geom.Point;
 import rm.titansdata.SridUtils;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
@@ -21,8 +25,9 @@ import ucar.nc2.dt.grid.GridDataset;
  */
 public class NetCdfRaster implements Closeable {
 
-  private GridDataset gds;
-
+  private Map<NetCdfFile, GridDataset> gds = new HashMap<>();
+  
+  
   public NetCdfRaster() {
   }
 
@@ -55,7 +60,7 @@ public class NetCdfRaster implements Closeable {
    */
   public double getValue(NetCdfFile netCdfFile, Point point) {
     this.initGridDataset(netCdfFile);
-    GridDatatype grid = getGridDatatype(netCdfFile);
+    GridDatatype grid = this.getGridDatatype(netCdfFile);
     int[] xyIndex = this.getQueryIndices(grid, point);
     double result = this.readValueForIndices(grid, xyIndex);
     return result;
@@ -105,13 +110,13 @@ public class NetCdfRaster implements Closeable {
    */
   private GridDatatype getGridDatatype(NetCdfFile netCdfFile) throws NullPointerException {
     String varName = netCdfFile.getVarName();
-    GridDatatype grid = this.gds.getGrids().stream()
+    GridDatatype grid = this.gds.get(netCdfFile).getGrids().stream()
       .filter((g) -> g.getName().equals(varName))
       .findFirst()
-      .orElse(gds.getGrids().get(0));
+      .orElse(gds.get(netCdfFile).getGrids().get(0));
     if (grid == null) {
       throw new NullPointerException("Netcdf file '"
-        + gds.getNetcdfFile() + "' does not contain variable " + varName);
+        + gds.get(netCdfFile).getNetcdfFile() + "' does not contain variable " + varName);
     }
     return grid;
   }
@@ -122,10 +127,10 @@ public class NetCdfRaster implements Closeable {
    * @throws RuntimeException
    */
   private void initGridDataset(NetCdfFile netCdfFile) throws RuntimeException {
-    if (this.gds == null) {
+    if (!this.gds.containsKey(netCdfFile)) {
       String filepath = netCdfFile.file.getAbsolutePath();
       try {
-        this.gds = GridDataset.open(filepath);
+        this.gds.put(netCdfFile, GridDataset.open(filepath)) ;
       } catch (IOException ex) {
         throw new RuntimeException(ex);
       }
@@ -135,8 +140,14 @@ public class NetCdfRaster implements Closeable {
   @Override
   public void close() throws IOException {
     if (this.gds == null) {
-      this.gds.close();
-      this.gds = null;
+      this.gds.forEach( (f, g)->{
+        try {
+          g.close();
+        } catch (IOException ex) {
+          Logger.getLogger(NetCdfRaster.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      });
+      this.gds.clear();
     }
   }
 

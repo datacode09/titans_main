@@ -22,7 +22,13 @@ import titans.nam.NamParameter;
 public class NamGribSource {
 
   private final String url = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/nam/prod/";
-
+  
+  
+  /**
+   * 
+   * @param parentKey
+   * @return 
+   */
   public List<NamParameter> getCurrentNamParameters(String parentKey) {
     DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("yyyyMMdd").toFormatter();
     ZonedDateTime date = ZonedDateTime.now(ZoneId.of("UTC"))
@@ -32,11 +38,12 @@ public class NamGribSource {
       .format(formatter);
     String fullUrl = this.url + "nam." + datetext;
     List<NamParameter> result = new ArrayList<>();
+    String var = "TMP_2-HTGL";
     new RmHttpReader.Builder(fullUrl).read((text) -> {
       Arrays.stream(text.split("\n")) //
         .filter(this::isConusNestLine)
         .map(this::toForecastTimeRef)
-        .map(d -> new NamParameter(parentKey, date, d))
+        .map(d -> new NamParameter(parentKey, date, d, var))
         .forEach(result::add);
     });
     result.stream()

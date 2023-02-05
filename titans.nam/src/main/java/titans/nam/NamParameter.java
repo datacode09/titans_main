@@ -18,18 +18,20 @@ public class NamParameter implements Parameter {
 
   private final String parentKey;
 
-  public ZonedDateTime datetime;
-  public int fcststep;
+  public final ZonedDateTime datetime;
+  public final int fcststep;
+  public final String namVar;
 
   /**
    *
    * @param datetime
    * @param d
    */
-  public NamParameter(String parentKey, ZonedDateTime datetime, ForecastTimeReference d) {
+  public NamParameter(String parentKey, ZonedDateTime datetime, ForecastTimeReference d, String namVar) {
     this.parentKey = parentKey;
     this.datetime = datetime.plusHours(d.refhour);
     this.fcststep = d.fcsthourAhead;
+    this.namVar = namVar;
   }
 
   /**
@@ -88,6 +90,7 @@ public class NamParameter implements Parameter {
    * 
    * @return 
    */
+  @Override
   public String getKey() {
     String format = this.datetime.format(getDateTimeFormatter());
     String key = format + "-" + this.fcststep;
@@ -105,11 +108,13 @@ public class NamParameter implements Parameter {
       int fcststep = obj.getInt("fcststep");
       String datetimetext = obj.getString("datetime");
       ZoneId zoneId = ZoneId.of(obj.getString("zoneid"));
+      String var = obj.getString("var");
       LocalDateTime localdatetime = getDateTimeFormatter()
         .parse(datetimetext, LocalDateTime::from);
       ZonedDateTime datetime = ZonedDateTime.of(localdatetime, zoneId);
       ForecastTimeReference d = new ForecastTimeReference(0, fcststep);
-      NamParameter result = new NamParameter(parentKey, datetime, d);      return result;
+      NamParameter result = new NamParameter(parentKey, datetime, d, var);      
+      return result;
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }

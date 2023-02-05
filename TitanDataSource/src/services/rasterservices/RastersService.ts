@@ -30,6 +30,13 @@ export class RastersService {
   public getSelectedItem(): Observable<any> {
     return this.selectedItem;
   }
+  
+  /**
+   * 
+   */
+  public getSelectedItemValue(): any {
+    return this.selectedItem.value;
+  }
 
   /**
    * 

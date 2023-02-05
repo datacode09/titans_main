@@ -89,9 +89,10 @@ export class AssociationsChartSeries {
       this.onSeriesLoaded(rasterId, rasterSeries);
     });
     const result = {
-      id: this.getSeriesId(rasterId),
-      name: 'Raster ' + rasterId,
-      data: data
+      id: this.getSeriesId(rasterId)
+      , name: 'Raster ' + rasterId
+      ,data: data
+      , showInLegend : false
     };
     return result;
   }
