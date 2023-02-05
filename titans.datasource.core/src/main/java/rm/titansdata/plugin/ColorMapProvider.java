@@ -8,6 +8,13 @@ import rm.titansdata.colormap.ColorMap;
  * @author Ricardo Marquez
  */
 public interface ColorMapProvider {
+
   
-  public ColorMap getColorMap(Parameter param); 
+
+  /**
+   *
+   * @param param
+   * @return
+   */
+  public ColorMap getColorMap(Parameter param);
 }

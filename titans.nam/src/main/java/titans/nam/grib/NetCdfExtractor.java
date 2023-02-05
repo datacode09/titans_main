@@ -56,7 +56,7 @@ public class NetCdfExtractor {
       printLines(lines);
       InputStream errorstream = p.getErrorStream();
       String errorMsg;
-      if (errorstream != null && (errorMsg = toMessage(errorstream)).isEmpty()) {
+      if (errorstream != null && !(errorMsg = toMessage(errorstream)).isEmpty()) {
         throw new RuntimeException(errorMsg);
       }
     } catch (Exception ex) {

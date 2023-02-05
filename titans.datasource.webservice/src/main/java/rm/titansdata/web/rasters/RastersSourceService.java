@@ -1,5 +1,6 @@
 package rm.titansdata.web.rasters;
 
+import common.RmExceptions;
 import common.db.DbConnection;
 import common.db.RmDbUtils;
 import java.sql.ResultSet;
@@ -24,11 +25,11 @@ public class RastersSourceService {
   @Autowired
   @Qualifier("titans.db")
   private DbConnection dbconn;
-  
+
   /**
-   * 
+   *
    * @param userId
-   * @return 
+   * @return
    */
   public Map<RasterGroupEntity, List<Long>> getRastersByUserId(Long userId) {
     String query = this.getRastersByUserIdQuery(userId);
@@ -97,9 +98,9 @@ public class RastersSourceService {
   }
 
   /**
-   * 
+   *
    * @param rasterId
-   * @return 
+   * @return
    */
   public RasterEntity getRaster(Long rasterId) {
     String query = getRasterQuery(rasterId);
@@ -110,11 +111,11 @@ public class RastersSourceService {
     RasterEntity result = obj.getValue();
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param rasterId
-   * @return 
+   * @return
    */
   private String getRasterQuery(Long rasterId) {
     String query = "select\n"
@@ -158,16 +159,38 @@ public class RastersSourceService {
   }
 
   public List<Long> getRastersByGroupId(Long rasterGroupId) {
-    String query =  "select \n"
+    String query = "select \n"
       + "    r.raster_id\n"
       + "from public.rastergroup_raster_link l\n"
       + "join public.raster r\n"
       + "	on r.raster_id = l.raster_id\n"
       + "where l.rastergroup_id = " + rasterGroupId;;
-    List<Long> result = this.dbconn.executeQuery(query, (rs)->{
-      Long e = RmDbUtils.longValue(rs, "raster_id"); 
+    List<Long> result = this.dbconn.executeQuery(query, (rs) -> {
+      Long e = RmDbUtils.longValue(rs, "raster_id");
       return e;
-    }); 
+    });
+    return result;
+  }
+
+  /**
+   *
+   * @param key
+   * @return
+   */
+  public long getRasterIdByKey(String key) {
+    MutableObject<Long> obj = new MutableObject<>(Long.MIN_VALUE);
+    String query = "select r.raster_id \n"
+      + "from public.raster r \n"
+      + "join source s \n"
+      + "on s.source_id = r.source_id \n"
+      + "where s.title = '" + key + "'";
+    this.dbconn.executeQuery(query, (rs) -> {
+      obj.setValue(RmDbUtils.longValue(rs, "raster_id"));
+    });
+    if (obj.getValue().equals(Long.MIN_VALUE)) {
+      RmExceptions.throwException("Raster Id not found for key '%s'", key);
+    }
+    long result = obj.getValue();
     return result;
   }
 

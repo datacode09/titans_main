@@ -8,10 +8,11 @@ import org.locationtech.jts.geom.Point;
  */
 public class RasterImageResult {
 
-  public final String imageURL;
+  
   public final Point upperRight;
   public final Point lowerLeft;  
   public final int srid;
+  public final String imageURL;
 
   public RasterImageResult(String imageURL, Point upperRight, Point lowerLeft, int srid) {
     this.imageURL = imageURL;
@@ -20,4 +21,12 @@ public class RasterImageResult {
     this.srid = srid;
   }
   
+  /**
+   * 
+   * @return 
+   */
+  @Override
+  public String toString() {
+    return "RasterImageResult{" + "upperRight=" + upperRight + ", lowerLeft=" + lowerLeft + ", srid=" + srid + ", imageURL=" + imageURL + '}';
+  }
 }

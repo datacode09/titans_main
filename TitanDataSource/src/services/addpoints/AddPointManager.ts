@@ -12,7 +12,7 @@ import {QueryPoint} from 'src/core/rasters/QueryPoint';
 export class AddPointManager {
   public selectQueryPoint: BehaviorSubject<QueryPoint> = new BehaviorSubject(null);
   private queryPoints: BehaviorSubject<QueryPoint[]> = new BehaviorSubject([]);
-  private queryPointActivated: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private queryPointActivated: BehaviorSubject<boolean> = new BehaviorSubject(false);  
   
   public constructor() {
   }

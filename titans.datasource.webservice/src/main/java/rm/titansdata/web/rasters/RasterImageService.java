@@ -1,19 +1,21 @@
 package rm.titansdata.web.rasters;
 
-import org.locationtech.jts.geom.Point;
+import common.RmKeys;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
 import rm.titansdata.SridUtils;
 import rm.titansdata.colormap.ColorMap;
 import rm.titansdata.images.RasterImage;
+import rm.titansdata.plugin.ColorMapProvider;
 import rm.titansdata.raster.RasterObj;
-import rm.titansdata.raster.RasterSearch;
+import rm.titansdata.web.rasters.colormap.ColorMapProviderFactory;
 
 /**
  *
@@ -24,6 +26,8 @@ public class RasterImageService {
 
   @Autowired  
   private RastersValueService rastersValueService;
+  @Autowired
+  private ColorMapProviderFactory factory;
 
   /**
    *
@@ -31,10 +35,8 @@ public class RasterImageService {
    * @return
    */
   public RasterImageResult getRasterImage(long rasterId, Parameter param) {
-    RasterObj r = this.getRasterObj(rasterId, param);
-    RasterSearch s = new RasterSearch(r.getBounds(), r.getDimensions()); 
-    s.maxIndices(); 
-    ColorMap cmap = this.getColorMap(s, r);
+    RasterObj r = this.getRasterObj(rasterId, param); 
+    ColorMap cmap = this.getColorMap(rasterId, param);
     RasterImage img = new RasterImage(r, cmap);  
     RasterImageResult result = this.toRasterImageResult(rasterId, img);
     return result;
@@ -63,22 +65,11 @@ public class RasterImageService {
    * @param r
    * @return 
    */
-  private ColorMap getColorMap(RasterSearch s, RasterObj r) {
-    double max = s.stream(b->r.getValue(b))
-      .mapToDouble(i->i.getValue().getValue())
-      .max()
-      .orElseThrow(()->new RuntimeException());
-    double min = s.stream(b->r.getValue(b))
-      .mapToDouble(i->i.getValue().getValue())
-      .min()
-      .orElseThrow(()->new RuntimeException());
-    ColorMap cmap = new ColorMap.Builder()
-      .setXmin(min)
-      .setXmax(max)
-      .setColorMin("#000")
-      .setColorMax("#fff")
-      .build();
-    return cmap;
+  private ColorMap getColorMap(long rasterId, Parameter param) {
+    ColorMapProvider cm = this.factory.getProvider(rasterId);
+    ColorMap result = cm.getColorMap(param); 
+    return result;
+    
   }
 
   /**
@@ -98,7 +89,7 @@ public class RasterImageService {
    * @return
    */
   private String getImageURL(long rasterId, BufferedImage bufferedImg) {
-    String filename = rasterId + ".png";
+    String filename = rasterId + "_" + RmKeys.createKey() +  ".png";
     File f = new File("C:\\Servers\\apache-tomcat-8.5.45\\webapps\\data\\" + filename);
     if (!f.getParentFile().exists()) {
       f.getParentFile().mkdirs(); 
