@@ -30,7 +30,7 @@ export class RasterSeriesService {
    */
   public static singleton(http: HttpClient, s: RastersService, m: AddPointManager): RasterSeriesService {
     let delegate;
-    if (false) {
+    if (httpsources) {
       delegate = new HttpRasterSeriesDelegate(http);
     } else {
       delegate = new InternalRasterSeriesDelegate();

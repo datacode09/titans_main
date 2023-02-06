@@ -11,9 +11,15 @@
   <bean id="nam.gribRootFolder" class="java.io.File">
     <constructor-arg value="G:\tests\data\grib"/>
   </bean>
+<!--  <bean id="nam.gribRootFolder" class="java.io.File">
+    <constructor-arg value="C:\data\noaa\nam\grib"/>
+  </bean>-->
   <bean id="nam.netCdfRootFolder" class="java.io.File">
     <constructor-arg value="G:\tests\data\netcdf"/>
   </bean>
+<!--  <bean id="nam.netCdfRootFolder" class="java.io.File">
+    <constructor-arg value="C:\data\noaa\nam\netcdf"/>
+  </bean>-->
   <bean id="nam.degribExe" class="java.io.File">
     <constructor-arg value="C:\\ndfd\\degrib\\bin\\degrib.exe"/>
   </bean>

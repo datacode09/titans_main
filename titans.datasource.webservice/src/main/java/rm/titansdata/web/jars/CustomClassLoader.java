@@ -1,5 +1,6 @@
 package rm.titansdata.web.jars;
 
+import common.RmExceptions;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,7 @@ import java.net.URLClassLoader;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 import org.locationtech.jts.awt.PointShapeFactory.X;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -40,8 +42,8 @@ public class CustomClassLoader {
 
   @Autowired
   private RasterModelsRegistry rasterModelsRegistry;
-  
-  @Autowired 
+
+  @Autowired
   private RastersSourceService service;
 
   @Autowired
@@ -70,17 +72,60 @@ public class CustomClassLoader {
         }
       }
     } catch (Exception ex) {
-      throw new RuntimeException(//
+      throw new RuntimeException(//  
         String.format("Cannot load library from jar file '%s'. Reason: %s",
           jar.getAbsolutePath(), ex.getMessage()), ex);
     }
-    if (!this.applicationContext.getBeansOfType(ColorMapProvider.class).isEmpty()) {
-      ColorMapProvider cmProvider = this.applicationContext.getBean(ColorMapProvider.class);
-      String key = this.applicationContext.getBean(RasterFactory.class).key();
-      long rasterId = this.service.getRasterIdByKey(key);
-      this.cmProviderFactory.put(rasterId, cmProvider);
-    }
+  }
 
+  /**
+   *
+   * @throws BeansException
+   */
+  void postLoad() throws BeansException {
+    this.applicationContext.getBeansOfType(RasterFactory.class).values().forEach(bean -> {
+      String key = bean.key();
+      this.rasterModelsRegistry.put(key, bean);
+    });
+    this.applicationContext.getBeansOfType(ParameterFactory.class).values().forEach(bean -> {
+      String key = bean.key();
+      this.parametersFactory.add(key, bean);
+    });
+    this.applicationContext.getBeansOfType(ColorMapProvider.class).entrySet()
+      .forEach(entry -> {
+        String name = entry.getKey();
+        ColorMapProvider cmProvider = entry.getValue();
+        RasterFactory rasterBean = this.getRasterFactory(name);
+        String key = rasterBean.key();
+        long rasterId = this.service.getRasterIdByKey(key);
+        this.cmProviderFactory.put(rasterId, cmProvider);
+      });
+  }
+
+  /**
+   *
+   * @param beanname
+   * @return
+   * @throws BeansException
+   */
+  private RasterFactory getRasterFactory(String beanname) {
+    ConfigurableListableBeanFactory factory = this.applicationContext.getBeanFactory();
+    BeanDefinition def = factory.getBeanDefinition(beanname);
+    String[] deps = def.getDependsOn() == null ? new String[0] : def.getDependsOn();
+    if (deps == null) {
+      RmExceptions.throwException("Bean '%s' does not specifiy RasterFactory dependency.", beanname);
+    }
+    RasterFactory rasterBean = null;
+    for (String dep : deps) {
+      Object blah = this.applicationContext.getBean(dep);
+      if ((blah) instanceof RasterFactory) {
+        rasterBean = (RasterFactory) blah;
+      }
+    }
+    if (rasterBean == null) {
+      RmExceptions.throwException("Bean '%s' does not specifiy RasterFactory dependency.", beanname);
+    }
+    return rasterBean;
   }
 
   /**
@@ -93,16 +138,6 @@ public class CustomClassLoader {
       Class<?> c = Class.forName(classe);
       if (c.getAnnotation(Configuration.class) != null) {
         this.loadConfiguration(c);
-      } else if (RasterFactory.class.isAssignableFrom(c)) {
-        RasterFactory bean = (RasterFactory) beanFactory
-          .createBean(c, AutowireCapableBeanFactory.AUTOWIRE_NO, true);
-        String key = bean.key();
-        this.rasterModelsRegistry.put(key, bean);
-      } else if (ParameterFactory.class.isAssignableFrom(c)) {
-        ParameterFactory bean = (ParameterFactory) beanFactory
-          .createBean(c, AutowireCapableBeanFactory.AUTOWIRE_NO, true);
-        String key = bean.key();
-        this.parametersFactory.add(key, bean);
       } else {
         beanFactory.createBean(c, AutowireCapableBeanFactory.AUTOWIRE_NO, true);
       }
@@ -122,9 +157,7 @@ public class CustomClassLoader {
     String className = c.getSimpleName();
     className = className.substring(0, 1).toLowerCase() + className.substring(1);
     DefaultListableBeanFactory factory = (DefaultListableBeanFactory) this.applicationContext.getBeanFactory();
-
     factory.registerBeanDefinition(className, context.getBeanDefinition(className));
-
     Method[] m = c.getDeclaredMethods();
     for (Method method : m) {
       Bean beanannotation = method.getDeclaredAnnotation(Bean.class);
@@ -149,13 +182,13 @@ public class CustomClassLoader {
     XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(createdContext);
     reader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_XSD);
     InputSource inputSource = this.getSpringXmlInputSource(jar, beansXml);
-    reader.loadBeanDefinitions(inputSource);
+    int num = reader.loadBeanDefinitions(inputSource);
     String[] names = createdContext.getBeanDefinitionNames();
     ConfigurableApplicationContext genericAppContext = this.applicationContext;
+    DefaultListableBeanFactory factory = (DefaultListableBeanFactory) genericAppContext.getBeanFactory();
     Stream.of(names).filter(n -> !n.contains("org.spring"))
       .forEach(beanname -> {
         BeanDefinition definition = createdContext.getBeanDefinition(beanname);
-        DefaultListableBeanFactory factory = (DefaultListableBeanFactory) genericAppContext.getBeanFactory();
         factory.registerBeanDefinition(beanname, definition);
       });
   }

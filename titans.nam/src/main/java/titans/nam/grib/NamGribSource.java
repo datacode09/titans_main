@@ -1,5 +1,6 @@
 package titans.nam.grib;
 
+import com.google.common.base.Objects;
 import common.http.RmHttpReader;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -30,9 +31,21 @@ public class NamGribSource {
    * @return 
    */
   public List<NamParameter> getCurrentNamParameters(String parentKey) {
+    long minusDays = 2l;
+    List<NamParameter> result = this.getCurrentNamParameters(minusDays, parentKey);
+    return result;
+  }
+  
+  /**
+   * 
+   * @param minusDays
+   * @param parentKey
+   * @return 
+   */
+  public List<NamParameter> getCurrentNamParameters(long minusDays, String parentKey) {
     DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("yyyyMMdd").toFormatter();
     ZonedDateTime date = ZonedDateTime.now(ZoneId.of("UTC"))
-      .minusDays(1l)
+      .minusDays(minusDays)
       .truncatedTo(ChronoUnit.DAYS);
     String datetext = date
       .format(formatter);
@@ -49,7 +62,8 @@ public class NamGribSource {
     result.stream()
       .sorted((o1, o2) -> -o1.datetime.compareTo(o2.datetime))
       .findFirst()
-      .ifPresent(maxparameter -> result.removeIf(e -> !e.datetime.equals(maxparameter.datetime)));
+//      .ifPresent(maxparameter -> result.removeIf(e -> !e.datetime.equals(maxparameter.datetime)));
+      .ifPresent(maxparameter -> result.removeIf(e -> !Objects.equal(e.datetime.getHour(), 0)));
     return result;
   }
 
@@ -110,8 +124,11 @@ public class NamGribSource {
   public void download(GribFile gribFile) {
     String urlText = this.createUrl(gribFile);
     URL gribUrl = this.toUrlObject(urlText);
+    if (!gribFile.grib.getParentFile().exists()) {
+      gribFile.grib.getParentFile().mkdirs();
+    }
     if (!gribFile.exists()) {
-      System.out.println("Importing file : " + gribFile);
+      System.out.println("Importing file : " + gribFile.grib);
       try (OutputStream output = gribFile.getOutputStream()) {
         IOUtils.copy(gribUrl.openStream(), output);
       } catch (Exception ex) {

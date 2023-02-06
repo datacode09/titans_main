@@ -55,7 +55,7 @@ public class NetCdfFileOrganization {
   public NetCdfFile getNetCdfFile() {
     File file = this.getFile();
     String gribVarName = var.getGribVarName();
-    NetCdfFile result = new NetCdfFile(file, gribVarName);
+    NetCdfFile result = new NetCdfFile(gribVarName, file);
     return result;
   }
 }

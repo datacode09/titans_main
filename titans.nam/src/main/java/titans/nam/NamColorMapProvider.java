@@ -3,6 +3,7 @@ package titans.nam;
 import java.io.File;
 import org.apache.commons.lang.math.DoubleRange;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
 import rm.titansdata.colormap.ColorMap;
@@ -14,7 +15,8 @@ import titans.nam.netcdf.NetCdfFile;
  * @author Ricardo Marquez
  */
 @Component
-public class NamColorMapProvider implements ColorMapProvider{
+@DependsOn(value = "namRasterFactory")
+public class NamColorMapProvider implements ColorMapProvider {
 
   private final File baseNetCdfdir;
   

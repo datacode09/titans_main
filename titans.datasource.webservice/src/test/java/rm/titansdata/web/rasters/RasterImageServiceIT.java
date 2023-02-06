@@ -29,8 +29,7 @@ public class RasterImageServiceIT extends BaseSpringTest {
     String varName = "TMP_2-HTGL";
     ZonedDateTime datetime = ZonedDateTime
       .now(ZoneId.of("UTC"))
-      .truncatedTo(ChronoUnit.DAYS)
-      ;
+      .truncatedTo(ChronoUnit.DAYS);
     ForecastTimeReference fcststep = new ForecastTimeReference(0, 0);
     String parentKey = "North American Model Forecasts";
     Parameter param = new NamParameter(parentKey, datetime, fcststep, varName);

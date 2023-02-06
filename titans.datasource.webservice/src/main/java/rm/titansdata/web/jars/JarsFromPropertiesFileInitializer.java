@@ -34,8 +34,9 @@ public class JarsFromPropertiesFileInitializer implements InitializingBean {
       String[] classes = Arrays.stream(jarAndClass[0].split("/", -1))
         .map(s->s.replaceAll("\"", ""))
         .collect(Collectors.toList()).toArray(new String[0]);
-      this.jarClassLoader.loadLibrary(jar, classes);
-    }
+      this.jarClassLoader.loadLibrary(jar, classes);  
+    }  
+    this.jarClassLoader.postLoad();    
   }
 
 }

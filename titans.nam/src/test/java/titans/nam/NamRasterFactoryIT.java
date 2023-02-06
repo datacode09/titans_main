@@ -8,7 +8,6 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.locationtech.jts.geom.Coordinate;
@@ -16,9 +15,6 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.ContextHierarchy;
-import org.springframework.test.context.TestContextManager;
 import rm.titansdata.SridUtils;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
@@ -30,24 +26,12 @@ import titans.nam.grib.ForecastTimeReference;
  * @author Ricardo Marquez
  */
 @RunWith(JUnitParamsRunner.class)
-@ContextHierarchy({
-  @ContextConfiguration(
-    locations = {
-      "/spring.xml"
-    }
-  )
-})
-public class NamRasterFactoryIT {
+public class NamRasterFactoryIT extends BaseSpringTest{
 
   @Autowired
   private NamRasterFactory factory;
 
-  @Before
-  public void setup() throws Exception {
-    TestContextManager testContextManager = new TestContextManager(getClass());
-    testContextManager.prepareTestInstance(this);
-    SridUtils.init();
-  }
+
 
   @Test
   @Parameters({

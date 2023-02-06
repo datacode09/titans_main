@@ -23,7 +23,9 @@ import rm.titansdata.web.rasters.colormap.ColorMapProviderFactory;
  */
 @Component
 public class RasterImageService {
-
+  
+//  @Autowired
+//  private S
   @Autowired  
   private RastersValueService rastersValueService;
   @Autowired
@@ -51,7 +53,7 @@ public class RasterImageService {
    */
   private RasterImageResult toRasterImageResult(long rasterId, RasterImage img) {
     BufferedImage bufferedImg = img.asBufferedImage();
-    int targetSrid = 3857;   
+    int targetSrid = 3857;    
     Point upperRight = SridUtils.transform(img.getBounds().upperright(), targetSrid);
     Point lowerLeft = SridUtils.transform(img.getBounds().lowerleft(), targetSrid);
     String imageURL = this.getImageURL(rasterId, bufferedImg);

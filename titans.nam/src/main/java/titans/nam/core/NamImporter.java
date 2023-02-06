@@ -104,16 +104,22 @@ public class NamImporter implements Closeable {
    * @return
    */
   private String getGribFileName(int fcstHour, ZonedDateTime datetimeref) {
-    String refdatetimetext = datetimeref //
+    String hourtext = datetimeref //
       .toOffsetDateTime() //
       .atZoneSameInstant(ZoneId.of("UTC")) //
       .format(new DateTimeFormatterBuilder()
         .appendPattern("HH")
         .toFormatter());
+    String datetext = datetimeref //
+      .toOffsetDateTime() //
+      .atZoneSameInstant(ZoneId.of("UTC")) //
+      .format(new DateTimeFormatterBuilder()
+        .appendPattern("yyyy\\MM\\dd")
+        .toFormatter());
     DecimalFormat decimalFormat = new DecimalFormat("00");
     String fcstHourTxt = decimalFormat.format(fcstHour);
-    String filename = String.format("nam.t%sz.conusnest.hiresf%s.tm00.grib2", new Object[]{
-      refdatetimetext, fcstHourTxt,});
+    String filename = String.format("%s\\nam.t%sz.conusnest.hiresf%s.tm00.grib2", new Object[]{
+      datetext, hourtext, fcstHourTxt});
     return filename;
   }
 

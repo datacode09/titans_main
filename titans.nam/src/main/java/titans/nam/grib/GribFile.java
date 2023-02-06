@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -76,6 +77,51 @@ public class GribFile {
    */
   public boolean notExists() {
     return !this.grib.exists();
+  }
+  
+  /**
+   * 
+   * @return 
+   */
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 41 * hash + Objects.hashCode(this.datetimeref);
+    hash = 41 * hash + this.fcststep;
+    return hash;
+  }
+  
+  /**
+   * 
+   * @param obj
+   * @return 
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final GribFile other = (GribFile) obj;
+    if (this.fcststep != other.fcststep) {
+      return false;
+    }
+    if (!Objects.equals(this.datetimeref, other.datetimeref)) {
+      return false;
+    }
+    return true;
+  }
+  
+  
+
+  @Override
+  public String toString() {
+    return "GribFile{" + "grib=" + grib + ", datetimeref=" + datetimeref + ", fcststep=" + fcststep + '}';
   }
 
 }

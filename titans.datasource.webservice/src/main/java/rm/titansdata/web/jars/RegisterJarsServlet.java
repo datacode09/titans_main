@@ -34,6 +34,7 @@ public class RegisterJarsServlet {
     String[] classes = new String[]{classe};
     File jar = new File(f);
     this.jarClassLoader.loadLibrary(jar, classes);
+    this.jarClassLoader.postLoad();
     Map<String, Object> map = new HashMap<>();
     map.put("result", true);
     this.responseHelper.send(map, res);

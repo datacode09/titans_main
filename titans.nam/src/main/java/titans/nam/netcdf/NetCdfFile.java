@@ -28,12 +28,13 @@ import ucar.unidata.geoloc.LatLonRect;
  */
 public class NetCdfFile {
 
-  public final File file;
   private final String varName;
+  public final File file;
+  
 
-  public NetCdfFile(File file, String varName) {
-    this.file = file;
+  public NetCdfFile(String varName, File file) {
     this.varName = varName;
+    this.file = file;
   }
 
   /**
@@ -120,6 +121,17 @@ public class NetCdfFile {
     }
     return true;
   }
+  
+  /**
+   * 
+   * @return 
+   */
+  @Override
+  public String toString() {
+    return "NetCdfFile{" + "varName=" + varName + ", file=" + file + '}';
+  }
+  
+  
 
   /**
    *
@@ -159,7 +171,7 @@ public class NetCdfFile {
     NetCdfFileOrganization org = new NetCdfFileOrganization(
       baseFolder, namParameter.fcststep, namParameter.datetime, var);
     File file = org.getFile();
-    NetCdfFile instance = new NetCdfFile(file, var.getGribVarName());
+    NetCdfFile instance = new NetCdfFile(var.getGribVarName(), file);
     return instance;
   }
 }
