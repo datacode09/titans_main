@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import rm.titansdata.Parameter;
 import rm.titansdata.test.help.BaseSpringTest;
-import titans.nam.NamParameter;
+import titans.nam.NoaaParameter;
 import titans.nam.grib.ForecastTimeReference;
 
 /**
@@ -32,7 +32,7 @@ public class RasterImageServiceIT extends BaseSpringTest {
       .truncatedTo(ChronoUnit.DAYS);
     ForecastTimeReference fcststep = new ForecastTimeReference(0, 0);
     String parentKey = "North American Model Forecasts";
-    Parameter param = new NamParameter(parentKey, datetime, fcststep, varName);
+    Parameter param = new NoaaParameter(parentKey, datetime, fcststep, varName);
     int rasterId = 1; 
     RasterImageResult img = this.imageService.getRasterImage(rasterId, param); 
     System.out.println("img = " + img);

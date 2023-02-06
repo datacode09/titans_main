@@ -1,4 +1,4 @@
-package titans.nam;
+package titans.hrrr;
 
 import org.junit.Before;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,7 +13,7 @@ import rm.titansdata.SridUtils;
 @ContextHierarchy({
   @ContextConfiguration(
     locations = {
-      "/nam.spring.xml"
+      "/hrrr.spring.xml"
     }
   )
 })

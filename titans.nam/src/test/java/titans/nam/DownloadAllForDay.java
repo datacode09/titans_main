@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import titans.nam.core.NamImporter;
-import titans.nam.core.NamVariable;
+import titans.nam.core.NoaaVariable;
 import titans.nam.grib.NamGribSource;
 
 /**
@@ -29,8 +29,8 @@ public class DownloadAllForDay extends BaseSpringTest {
   public void test() {
     NamGribSource source = new NamGribSource();
     String parentKey = "";
-    List<NamParameter> params = source.getCurrentNamParameters(2L, parentKey); 
-    NamVariable namVariable = new NamVariable("TMP_2-HTGL");
+    List<NoaaParameter> params = source.getCurrentNamParameters(2L, parentKey); 
+    NoaaVariable namVariable = new NoaaVariable("TMP_2-HTGL");
     params.stream().forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();

@@ -1,4 +1,4 @@
-package titans.nam;
+package titans.hrrr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,31 +9,32 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
 import rm.titansdata.plugin.ParameterFactory;
+import titans.nam.NoaaParameter;
 
 /**
  *
  * @author Ricardo Marquez
  */
 @Component
-public class NamParametersFactory implements ParameterFactory {
+public class HrrrParametersFactory implements ParameterFactory {
 
   @Autowired
-  @Qualifier("nam.parameters")
+  @Qualifier("hrrr.parameters")
   private ListProperty<NoaaParameter> parameters;
-
+  
   /**
-   *
-   * @return
+   * 
+   * @return 
    */
   @Override
   public String key() {
-    return "North American Model Forecasts";
+    return "High Resolution Rapid Refresh";
   }
-
+  
   /**
-   *
+   * 
    * @param obj
-   * @return
+   * @return 
    */
   @Override
   public Parameter create(JSONObject obj) {
@@ -41,8 +42,8 @@ public class NamParametersFactory implements ParameterFactory {
     if (obj.has("key")) {
       try {
         String key = obj.getString("key");
-        param = this.parameters.stream() 
-          .filter(e -> e.getKey().equals(key)) 
+        param = this.parameters.stream()
+          .filter(e -> e.getKey().equals(key))
           .findFirst()
           .orElseGet(() -> NoaaParameter.create(obj));
       } catch (Exception ex) {
@@ -51,13 +52,12 @@ public class NamParametersFactory implements ParameterFactory {
     } else {
       param = NoaaParameter.create(obj);
     }
-
     return param;
   }
-
+  
   /**
-   *
-   * @return
+   * 
+   * @return 
    */
   @Override
   public List<Parameter> getParameters() {

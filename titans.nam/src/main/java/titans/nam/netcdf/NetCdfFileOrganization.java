@@ -4,7 +4,7 @@ import java.io.File;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import titans.nam.core.NamVariable;
+import titans.nam.core.NoaaVariable;
 
 /**
  *
@@ -15,7 +15,7 @@ public class NetCdfFileOrganization {
   private final File baseFolder;
   private int fcststep;
   private ZonedDateTime datetime;
-  private NamVariable var;
+  private NoaaVariable var;
 
   /**
    *
@@ -24,7 +24,7 @@ public class NetCdfFileOrganization {
    * @param datetime
    * @param var
    */
-  public NetCdfFileOrganization(File baseFolder, int fcststep, ZonedDateTime datetime, NamVariable var) {
+  public NetCdfFileOrganization(File baseFolder, int fcststep, ZonedDateTime datetime, NoaaVariable var) {
     this.baseFolder = baseFolder;
     this.fcststep = fcststep;
     this.datetime = datetime;

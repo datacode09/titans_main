@@ -1,4 +1,4 @@
-package titans.nam.core;
+package titans.hrrr.core;
 
 import java.io.Closeable;
 import java.io.File;
@@ -8,8 +8,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatterBuilder;
 import rm.titansdata.raster.RasterObj;
+import titans.hrrr.core.grib.HrrrGribSource;
+import titans.nam.core.NoaaVariable;
 import titans.nam.grib.GribFile;
-import titans.nam.grib.NamGribSource;
 import titans.nam.grib.NetCdfExtractor;
 import titans.nam.netcdf.NetCdfFile;
 import titans.nam.netcdf.NetCdfRaster;
@@ -18,19 +19,20 @@ import titans.nam.netcdf.NetCdfRaster;
  *
  * @author Ricardo Marquez
  */
-public class NamImporter implements Closeable {
-
+public class HrrrImporter implements Closeable {
+  
   private final NetCdfRaster rasterLoader = new NetCdfRaster();
-  private final NamGribSource source = new NamGribSource();
+  private final HrrrGribSource source = new HrrrGribSource();
   private final File gribRootFolder;
   private final File netCdfRootFolder;
   private final File degribExe;
+  
 
   /**
    *
    * @param gribRootFolder
    */
-  public NamImporter(File gribRootFolder, File netCdfRootFolder, File degribExe) {
+  public HrrrImporter(File gribRootFolder, File netCdfRootFolder, File degribExe) {
     this.gribRootFolder = gribRootFolder;
     this.netCdfRootFolder = netCdfRootFolder;
     this.degribExe = degribExe;
@@ -44,22 +46,22 @@ public class NamImporter implements Closeable {
    */
   public RasterObj getRaster(NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
     NetCdfFile netCdfFile;
-    NetCdfExtractor extractor = new NetCdfExtractor(this.degribExe, this.netCdfRootFolder, var); 
+    NetCdfExtractor extractor = new NetCdfExtractor(this.degribExe, this.netCdfRootFolder, var);
     if (!extractor.netCdfFileExists(datetimeref, forecaststep)) {
-      netCdfFile = this.downloadAndExtract(extractor, datetimeref, forecaststep); 
+      netCdfFile = this.downloadAndExtract(extractor, datetimeref, forecaststep);
     } else {
       netCdfFile = extractor.getNetCdfFile(datetimeref, forecaststep);
     }
     RasterObj result = this.rasterLoader.getRaster(netCdfFile);
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param extractor
    * @param datetimeref
    * @param forecaststep
-   * @return 
+   * @return
    */
   private NetCdfFile downloadAndExtract(NetCdfExtractor extractor, ZonedDateTime datetimeref, int forecaststep) {
     NetCdfFile netCdfFile;
@@ -67,13 +69,12 @@ public class NamImporter implements Closeable {
     netCdfFile = extractor.extract(gribFile);
     return netCdfFile;
   }
-  
-  
+
   /**
-   * 
+   *
    * @param forecaststep
    * @param datetimeref
-   * @return 
+   * @return
    */
   private GribFile downloadGribFile(ZonedDateTime datetimeref, int forecaststep) {
     GribFile gribFile = this.getGribFile(datetimeref, forecaststep);
@@ -118,7 +119,7 @@ public class NamImporter implements Closeable {
         .toFormatter());
     DecimalFormat decimalFormat = new DecimalFormat("00");
     String fcstHourTxt = decimalFormat.format(fcstHour);
-    String filename = String.format("%s\\nam.t%sz.conusnest.hiresf%s.tm00.grib2", new Object[]{
+    String filename = String.format("%s\\hrrr.t%sz.wrfsfcf%s.grib2", new Object[]{
       datetext, hourtext, fcstHourTxt});
     return filename;
   }
@@ -131,5 +132,4 @@ public class NamImporter implements Closeable {
   public void close() throws IOException {
     this.rasterLoader.close();
   }
-
 }

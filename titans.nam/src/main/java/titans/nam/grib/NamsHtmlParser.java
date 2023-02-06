@@ -2,7 +2,7 @@ package titans.nam.grib;
 
 import java.util.ArrayList;
 import java.util.List;
-import titans.nam.NamParameter;
+import titans.nam.NoaaParameter;
 
 /**
  *
@@ -21,8 +21,8 @@ public class NamsHtmlParser {
    * nam.t%sz.conusnest.hiresf%s.tm00.grib2
    * @return 
    */
-  public List<NamParameter> parse() {
-    List<NamParameter> result = new ArrayList<>(); 
+  public List<NoaaParameter> parse() {
+    List<NoaaParameter> result = new ArrayList<>(); 
     return result;
   }
 }

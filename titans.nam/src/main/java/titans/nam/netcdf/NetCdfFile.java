@@ -15,8 +15,8 @@ import rm.titansdata.SridUtils;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimension;
 import rm.titansdata.properties.Dimensions;
-import titans.nam.NamParameter;
-import titans.nam.core.NamVariable;
+import titans.nam.NoaaParameter;
+import titans.nam.core.NoaaVariable;
 import ucar.nc2.dataset.VariableDS;
 import ucar.nc2.dt.GridDataset.Gridset;
 import ucar.nc2.dt.grid.GridDataset;
@@ -166,8 +166,8 @@ public class NetCdfFile {
    * @param namParameter
    * @return
    */
-  public static NetCdfFile create(File baseFolder, NamParameter namParameter) {
-    NamVariable var = new NamVariable(namParameter.namVar);
+  public static NetCdfFile create(File baseFolder, NoaaParameter namParameter) {
+    NoaaVariable var = new NoaaVariable(namParameter.namVar);
     NetCdfFileOrganization org = new NetCdfFileOrganization(
       baseFolder, namParameter.fcststep, namParameter.datetime, var);
     File file = org.getFile();

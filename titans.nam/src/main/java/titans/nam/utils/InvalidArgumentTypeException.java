@@ -1,6 +1,6 @@
 package titans.nam.utils;
 
-import titans.nam.NamParameter;
+import titans.nam.NoaaParameter;
 
 /**
  *
@@ -13,7 +13,7 @@ public class InvalidArgumentTypeException extends RuntimeException {
    * @param p
    * @param aClass 
    */
-  public InvalidArgumentTypeException(Object p, Class<NamParameter> aClass) {
+  public InvalidArgumentTypeException(Object p, Class<NoaaParameter> aClass) {
     super(String.format("The object '%s' is not a type of %s", p, aClass)); 
   }
   

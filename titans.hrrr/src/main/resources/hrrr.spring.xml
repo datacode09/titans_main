@@ -8,14 +8,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans classpath:./spring/spring-beans.xsd
           http://www.springframework.org/schema/context classpath:./spring/spring-context.xsd   
 ">  
-  <bean id="nam.gribRootFolder" class="java.io.File">
-    <constructor-arg value="G:\tests\data\nam\grib"/>
+  <bean id="hrrr.gribRootFolder" class="java.io.File">
+    <constructor-arg value="G:\tests\data\hrrr\grib"/>
   </bean>
-  <bean id="nam.netCdfRootFolder" class="java.io.File">
-    <constructor-arg value="G:\tests\data\nam\netcdf"/>
+  <bean id="hrrr.netCdfRootFolder" class="java.io.File">
+    <constructor-arg value="G:\tests\data\hrrr\netcdf"/>
   </bean>
-  <bean id="nam.degribExe" class="java.io.File">
+  <bean id="hrrr.degribExe" class="java.io.File">
     <constructor-arg value="C:\\ndfd\\degrib\\bin\\degrib.exe"/>
   </bean>
-  <context:component-scan base-package="titans.nam"/>
+  <context:component-scan base-package="titans.hrrr"/>
 </beans>

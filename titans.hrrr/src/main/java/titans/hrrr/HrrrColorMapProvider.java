@@ -1,4 +1,4 @@
-package titans.nam;
+package titans.hrrr;
 
 import java.io.File;
 import org.apache.commons.lang.math.DoubleRange;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
 import rm.titansdata.colormap.ColorMap;
 import rm.titansdata.plugin.ColorMapProvider;
+import titans.nam.NoaaParameter;
 import titans.nam.netcdf.NetCdfFile;
 
 /**
@@ -15,8 +16,8 @@ import titans.nam.netcdf.NetCdfFile;
  * @author Ricardo Marquez
  */
 @Component
-@DependsOn(value = "namRasterFactory")
-public class NamColorMapProvider implements ColorMapProvider {
+@DependsOn(value = "hrrrRasterFactory")
+public class HrrrColorMapProvider implements ColorMapProvider {
 
   private final File baseNetCdfdir;
   
@@ -24,15 +25,18 @@ public class NamColorMapProvider implements ColorMapProvider {
    * 
    * @param baseNetCdfdir 
    */
-  public NamColorMapProvider(@Qualifier(value = "nam.netCdfRootFolder") File baseNetCdfdir) {
+  public HrrrColorMapProvider(@Qualifier(value = "hrrr.netCdfRootFolder") File baseNetCdfdir) {
     this.baseNetCdfdir = baseNetCdfdir;
   }
   
-  
-
+  /**
+   * 
+   * @param param
+   * @return 
+   */
   @Override
   public ColorMap getColorMap(Parameter param) {
-    ColorMap result; 
+    ColorMap result;
     if (param instanceof NoaaParameter) {
       result = this.getColorMapFromFile((NoaaParameter) param);
     } else {
@@ -40,15 +44,15 @@ public class NamColorMapProvider implements ColorMapProvider {
     }
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param namParameter
-   * @return 
+   * @return
    */
   private ColorMap getColorMapFromFile(NoaaParameter namParameter) {
     NetCdfFile f = NetCdfFile.create(this.baseNetCdfdir, namParameter);
-    DoubleRange r= f.getValueRange();
+    DoubleRange r = f.getValueRange();
     ColorMap result = new ColorMap.Builder()
       .setXmin(r.getMinimumDouble())
       .setXmax(r.getMaximumDouble())
@@ -57,5 +61,5 @@ public class NamColorMapProvider implements ColorMapProvider {
       .build();
     return result;
   }
-  
+
 }

@@ -31,7 +31,7 @@ public class GribFile {
    *
    * @return
    */
-  String getBaseFileName() {
+  public String getBaseFileName() {
     return this.grib.getName();
   }
 
@@ -39,7 +39,7 @@ public class GribFile {
    *
    * @return
    */
-  boolean exists() {
+  public boolean exists() {
     boolean result = this.grib.exists();
     return result;
   }
@@ -48,7 +48,7 @@ public class GribFile {
    *
    * @return
    */
-  OutputStream getOutputStream() {
+  public OutputStream getOutputStream() {
     FileOutputStream result;
     try {
       result = new FileOutputStream(this.grib);

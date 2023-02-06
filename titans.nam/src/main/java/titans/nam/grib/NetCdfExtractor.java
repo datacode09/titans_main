@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
-import titans.nam.core.NamVariable;
+import titans.nam.core.NoaaVariable;
 import titans.nam.netcdf.NetCdfFile;
 import titans.nam.netcdf.NetCdfFileOrganization;
 
@@ -19,9 +19,9 @@ public class NetCdfExtractor {
 
   private final File degribExe;
   private final File netcdfdir;
-  private final NamVariable var;
+  private final NoaaVariable var;
 
-  public NetCdfExtractor(File degribExe, File netcdfdir, NamVariable var) {
+  public NetCdfExtractor(File degribExe, File netcdfdir, NoaaVariable var) {
     this.degribExe = degribExe;
     this.netcdfdir = netcdfdir;
     this.var = var;

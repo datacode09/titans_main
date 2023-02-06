@@ -1,4 +1,4 @@
-package titans.nam;
+package titans.hrrr;
 
 import java.io.File;
 import java.time.ZonedDateTime;
@@ -11,7 +11,8 @@ import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
 import rm.titansdata.raster.RasterObj;
-import titans.nam.core.NamImporter;
+import titans.hrrr.core.HrrrImporter;
+import titans.nam.NoaaParameter;
 import titans.nam.core.NoaaVariable;
 import titans.nam.utils.InvalidArgumentTypeException;
 
@@ -20,37 +21,35 @@ import titans.nam.utils.InvalidArgumentTypeException;
  * @author Ricardo Marquez
  */
 @Component
-@DependsOn({"nam.gribRootFolder", "nam.degribExe"}) 
-public class NamRasterFactory implements RasterFactory {
-  private final NamImporter namImporter;
-  
-  /**
-   *
-   * @param forecaststep
-   * @param datetimeref
-   */
-  public NamRasterFactory(
-    @Qualifier("nam.gribRootFolder") File gribRootFolder, 
-    @Qualifier("nam.netCdfRootFolder") File netCdfRootFolder, 
-    @Qualifier("nam.degribExe") File degribExe) {
-    this.namImporter = new NamImporter(gribRootFolder, netCdfRootFolder, degribExe); 
+@DependsOn({"hrrr.gribRootFolder", "hrrr.degribExe"})
+public class HrrrRasterFactory implements RasterFactory {
+
+  private final HrrrImporter importer;
+
+  public HrrrRasterFactory(
+    @Qualifier("hrrr.gribRootFolder") File gribRootFolder,
+    @Qualifier("hrrr.netCdfRootFolder") File netCdfRootFolder,
+    @Qualifier("hrrr.degribExe") File degribExe
+  ) {
+    this.importer = new HrrrImporter(gribRootFolder, netCdfRootFolder, degribExe);
   }
   
   /**
-   *
-   * @return
+   * 
+   * @return 
    */
   @Override
   public String key() {
-    String key = "North American Model Forecasts";
+    String key = "High Resolution Rapid Refresh";
     return key;
   }
-
+  
   /**
-   *
+   * 
+   * @param p
    * @param bounds
    * @param dims
-   * @return
+   * @return 
    */
   @Override
   public Raster create(Parameter p, Bounds bounds, Dimensions dims) {
@@ -59,11 +58,12 @@ public class NamRasterFactory implements RasterFactory {
       int fcststep = namparam.fcststep;
       ZonedDateTime datetime = namparam.datetime;
       NoaaVariable var = new NoaaVariable("TMP_2-HTGL");
-      RasterObj rasterObj = this.namImporter.getRaster(var, datetime, fcststep);
+      RasterObj rasterObj = this.importer.getRaster(var, datetime, fcststep);
       Raster result = rasterObj.getRaster();
       return result;
     } else {
-      throw new InvalidArgumentTypeException(p, NoaaParameter.class); 
+      throw new InvalidArgumentTypeException(p, NoaaParameter.class);
     }
   }
+
 }

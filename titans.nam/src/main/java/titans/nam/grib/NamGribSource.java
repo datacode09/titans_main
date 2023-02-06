@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
-import titans.nam.NamParameter;
+import titans.nam.NoaaParameter;
 
 /**
  *
@@ -30,9 +30,9 @@ public class NamGribSource {
    * @param parentKey
    * @return 
    */
-  public List<NamParameter> getCurrentNamParameters(String parentKey) {
+  public List<NoaaParameter> getCurrentNamParameters(String parentKey) {
     long minusDays = 2l;
-    List<NamParameter> result = this.getCurrentNamParameters(minusDays, parentKey);
+    List<NoaaParameter> result = this.getCurrentNamParameters(minusDays, parentKey);
     return result;
   }
   
@@ -42,7 +42,7 @@ public class NamGribSource {
    * @param parentKey
    * @return 
    */
-  public List<NamParameter> getCurrentNamParameters(long minusDays, String parentKey) {
+  public List<NoaaParameter> getCurrentNamParameters(long minusDays, String parentKey) {
     DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("yyyyMMdd").toFormatter();
     ZonedDateTime date = ZonedDateTime.now(ZoneId.of("UTC"))
       .minusDays(minusDays)
@@ -50,13 +50,13 @@ public class NamGribSource {
     String datetext = date
       .format(formatter);
     String fullUrl = this.url + "nam." + datetext;
-    List<NamParameter> result = new ArrayList<>();
+    List<NoaaParameter> result = new ArrayList<>();
     String var = "TMP_2-HTGL";
     new RmHttpReader.Builder(fullUrl).read((text) -> {
       Arrays.stream(text.split("\n")) //
         .filter(this::isConusNestLine)
         .map(this::toForecastTimeRef)
-        .map(d -> new NamParameter(parentKey, date, d, var))
+        .map(d -> new NoaaParameter(parentKey, date, d, var))
         .forEach(result::add);
     });
     result.stream()

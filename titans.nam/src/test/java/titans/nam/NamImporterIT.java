@@ -13,7 +13,7 @@ import rm.titansdata.images.RasterImage;
 import rm.titansdata.plugin.ColorMapProvider;
 import rm.titansdata.raster.RasterObj;
 import titans.nam.core.NamImporter;
-import titans.nam.core.NamVariable;
+import titans.nam.core.NoaaVariable;
 import titans.nam.grib.ForecastTimeReference;
 
 /**
@@ -49,11 +49,11 @@ public class NamImporterIT {
     int forecastStep = 0;
     
     try (NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, degribExe)) {
-      NamVariable var = new NamVariable(varName);
+      NoaaVariable var = new NoaaVariable(varName);
       raster = importer.getRaster(var, refdate, forecastStep);
       ColorMapProvider cmprovider = new NamColorMapProvider(netCdfRootFolder);
       ForecastTimeReference ref = new ForecastTimeReference(refdate.getHour(), forecastStep);
-      Parameter param = new NamParameter(parentKey, refdate, ref, varName);
+      Parameter param = new NoaaParameter(parentKey, refdate, ref, varName);
       ColorMap cmap = cmprovider.getColorMap(param);
       RasterImage image = new RasterImage(raster, cmap);
       File output = new File(gribRootFolder, "image.png");

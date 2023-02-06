@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import titans.nam.NamParameter;
+import titans.nam.NoaaParameter;
 import titans.nam.NamRasterFactory;
 import titans.nam.grib.NamGribSource;
 
@@ -28,7 +28,7 @@ public class NamPropertyUpdates implements InitializingBean {
    */
   @Autowired
   @Qualifier("nam.parameters")
-  private ListProperty<NamParameter> parameters;
+  private ListProperty<NoaaParameter> parameters;
   
   @Autowired
   private NamRasterFactory factory;
@@ -41,8 +41,8 @@ public class NamPropertyUpdates implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     NamGribSource source = new NamGribSource();
     String parentKey = this.factory.key();
-    List<NamParameter> params = source.getCurrentNamParameters(parentKey);
-    ObservableList<NamParameter> obsList = FXCollections.observableArrayList(params);
+    List<NoaaParameter> params = source.getCurrentNamParameters(parentKey);
+    ObservableList<NoaaParameter> obsList = FXCollections.observableArrayList(params);
     this.parameters.setValue(obsList);
   }
 }

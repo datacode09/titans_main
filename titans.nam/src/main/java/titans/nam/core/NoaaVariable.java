@@ -4,7 +4,7 @@ package titans.nam.core;
  *
  * @author Ricardo Marquez
  */
-public class NamVariable {
+public class NoaaVariable {
 
   private final String varName;
 
@@ -12,7 +12,7 @@ public class NamVariable {
    * 
    * @param varName 
    */
-  public NamVariable(String varName) {
+  public NoaaVariable(String varName) {
     this.varName = varName;
   }
   

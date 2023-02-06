@@ -14,7 +14,7 @@ import titans.nam.grib.ForecastTimeReference;
  *
  * @author Ricardo Marquez
  */
-public class NamParameter implements Parameter {
+public class NoaaParameter implements Parameter {
 
   private final String parentKey;
 
@@ -27,7 +27,7 @@ public class NamParameter implements Parameter {
    * @param datetime
    * @param d
    */
-  public NamParameter(String parentKey, ZonedDateTime datetime, ForecastTimeReference d, String namVar) {
+  public NoaaParameter(String parentKey, ZonedDateTime datetime, ForecastTimeReference d, String namVar) {
     this.parentKey = parentKey;
     this.datetime = datetime.plusHours(d.refhour);
     this.fcststep = d.fcsthourAhead;
@@ -102,7 +102,7 @@ public class NamParameter implements Parameter {
    * @param obj
    * @return
    */
-  public static NamParameter create(JSONObject obj) {
+  public static NoaaParameter create(JSONObject obj) {
     try {
       String parentKey = obj.getString("parentKey");
       int fcststep = obj.getInt("fcststep");
@@ -113,7 +113,7 @@ public class NamParameter implements Parameter {
         .parse(datetimetext, LocalDateTime::from);
       ZonedDateTime datetime = ZonedDateTime.of(localdatetime, zoneId);
       ForecastTimeReference d = new ForecastTimeReference(0, fcststep);
-      NamParameter result = new NamParameter(parentKey, datetime, d, var);      
+      NoaaParameter result = new NoaaParameter(parentKey, datetime, d, var);      
       return result;
     } catch (Exception ex) {
       throw new RuntimeException(ex);
