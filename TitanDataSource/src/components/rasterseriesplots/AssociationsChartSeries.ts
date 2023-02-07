@@ -5,6 +5,7 @@ import {RasterSeries} from 'src/core/rasters/RasterSeries';
 import {PointAndRasterAssociations} from 'src/services/rasterassociations/PointAndRasterAssociations';
 import {AddPointManager} from 'src/services/addpoints/AddPointManager';
 import {QueryPoint} from 'src/core/rasters/QueryPoint';
+import {RasterSeriesPropertiesService} from './RasterSeriesPropertiesService';
 
 export class AssociationsChartSeries {
 
@@ -20,7 +21,8 @@ export class AssociationsChartSeries {
     private pointId: number,
     private seriesservice: RasterSeriesService,
     private associations: PointAndRasterAssociations,
-    private manager: AddPointManager
+    private manager: AddPointManager, 
+    private propertiesService : RasterSeriesPropertiesService
   ) {
   }
 
@@ -88,11 +90,13 @@ export class AssociationsChartSeries {
     this.seriesservice.getSeries(this.pointId, rasterId).subscribe(rasterSeries => {
       this.onSeriesLoaded(rasterId, rasterSeries);
     });
+    
     const result = {
       id: this.getSeriesId(rasterId)
       , name: 'Raster ' + rasterId
-      ,data: data
+      , data: data
       , showInLegend : false
+      , color: this.propertiesService.getProperties(rasterId).color
     };
     return result;
   }

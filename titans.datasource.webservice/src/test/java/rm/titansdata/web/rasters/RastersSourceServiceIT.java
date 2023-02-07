@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestContextManager;
 import org.springframework.test.context.web.WebAppConfiguration;
+import rm.titansdata.Parameter;
 
 /**
  *
@@ -30,6 +31,8 @@ public class RastersSourceServiceIT {
 
   @Autowired
   private RastersSourceService service;
+  @Autowired
+  private AbstractParameterFactory parameterFactory;
 
   @Before
   public void setup() throws Exception {
@@ -41,8 +44,7 @@ public class RastersSourceServiceIT {
   @Parameters({
     "0, 2",
     "-1, 0",
-    "1, 0",
-  })
+    "1, 0",})
   public void getrasters_by_userid(Long userId, int expGroupSize) {
     Map<RasterGroupEntity, List<Long>> rasters = service.getRastersByUserId(userId);
     Assert.assertEquals(expGroupSize, rasters.keySet().size());
@@ -60,8 +62,8 @@ public class RastersSourceServiceIT {
 
   @Test
   @Parameters({
-//    "0, 1",
-//    "-1, 0",
+    //    "0, 1",
+    //    "-1, 0",
     "1, 1"
   })
   public void getrasters_by_rastergroup_id(Long rasterGroupId, int expectedSize) {
@@ -69,4 +71,14 @@ public class RastersSourceServiceIT {
     Assert.assertEquals(expectedSize, e.size());
   }
 
+  @Test
+  @Parameters({
+    "1", 
+    "2"
+  })
+  public void getparameters_by_rasterId(long rasterId) {
+    String key = this.service.getRaster(rasterId).sourceTitle;
+    List<Parameter> params = this.parameterFactory.getParameters(key);
+    params.forEach(System.out::println);
+  }
 }

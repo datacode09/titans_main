@@ -1,4 +1,4 @@
-package titans.nam.grib;
+package titans.hrrr.core.grib;
 
 import com.google.common.base.Objects;
 import common.http.RmHttpReader;
@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import titans.nam.NoaaParameter;
+import titans.nam.grib.ForecastTimeReference;
 
 /**
  *

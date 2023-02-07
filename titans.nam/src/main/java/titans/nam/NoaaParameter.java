@@ -27,7 +27,8 @@ public class NoaaParameter implements Parameter {
    * @param datetime
    * @param d
    */
-  public NoaaParameter(String parentKey, ZonedDateTime datetime, ForecastTimeReference d, String namVar) {
+  public NoaaParameter(String parentKey, ZonedDateTime datetime, //
+    ForecastTimeReference d, String namVar) {
     this.parentKey = parentKey;
     this.datetime = datetime.plusHours(d.refhour);
     this.fcststep = d.fcsthourAhead;
@@ -57,6 +58,7 @@ public class NoaaParameter implements Parameter {
       result.put("fcststep", this.fcststep);
       result.put("datetime", this.datetime.format(getDateTimeFormatter()));
       result.put("zoneid", this.datetime.getZone().getId());
+      result.put("validtime", this.getValidTime());
       JSONArray view = new JSONArray();
       view.put(0, new JSONObject() {
         {
@@ -85,10 +87,10 @@ public class NoaaParameter implements Parameter {
     }
     return result;
   }
-  
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   @Override
   public String getKey() {
@@ -113,17 +115,34 @@ public class NoaaParameter implements Parameter {
         .parse(datetimetext, LocalDateTime::from);
       ZonedDateTime datetime = ZonedDateTime.of(localdatetime, zoneId);
       ForecastTimeReference d = new ForecastTimeReference(0, fcststep);
-      NoaaParameter result = new NoaaParameter(parentKey, datetime, d, var);      
+      NoaaParameter result = new NoaaParameter(parentKey, datetime, d, var);
       return result;
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
   }
 
+  /**
+   *
+   * @return
+   */
   private static DateTimeFormatter getDateTimeFormatter() {
-    return new DateTimeFormatterBuilder()
+    DateTimeFormatter result = new DateTimeFormatterBuilder()
       .appendPattern("yyyyMMddHH")
       .toFormatter();
+    return result;
+  }
+
+  /**
+   *
+   * @return
+   */
+  private String getValidTime() {
+    ZonedDateTime plusHours = this.datetime.plusHours(fcststep) //
+      .toOffsetDateTime()//
+      .atZoneSameInstant(ZoneId.of("UTC"));
+    String result = plusHours.format(getDateTimeFormatter());
+    return result;
   }
 
 }

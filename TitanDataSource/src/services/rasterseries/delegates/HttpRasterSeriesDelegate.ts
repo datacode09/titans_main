@@ -61,8 +61,11 @@ export class HttpRasterSeriesDelegate implements SeriesDelegate {
   private toRasterSeries(rasterId: number, response: any, rasterparams: RasterParameter[]): RasterSeries {
     const keys = Object.keys(response.values);
     const values = keys.map((k, i) => {
+      
+      
       const index = rasterparams.findIndex(f => f.parameter.key === k);
       const param = rasterparams[index];
+      console.log(param.parameter.validtime);
       const result = {
         x: i
         , y: response.values[k]

@@ -8,6 +8,7 @@ import {RastersVisibilityService} from 'src/services/rasterstates/RastersVisibil
 import {RasterParameter} from 'src/core/rasters/RasterParameter';
 import {AssociationsChartSeries} from './AssociationsChartSeries';
 import {Objects} from 'src/core/types/Objects';
+import {RasterSeriesPropertiesService} from './RasterSeriesPropertiesService';
 
 declare var $: any;
 @Component({
@@ -19,6 +20,7 @@ declare var $: any;
 export class RasterSeriesPlots implements OnInit {
   private chart: any;
   private handlers: Map<number, AssociationsChartSeries> = new Map();
+  private s = new RasterSeriesPropertiesService(); 
 
   /**
    * 
@@ -96,7 +98,7 @@ export class RasterSeriesPlots implements OnInit {
   private addAssociationsChartSeries(point: QueryPoint): void {
     if (!this.handlers.has(point.id)) {
       const handler = new AssociationsChartSeries( //
-        point.id, this.seriesService, this.associations, this.manager);
+        point.id, this.seriesService, this.associations, this.manager, this.s);
       if (Objects.isNotNull(this.chart)) {
         handler.init(this.chart);
       }

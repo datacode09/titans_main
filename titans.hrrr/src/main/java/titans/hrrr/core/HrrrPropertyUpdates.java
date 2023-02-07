@@ -1,4 +1,4 @@
-package titans.nam.components;
+package titans.hrrr.core;
 
 import java.util.List;
 import javafx.beans.property.ListProperty;
@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import titans.nam.NamRasterFactory;
+import titans.hrrr.HrrrRasterFactory;
+import titans.hrrr.core.grib.HrrrGribSource;
 import titans.nam.NoaaParameter;
-import titans.nam.grib.NamGribSource;
 
 /**
  *
@@ -20,18 +20,18 @@ import titans.nam.grib.NamGribSource;
  */
 @Component
 @Lazy(false)
-@DependsOn("nam.parameters")
-public class NamPropertyUpdates implements InitializingBean {
+@DependsOn("hrrr.parameters")
+public class HrrrPropertyUpdates implements InitializingBean {
   
   /**
    * 
    */
   @Autowired
-  @Qualifier("nam.parameters")
+  @Qualifier("hrrr.parameters")
   private ListProperty<NoaaParameter> parameters;
   
   @Autowired
-  private NamRasterFactory factory;
+  private HrrrRasterFactory factory;
   
   /**
    *
@@ -39,10 +39,9 @@ public class NamPropertyUpdates implements InitializingBean {
    */
   @Override
   public void afterPropertiesSet() throws Exception {
-    NamGribSource source = new NamGribSource();
+    HrrrGribSource source = new HrrrGribSource();
     String parentKey = this.factory.key();
-    long minusDays = 3;
-    List<NoaaParameter> params = source.getCurrentNamParameters(minusDays, parentKey);
+    List<NoaaParameter> params = source.getCurrentParameters(parentKey);
     ObservableList<NoaaParameter> obsList = FXCollections.observableArrayList(params);
     this.parameters.setValue(obsList);
   }

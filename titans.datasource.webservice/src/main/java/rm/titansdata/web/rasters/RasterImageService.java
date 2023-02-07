@@ -38,7 +38,7 @@ public class RasterImageService {
    */
   public RasterImageResult getRasterImage(long rasterId, Parameter param) {
     RasterObj r = this.getRasterObj(rasterId, param); 
-    ColorMap cmap = this.getColorMap(rasterId, param);
+    ColorMap cmap = this.getColorMap(rasterId, param);      
     RasterImage img = new RasterImage(r, cmap);  
     RasterImageResult result = this.toRasterImageResult(rasterId, img);
     return result;

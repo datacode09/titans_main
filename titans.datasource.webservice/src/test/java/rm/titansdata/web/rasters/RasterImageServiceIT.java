@@ -23,17 +23,23 @@ public class RasterImageServiceIT extends BaseSpringTest {
   @Autowired
   private RasterImageService imageService;
   
+  /**
+   * 
+   * @param a 
+   */
   @Test
-  @Parameters({""})
-  public void test(String a) {
+  @Parameters({
+    "1, North American Model Forecasts", 
+    "2, High Resolution Rapid Refresh", 
+  })
+  public void test(int rasterId, String parentKey) {
     String varName = "TMP_2-HTGL";
     ZonedDateTime datetime = ZonedDateTime
       .now(ZoneId.of("UTC"))
+      .minusDays(1l)
       .truncatedTo(ChronoUnit.DAYS);
     ForecastTimeReference fcststep = new ForecastTimeReference(0, 0);
-    String parentKey = "North American Model Forecasts";
     Parameter param = new NoaaParameter(parentKey, datetime, fcststep, varName);
-    int rasterId = 1; 
     RasterImageResult img = this.imageService.getRasterImage(rasterId, param); 
     System.out.println("img = " + img);
     
