@@ -3,6 +3,7 @@ import {RasterSeries} from 'src/core/rasters/RasterSeries';
 import {Observable, BehaviorSubject} from 'rxjs';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {RasterParameter} from 'src/core/rasters/RasterParameter';
+import {Objects} from 'src/core/types/Objects';
 
 /**
  * 
@@ -61,19 +62,27 @@ export class HttpRasterSeriesDelegate implements SeriesDelegate {
   private toRasterSeries(rasterId: number, response: any, rasterparams: RasterParameter[]): RasterSeries {
     const keys = Object.keys(response.values);
     const values = keys.map((k, i) => {
-      
-      
+
+
       const index = rasterparams.findIndex(f => f.parameter.key === k);
       const param = rasterparams[index];
-      console.log(param.parameter.validtime);
+      const t = param.parameter.validtime;
+      let x: any = i;
+      if (Objects.isNotNull(t)) {
+        const year = Number(t.substr(0, 4));
+        const month = Number(t.substr(4, 2)) - 1;
+        const day = Number(t.substr(6, 2));
+        const hour = Number(t.substr(8, 2));
+        x = new Date(year, month, day, hour, 0);
+      }
       const result = {
-        x: i
+        x: x
         , y: response.values[k]
         , param: param
       };
       return result;
     });
-    const result = new RasterSeries(rasterId, values);
+    const result = new RasterSeries(rasterId, values.sort((x1, x2)=> x1.x - x2.x));
     return result;
   }
 }

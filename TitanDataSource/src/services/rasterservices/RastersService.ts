@@ -128,5 +128,14 @@ export class RastersService {
     const result = this.rasterParameters.get(rasterId); 
     return result;
   }
+  
+  /**
+   * 
+   */
+  public getRasterGroup(rasterId: number): RastersGroup {
+    const arr = this.rasterGroups.getValue();
+    const result = arr.find(g => g.rasterIds.indexOf(rasterId) !== -1);
+    return result;
+  }
 }
 

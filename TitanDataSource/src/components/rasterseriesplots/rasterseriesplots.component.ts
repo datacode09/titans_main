@@ -11,6 +11,8 @@ import {Objects} from 'src/core/types/Objects';
 import {RasterSeriesPropertiesService} from './RasterSeriesPropertiesService';
 
 declare var $: any;
+declare var Highcharts: any;
+
 @Component({
   selector: 'rasterseriesplots',
   templateUrl: './rasterseriesplots.component.html',
@@ -20,7 +22,7 @@ declare var $: any;
 export class RasterSeriesPlots implements OnInit {
   private chart: any;
   private handlers: Map<number, AssociationsChartSeries> = new Map();
-  private s = new RasterSeriesPropertiesService(); 
+  private s = new RasterSeriesPropertiesService();
 
   /**
    * 
@@ -40,16 +42,16 @@ export class RasterSeriesPlots implements OnInit {
   public ngOnInit(): void {
     this.initChart();
     this.manager.getQueryPoints().subscribe(this.onQueryPointsChanged.bind(this));
-    this.manager.getSelectedQueryPoint().subscribe(this.onSelectedPoint.bind(this)); 
+    this.manager.getSelectedQueryPoint().subscribe(this.onSelectedPoint.bind(this));
     this.service.getSelectedItem().subscribe(this.onSelectedItem.bind(this));
   }
-  
-  
+
+
   /**
    * 
    */
-  private onSelectedPoint(qp:QueryPoint):void  {
-    this.resetSelectedItem(); 
+  private onSelectedPoint(qp: QueryPoint): void {
+    this.resetSelectedItem();
   }
 
   /**
@@ -79,15 +81,15 @@ export class RasterSeriesPlots implements OnInit {
    */
   private onQueryPointsChanged(points: QueryPoint[]): void {
     points.forEach(this.addAssociationsChartSeries.bind(this));
-    this.resetSelectedItem(); 
+    this.resetSelectedItem();
   }
-  
+
   /**
    * 
    */
-  private resetSelectedItem():void {
+  private resetSelectedItem(): void {
     setTimeout(() => {
-      const item = this.service.getSelectedItemValue(); 
+      const item = this.service.getSelectedItemValue();
       this.onSelectedItem(item);
     })
   }
@@ -132,7 +134,7 @@ export class RasterSeriesPlots implements OnInit {
       series: []
       , tooltip: {
         headerFormat: '<span style="font-size: 10px">',
-        pointFormat: '<b>{point.y}</b>'
+        pointFormat: 'Value = {point.x}<br><b>{point.y}</b>'
       }
       , plotOptions: {
         series: {
@@ -157,8 +159,7 @@ export class RasterSeriesPlots implements OnInit {
         type: 'line'
         , backgroundColor: null
         , borderWidth: 0
-        , margin: [2, 4, 2, 4]
-        , height: div.height() - 20
+        , height: div.height() + 20
         , style: {
           overflow: 'visible'
         }
@@ -167,9 +168,27 @@ export class RasterSeriesPlots implements OnInit {
         }
         , animation: false
       }
+      , credits: {
+        enabled: false
+      },
+      xAxis: {
+        type: "datetime",
+        labels: {
+          formatter: this.dateFormatter.bind(this)
+        }
+      }
+
     };
     return result;
   }
+    
+  /**
+   * 
+   */
+  private dateFormatter(arg01:any):any {
+    const result = Highcharts.dateFormat('%b/%e/%Y<br>%l:%M', arg01.value); 
+    return result;
+  };
 
   /**
    * 

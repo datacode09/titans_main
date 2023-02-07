@@ -16,19 +16,30 @@ export class PropertiesComponent implements OnInit {
   /**
    * 
    */
-  public constructor(private service: RastersService) {
-    this.service.getSelectedItem().subscribe(a => {
-      const detailsView = PropertyDetailsViewFactory.get(a);
-      this.title = detailsView.getTitle();
-      const element = detailsView.getElement();
-      $("#propertiesContainer").empty().append(element);
-    });
+  public constructor(private service: RastersService, private factory:PropertyDetailsViewFactory) {
   }
 
   /**
    * 
    */
   public ngOnInit(): void {
+    this.service.getSelectedItem().subscribe(this.onSelectedItem.bind(this));
+  }
+  
+  /**
+   * 
+   */
+  private onSelectedItem(a: any): void {
+    this.setDetailsView(a);
+  }
 
+  /**
+   * 
+   */
+  private setDetailsView(a: any): void {
+    const detailsView = this.factory.get(a);
+    this.title = detailsView.getTitle();
+    const element = detailsView.getElement();
+    $("#propertiesContainer").empty().append(element);
   }
 }

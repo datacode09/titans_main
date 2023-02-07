@@ -27,7 +27,9 @@
 .grouptreenode .parameterdiv>span {
   padding-left: 10px;  
 }
-
+.grouptreenode > .name{
+  font-weight: bold;  
+}
 .rasterelements {
   overflow-y: auto;
   max-height: 110px;
