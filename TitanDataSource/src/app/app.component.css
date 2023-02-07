@@ -1,6 +1,8 @@
 @import url("//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css");
 
-
+.page {
+  min-height: 640px
+}
 body {
   color: #5a5a5a;
   font-family: 'Calibri',Arial,sans-serif;

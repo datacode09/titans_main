@@ -1,0 +1,16 @@
+<section class="top-nav">
+  <nav class="navbar navbar-expand-lg py-0">
+    <div class="container">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="exCollapsingNavbar2">
+        <ul class="nav navbar-nav" *ngFor="let n of navlinks">
+          <li class="nav-item" id="routernav-{{n.path}}"> 
+            <a class="nav-link" routerLink="{{n.path}}" routerLinkActive="active">{{n.name}}</a> 
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</section>
