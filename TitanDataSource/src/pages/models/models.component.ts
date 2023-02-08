@@ -20,7 +20,7 @@ export class ModelsComponent implements OnInit {
    * 
    */
   public ngOnInit(): void {
-    this.service.getAllRasters().subscribe(this.onRastersChanged.bind(this));
+    
   }
   
   /**

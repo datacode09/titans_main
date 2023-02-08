@@ -1,13 +1,13 @@
 import {CommonModule} from '@angular/common';
 import {NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core';
-import {DataSourceList} from './datasourcelist/datasourcelist.component';
-import {MapComponent} from './map/map.component';
-import {PropertiesComponent} from './properties/properties.component';
-import {RoiQueryBarComponent} from './roiquerybar/roiquerybar.component';
-import {PointsPlotLegendComponent} from './pointsplotlegend/pointsplotlegend.component';
-import {RasterSeriesPlots} from './rasterseriesplots/rasterseriesplots.component';
 import {DatasetItemComponent} from 'src/pages/datasets/item/datasetitem.component';
 import {ModelsItemComponent} from 'src/pages/models/item/models.component';
+import {DataSourceList} from 'src/pages/main/components/datasourcelist/datasourcelist.component';
+import {MapComponent} from 'src/pages/main/components/map/map.component';
+import {PropertiesComponent} from 'src/pages/main/components/properties/properties.component';
+import {RoiQueryBarComponent} from 'src/pages/main/components/roiquerybar/roiquerybar.component';
+import {PointsPlotLegendComponent} from 'src/pages/main/components/pointsplotlegend/pointsplotlegend.component';
+import {RasterSeriesPlots} from 'src/pages/main/components/rasterseriesplots/rasterseriesplots.component';
 
 @NgModule({
   declarations: [
