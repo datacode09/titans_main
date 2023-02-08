@@ -1,0 +1,18 @@
+<div class="api-section"> 
+  <div class="row dataset api-item-section">
+    <div class="col-3 text">API Call</div>
+    <div class="col-9 description" style="overflow-y: auto">{{data.apicall}}</div>
+  </div> 
+  <div class="row dataset api-item-section">
+    <div class="col-3 text">Parameters</div>
+    <div class="col-9 description" style="overflow-y: auto" >
+      <ul *ngFor="let parameter of data.parameters" style="padding-left: 18px">
+        <li class="" style="margin:0; padding: 0">{{parameter.argname}}: {{parameter.argtype}}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="row dataset api-item-section">
+    <div class="col-3 text">Result</div>
+    <div class="col-9 description" style="overflow-y: auto">{{data.result.argname}} : {{data.result.argtype}}</div>
+  </div>
+</div> 

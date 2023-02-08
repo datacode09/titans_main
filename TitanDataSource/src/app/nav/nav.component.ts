@@ -7,7 +7,7 @@ import {Router} from '@angular/router';
 @Component({
   selector: 'nav-root',
   templateUrl: './nav.component.html',
-  styleUrls: ['../app.component.css']
+  styleUrls: ['../../app/app.component.css']
   
 })
 export class NavComponent implements OnInit {

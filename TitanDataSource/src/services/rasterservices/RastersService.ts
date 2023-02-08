@@ -52,6 +52,7 @@ export class RastersService {
    */
   public static singleton(http: HttpClient): RastersService {
     let result: RastersService;
+    console.log("creating rastersService"); 
     if (httpsources) {
       result = new RastersService(new HttpRastersDelegate(http));
     } else {

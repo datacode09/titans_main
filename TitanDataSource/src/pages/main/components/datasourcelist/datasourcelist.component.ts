@@ -11,8 +11,8 @@ import {Objects} from 'src/core/types/Objects';
 @Component({
   selector: 'datasourcelist',
   templateUrl: './datasourcelist.component.html',
-  styleUrls: ['../../app/app.component.css', 'datasourcelist.component.css'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['../../../../app/app.component.css', './datasourcelist.component.css'],
+//  encapsulation: ViewEncapsulation.None
 })
 export class DataSourceList implements OnInit {
   @Input()

@@ -13,7 +13,7 @@ declare var $: any;
 @Component({
   selector: 'map',
   templateUrl: './map.component.html',
-  styleUrls: ['../../app/app.component.css', './map.component.css'],
+  styleUrls: ['../../../../app/app.component.css', 'map.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class MapComponent implements OnInit {

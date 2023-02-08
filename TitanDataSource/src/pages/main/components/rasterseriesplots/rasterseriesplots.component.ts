@@ -15,8 +15,8 @@ declare var Highcharts: any;
 
 @Component({
   selector: 'rasterseriesplots',
-  templateUrl: './rasterseriesplots.component.html',
-  styleUrls: ['../../app/app.component.css', './rasterseriesplots.component.css'],
+  templateUrl: './rasterseriesplots.component.html', 
+  styleUrls: ['../../../../app/app.component.css', 'rasterseriesplots.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class RasterSeriesPlots implements OnInit {

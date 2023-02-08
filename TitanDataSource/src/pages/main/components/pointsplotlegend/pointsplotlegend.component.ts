@@ -11,7 +11,7 @@ import {Subscription} from 'rxjs';
 @Component({
   selector: 'pointsplotlegend',
   templateUrl: './pointsplotlegend.component.html',
-  styleUrls: ['../../app/app.component.css', './pointsplotlegend.component.css'],
+  styleUrls: ['../../../../app/app.component.css', 'pointsplotlegend.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class PointsPlotLegendComponent implements OnInit {

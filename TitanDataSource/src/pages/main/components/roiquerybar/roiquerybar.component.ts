@@ -5,7 +5,7 @@ import {QueryPoint} from 'src/core/rasters/QueryPoint';
 @Component({
   selector: 'roiquerybar',
   templateUrl: './roiquerybar.component.html',
-  styleUrls: ['../../app/app.component.css', './roiquerybar.component.css'],
+  styleUrls: ['../../../../app/app.component.css', 'roiquerybar.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class RoiQueryBarComponent implements OnInit {
