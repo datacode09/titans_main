@@ -92,6 +92,14 @@ export class RastersService {
     return this.rastersDelegate.getRasterImage(param);
   }
 
+
+  /**
+   * 
+   */
+  public getAllRasters(): Observable<RastersGroup[]> {
+    return this.rastersDelegate.getAllRasters();
+  }
+  
   /**
    * 
    */

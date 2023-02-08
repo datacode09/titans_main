@@ -14,7 +14,7 @@ export class NavComponent implements OnInit {
   public navlinks:any[] = [
     {name: "Home", path: "main"}
     , {name: "Datasets", path: "datasets"}
-    , {name: "Models", path: ""}
+    , {name: "Models", path: "models"}
     , {name: "Export API", path: "export-api"}
   ];
   

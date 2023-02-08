@@ -20,6 +20,8 @@ export class AppComponent implements OnInit {
    * 
    */
   public ngOnInit(): void {
-    this.router.navigateByUrl("main", {skipLocationChange:true}); 
+    if (this.router.url === "") {
+      this.router.navigateByUrl("main", {skipLocationChange:true}); 
+    }
   }
 }

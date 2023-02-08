@@ -8,6 +8,8 @@
 .treenode:hover{
 }
 
+
+
 .node {
   background-color: white; 
 }
@@ -29,7 +31,18 @@
 }
 .grouptreenode > .name{
   font-weight: bold;  
+  display: inline-block;
+  width: calc(100% - 20px); 
+  word-break: normal;
 }
+
+.grouptreenode > .expander {
+  display: inline-block;
+  vertical-align: top;
+  width: 20px;
+}
+
+
 .rasterelements {
   overflow-y: auto;
   max-height: 110px;

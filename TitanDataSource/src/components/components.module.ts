@@ -6,6 +6,8 @@ import {PropertiesComponent} from './properties/properties.component';
 import {RoiQueryBarComponent} from './roiquerybar/roiquerybar.component';
 import {PointsPlotLegendComponent} from './pointsplotlegend/pointsplotlegend.component';
 import {RasterSeriesPlots} from './rasterseriesplots/rasterseriesplots.component';
+import {DatasetItemComponent} from 'src/pages/datasets/item/datasetitem.component';
+import {ModelsItemComponent} from 'src/pages/models/item/models.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +17,8 @@ import {RasterSeriesPlots} from './rasterseriesplots/rasterseriesplots.component
     , RoiQueryBarComponent
     , PointsPlotLegendComponent
     , RasterSeriesPlots
+    , DatasetItemComponent 
+    , ModelsItemComponent
   ],
   imports: [
     CommonModule
@@ -30,6 +34,8 @@ import {RasterSeriesPlots} from './rasterseriesplots/rasterseriesplots.component
     , RoiQueryBarComponent  
     , PointsPlotLegendComponent  
     , RasterSeriesPlots
+    , DatasetItemComponent 
+    , ModelsItemComponent
   ]
 })
 export class ComponentsModule {

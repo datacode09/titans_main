@@ -2,6 +2,7 @@ import {RastersDelegate} from './RastersDelegate';
 import {RastersService} from '../RastersService';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {Observable, BehaviorSubject} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {RastersGroup} from 'src/core/rasters/RastersGroup';
 import {RasterParameter} from 'src/core/rasters/RasterParameter';
 import {RasterEntity} from 'src/core/rasters/RasterEntity';
@@ -10,6 +11,8 @@ import {Envelope} from 'src/core/types/Envelope';
 
 
 export class HttpRastersDelegate implements RastersDelegate {
+
+
   private baseUrl: string = "http://localhost:8081/titansdata.web"
   private patterns: Map<number, BehaviorSubject<RasterParameter[]>> = new Map();
   private host: RastersService;
@@ -67,6 +70,39 @@ export class HttpRastersDelegate implements RastersDelegate {
       this.host.rastersmap.set(v.rasterId, e);
       callback(e);
     });
+  }
+
+  /**
+   * 
+   */
+  public getAllRasters(): Observable<RastersGroup[]> {
+    const url = this.baseUrl + "/getRasters";
+    const params = new HttpParams()
+      .set("userId", "0")
+      ;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const options = {params: params, headers: headers};
+    const result = this.http.get(url, options)
+      .pipe<RastersGroup[]>(map(this.responseToRasterGroupArray.bind(this)));
+    return result;
+  }
+
+
+  /**
+   * 
+   */
+  private responseToRasterGroupArray(response: any): void {
+    const values = JSON.parse(response.values).rastergroups;
+    const arr = values.map((value: any) => {
+      const id = value.rasterGroupId;
+      const name = value.name;
+      const rasterIds: number[] = value.rasterIds
+      const g = new RastersGroup(id, name, rasterIds);
+      return g;
+    });
+    return arr;
   }
 
   /**
@@ -136,7 +172,7 @@ export class HttpRastersDelegate implements RastersDelegate {
         const patternsArray = this.responseToPatterns(rasterId, response);
         value.next(patternsArray);
       });
-      this.patterns.set(rasterId, value); 
+      this.patterns.set(rasterId, value);
     }
     const result = this.patterns.get(rasterId);
     return result;
@@ -145,8 +181,8 @@ export class HttpRastersDelegate implements RastersDelegate {
   /**
    * 
    */
-  private responseToPatterns(rasterId:number, response: any): RasterParameter[] {
-    const values:any[] = response.values;
+  private responseToPatterns(rasterId: number, response: any): RasterParameter[] {
+    const values: any[] = response.values;
     const result = values.map(v => new RasterParameter(rasterId, v.map));
     return result;
   }

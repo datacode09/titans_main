@@ -3,12 +3,12 @@ import {RastersService} from 'src/services/rasterservices/RastersService';
 import {RastersGroup} from 'src/core/rasters/RastersGroup';
 
 @Component({
-  selector: 'datasets',
-  templateUrl: './datasets.component.html',
+  selector: 'models',
+  templateUrl: './models.component.html',
   styleUrls: ['../../app/app.component.css']
 })
-export class DatasetsComponent implements OnInit {
-  public datasets = [];
+export class ModelsComponent implements OnInit {
+  public datasets: any[] = [];
 
   /**
    * 

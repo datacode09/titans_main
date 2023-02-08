@@ -3,11 +3,13 @@ import {RouterModule, Routes} from '@angular/router';
 import {ExportApiComponent} from 'src/pages/exportapi/exportapi.component';
 import {MainComponent} from 'src/pages/main/main.component';
 import {DatasetsComponent} from 'src/pages/datasets/datasets.component';
+import {ModelsComponent} from 'src/pages/models/models.component';
 
 const routes: Routes = [
   {path: 'main', component: MainComponent}
   , {path: 'export-api', component: ExportApiComponent}
   , {path: 'datasets', component: DatasetsComponent}
+  , {path: 'models', component: ModelsComponent}
 ];
 
 @NgModule({
@@ -20,5 +22,6 @@ export class AppRoutingModule {
 export const routeComponents = [
   MainComponent,
   ExportApiComponent,
-  DatasetsComponent
+  DatasetsComponent, 
+  ModelsComponent
 ];

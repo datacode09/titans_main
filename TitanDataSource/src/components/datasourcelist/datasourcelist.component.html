@@ -7,9 +7,9 @@
   <div class="card-body" style="height:320px"> 
     <div *ngFor="let g of rastersgroup" class="card-title" >
       <div id="el_{{g.id}}" class="grouptreenode node" (click)="onClickedForSelection($event, g.name)">
-        <span class="level01 treenode" (click)="onClicked($event, g.name);" 
-              data-visible=false>+</span>  
-        <span class="name">{{g.name}} ({{g.size()}})</span>
+        <div class="level01 treenode expander" (click)="onClicked($event, g.name);" 
+              data-visible=false>+</div>  
+        <div class="name">{{g.name}} ({{g.size()}})</div>
       </div>
     </div>  
   </div>
