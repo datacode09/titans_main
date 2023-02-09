@@ -41,7 +41,7 @@ public class HrrrPropertyUpdates implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     HrrrGribSource source = new HrrrGribSource();
     String parentKey = this.factory.key();
-    List<NoaaParameter> params = source.getCurrentParameters(parentKey);
+    List<NoaaParameter> params = source.getCurrentParameters(parentKey, 0);
     ObservableList<NoaaParameter> obsList = FXCollections.observableArrayList(params);
     this.parameters.setValue(obsList);
   }

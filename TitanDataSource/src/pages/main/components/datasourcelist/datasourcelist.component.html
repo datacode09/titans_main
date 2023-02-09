@@ -6,10 +6,13 @@
   </div>
   <div class="card-body" style="height:320px"> 
     <div *ngFor="let g of rastersgroup" class="card-title" >
-      <div id="el_{{g.id}}" class="grouptreenode node" (click)="onClickedForSelection($event, g.name)">
+      <div id="el_{{g.id}}" 
+        class="grouptreenode node" 
+        (click)="onClickedForSelection($event, g.name)">
         <div class="level01 treenode expander" (click)="onClicked($event, g.name);" 
-              data-visible=false>+</div>  
-        <div class="name">{{g.name}} ({{g.size()}})</div>
+           data-visible=false>+</div>  
+        <div class="name">
+          {{g.name}} ({{g.size()}})</div>
       </div>
     </div>  
   </div>

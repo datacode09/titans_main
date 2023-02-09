@@ -77,9 +77,9 @@ public class HrrrGribSource {
    * @param parentKey
    * @return 
    */
-  public List<NoaaParameter> getCurrentParameters(String parentKey) {
+  public List<NoaaParameter> getCurrentParameters(String parentKey, int minusDays) {
     HrrrGribNameScraper scraper = new HrrrGribNameScraper();
-    List<NoaaParameter> noaaParams = scraper.getParameters(this.url, parentKey);
+    List<NoaaParameter> noaaParams = scraper.getParameters(this.url, parentKey, minusDays);
     return noaaParams;
   }
 }

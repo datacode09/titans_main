@@ -9,9 +9,9 @@
           http://www.springframework.org/schema/mvc classpath:spring/spring-mvc.xsd       
           http://www.springframework.org/schema/util classpath:spring/spring-util.xsd       
 ">  
-  <!--<context:annotation-config/>-->
-  <util:properties id="appProps" location="classpath:./app.properties"/>   
   
+  <import resource="classpath:./auth.spring.xml"/>
+  <util:properties id="appProps" location="classpath:./app.properties"/>   
   <bean id="version" class="java.lang.String" factory-method="valueOf"> 
     <constructor-arg value="1.0.0"/> 
   </bean>      

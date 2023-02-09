@@ -30,7 +30,8 @@ public class DownloadAllForDay extends BaseSpringTest {
   public void test() {
     HrrrGribSource source = new HrrrGribSource();
     String parentKey = "HRRR";
-    List<NoaaParameter> params = source.getCurrentParameters(parentKey);
+    int minusDays = 0; 
+    List<NoaaParameter> params = source.getCurrentParameters(parentKey, minusDays); 
     NoaaVariable namVariable = new NoaaVariable("TMP_2-HTGL");
     params.stream().forEach(p -> {
       System.out.println("p = " + p);

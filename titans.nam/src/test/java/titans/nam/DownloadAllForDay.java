@@ -28,8 +28,8 @@ public class DownloadAllForDay extends BaseSpringTest {
   @Test
   public void test() {
     NamGribSource source = new NamGribSource();
-    String parentKey = "";
-    List<NoaaParameter> params = source.getCurrentNamParameters(2L, parentKey); 
+    String parentKey = "NAM";
+    List<NoaaParameter> params = source.getCurrentNamParameters(1L, parentKey); 
     NoaaVariable namVariable = new NoaaVariable("TMP_2-HTGL");
     params.stream().forEach(p -> {
       System.out.println("p = " + p);

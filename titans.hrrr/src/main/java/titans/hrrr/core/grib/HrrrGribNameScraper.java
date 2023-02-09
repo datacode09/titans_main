@@ -19,10 +19,10 @@ import titans.nam.grib.ForecastTimeReference;
  */
 public class HrrrGribNameScraper {
 
-  public List<NoaaParameter> getParameters(String url, String parentKey) {
+  public List<NoaaParameter> getParameters(String url, String parentKey, int minusDays) {
     DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("yyyyMMdd").toFormatter();
     ZonedDateTime date = ZonedDateTime.now(ZoneId.of("UTC"))
-      .minusDays(1)
+      .minusDays(minusDays)
       .truncatedTo(ChronoUnit.DAYS);
     String datetext = date
       .format(formatter);

@@ -1,5 +1,6 @@
 package titans.nam.grib;
 
+import common.RmExceptions;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,8 +46,8 @@ public class GribFileVarsReader {
   public String getVarMsgNumber(String varName) {
     ProcessBuilder process = this.createGribInventoryProcess();
     List<String> processOutput = this.getProcessOutput(process);
-    String line = processOutput.stream().filter(l->this.toVarName(l).equals(varName))
-      .findFirst().orElse(null); 
+    String line = processOutput.stream().filter(l -> this.toVarName(l).equals(varName))
+      .findFirst().orElse(null);
     String result = this.lineToVarMsgNumber(line);
     return result;
   }
@@ -68,10 +69,15 @@ public class GribFileVarsReader {
    * @return
    */
   private String toVarName(String line) {
-    String[] parts = line.split(",");
-    String elementPrefix = parts[3].split("=")[0].trim();
-    String level = parts[4].trim();
-    String result = elementPrefix + "_" + level;
+    String result = "";
+    try {
+      String[] parts = line.split(",");
+      String elementPrefix = parts[3].split("=")[0].trim();
+      String level = parts[4].trim();
+      result = elementPrefix + "_" + level;
+    } catch(Exception ex) {
+      RmExceptions.throwException(ex, "An error occured on parsing line: '%s'", line); 
+    }
     return result;
   }
 
@@ -83,7 +89,7 @@ public class GribFileVarsReader {
     ProcessBuilder process = new ProcessBuilder(
       this.degribExe.getAbsolutePath().replace(".exe", ""),
       this.gribFile.getAbsolutePath(),
-       "-I"
+      "-I"
     );
     File workingDirectory = gribFile.getParentFile();
     process.directory(workingDirectory);
@@ -125,14 +131,14 @@ public class GribFileVarsReader {
     String result = String.join(",", lines);
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param line
-   * @return 
+   * @return
    */
   private String lineToVarMsgNumber(String line) {
-    return line.split(",")[0]; 
+    return line.split(",")[0];
   }
 
 }

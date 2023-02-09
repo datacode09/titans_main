@@ -15,7 +15,8 @@ public class HrrrGribSourceIT {
   @Test
   public void test01() {
     HrrrGribSource source = new HrrrGribSource();
-    List<NoaaParameter> list = source.getCurrentParameters("HRRR");
+    int minusDays = 0;
+    List<NoaaParameter> list = source.getCurrentParameters("HRRR", minusDays);
     list.forEach(System.out::println);
   }
 }

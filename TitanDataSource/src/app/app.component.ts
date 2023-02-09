@@ -14,14 +14,16 @@ declare var $: any;
 export class AppComponent implements OnInit {
   title = 'titans.datasource';
   
-  
+  /**
+   * 
+   */
   public constructor(private router:Router, private location:Location) {
   }
+  
   /**
    * 
    */
   public ngOnInit(): void {
-    console.log(this.location.path());
     const currpath = this.location.path();
     if (currpath === "" || currpath === "/") {
       this.router.navigateByUrl("main", {skipLocationChange:true}); 
