@@ -4,10 +4,10 @@ import {PropertyDetailsViewFactory} from './detailsview/PropertyDetailsViewFacto
 
 
 @Component({
-  selector: 'properties',
-  templateUrl: './properties.component.html',
-  styleUrls: ['../../../../app/app.component.css', './properties.component.css'],
-  encapsulation: ViewEncapsulation.None
+  selector: 'properties'
+  , templateUrl: './properties.component.html'
+  , styleUrls: ['../../../../app/app.component.css', 'properties.component.css']
+  , encapsulation: ViewEncapsulation.None
 })
 export class PropertiesComponent implements OnInit {
 

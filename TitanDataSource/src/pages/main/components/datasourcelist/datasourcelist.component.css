@@ -46,4 +46,5 @@
 .rasterelements {
   overflow-y: auto;
   max-height: 110px;
+  background: initial;
 }

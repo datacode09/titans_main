@@ -8,11 +8,13 @@ import {RastersService} from 'src/services/rasterservices/RastersService';
 import {NavComponent} from './nav/nav.component';
 import {RouteReuseStrategy} from '@angular/router';
 import {CacheRouteReuseStrategy} from './routing/CacheRouteReuseStrategy';
+import {FooterComponent} from './footer/footer.component';
 
 @NgModule({
   declarations: [
     AppComponent
     , NavComponent  
+    , FooterComponent
     , routeComponents
   ],
   imports: [

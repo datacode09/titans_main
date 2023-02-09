@@ -10,7 +10,7 @@ import {ApiItem} from '../ApiItem';
 @Component({
   selector: "apiitem-root"
   , templateUrl: "./apiitem.component.html"
-  , styleUrls: ["../../../app/app.component.css", "./apiitem.component.css"]
+  , styleUrls: ["../../../app/app.component.css", "apiitem.component.css"]
 })
 export class ApiItemComponent implements OnInit {
   @Input()
