@@ -26,7 +26,7 @@ public class LoginService {
    */
   public Optional<String> loginUser(Credentials credentials) {
     Optional<String> authToken = this.authenticator.authenticate(credentials.email, credentials.password);
-    if (authToken.isPresent()) {
+    if (authToken.isPresent()) { 
       this.manager.store(credentials, authToken.get());
     }
     return authToken;
@@ -47,5 +47,13 @@ public class LoginService {
    */
   public void logout(String email) {
     this.manager.remove(email);
+  }
+
+  boolean isLoggedInByEmail(String email) {
+    return this.manager.existsByEmail(email);
+  }
+
+  String getEmail(String token) {
+    return this.manager.getEmail(token);
   }
 }

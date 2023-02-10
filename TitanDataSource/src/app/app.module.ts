@@ -9,16 +9,20 @@ import {NavComponent} from './nav/nav.component';
 import {RouteReuseStrategy} from '@angular/router';
 import {CacheRouteReuseStrategy} from './routing/CacheRouteReuseStrategy';
 import {FooterComponent} from './footer/footer.component';
+import {HeaderComponent} from './header/header.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent
     , NavComponent  
     , FooterComponent
+    , HeaderComponent
     , routeComponents
-  ],
+  ], 
   imports: [
     BrowserModule
+    , FormsModule
     , AppRoutingModule
     , ComponentsModule
     , HttpClientModule
@@ -34,7 +38,6 @@ import {FooterComponent} from './footer/footer.component';
       , deps: [HttpClient]
     }
   ],
-
   bootstrap: [AppComponent]
 })
 export class AppModule {}

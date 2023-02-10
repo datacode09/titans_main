@@ -1,0 +1,38 @@
+
+<section class="banner-sec" style="min-height: 640px;">
+  <div class="container">
+    <div  style="padding: 20px 0px"> 
+      <h1> 
+        EPS Technologies and Services
+      </h1>
+      <h3> 
+        Login to Access the Titans Data Source 
+      </h3>
+    </div>
+    <div class="card">
+      <div class="card-header"> 
+        <div class="card-title"> 
+          Login
+        </div>
+      </div>
+      <div class="card-body" style="height: 530px;"> 
+        <div class="row">
+          <div class="col-1">Email</div> 
+          <div class="col-11"><input type="email" style="width:350px" [(ngModel)]="email"/> </div> 
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div class="col-1">Password</div> 
+          <div class="col-11"><input type="password" style="width:350px" [(ngModel)]="password"/> </div> 
+        </div>
+        <div class="row" style="margin-top:20px"> 
+          <div class="col-1"><input type="button" name="Submit" value="Submit" (click)="onSubmit()"/> </div> 
+          <div class="col-7">{{message}}</div> 
+          <div class="col-4"><input type="button" name="Submit" value="Dummy Request" (click)="onDummyRequest()"/> </div> 
+        </div>
+      </div>
+      <div class="card-footer">   
+      </div>
+    </div> 
+  </div>
+</section>
+

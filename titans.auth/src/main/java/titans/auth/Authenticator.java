@@ -27,10 +27,10 @@ public class Authenticator {
    * @param password
    */
   public Optional<String> authenticate(String email, String password) {
-    String query = this.getAuthQuery(email, password);
+    String query = this.getAuthQuery(email, password);  
     Boolean valid = this.conn.executeQuerySingleResult(query, this::isValid);
     Optional<String> result = (valid == null || !(valid))
-      ? Optional.empty()
+      ? Optional.empty() 
       : Optional.of(RmKeys.createKey());
     return result;
   }

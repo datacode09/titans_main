@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.MappedInterceptor;
-import rm.titansdata.web.user.login.AuthenticationHandlerInterceptor;
+import rm.titansdata.web.user.session.AuthenticationHandlerInterceptor;
 
 /**
  *

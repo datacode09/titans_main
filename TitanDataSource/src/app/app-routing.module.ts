@@ -4,12 +4,29 @@ import {ExportApiComponent} from 'src/pages/exportapi/exportapi.component';
 import {MainComponent} from 'src/pages/main/main.component';
 import {DatasetsComponent} from 'src/pages/datasets/datasets.component';
 import {ModelsComponent} from 'src/pages/models/models.component';
+import {HomeComponent} from 'src/pages/home/home.component';
+import {LoginComponent} from 'src/pages/login/login.component';
 
 const routes: Routes = [
-  {path: 'main', component: MainComponent}
-  , {path: 'export-api', component: ExportApiComponent}
-  , {path: 'datasets', component: DatasetsComponent}
-  , {path: 'models', component: ModelsComponent}
+  {
+    path: 'login', component: LoginComponent,
+  }
+  , {
+    path: '', component: LoginComponent,
+  }
+  
+  , {
+    path: 'home', component: HomeComponent, children: [
+      {path: 'main', component: MainComponent}
+      , {path: 'export-api', component: ExportApiComponent}
+      , {path: 'datasets', component: DatasetsComponent}
+      , {path: 'models', component: ModelsComponent}
+      , {path: '', component: MainComponent}
+    ]
+  }
+  , {
+    path: '**', component: LoginComponent,
+  }
 ];
 
 @NgModule({
@@ -18,10 +35,11 @@ const routes: Routes = [
 })
 export class AppRoutingModule {
 }
-//export const routeComponents = routes.map(r => r.component);  
 export const routeComponents = [
   MainComponent,
   ExportApiComponent,
-  DatasetsComponent, 
-  ModelsComponent
+  DatasetsComponent,
+  ModelsComponent,
+  HomeComponent,
+  LoginComponent
 ];
