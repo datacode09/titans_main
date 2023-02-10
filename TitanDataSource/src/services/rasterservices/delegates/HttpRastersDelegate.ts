@@ -39,7 +39,8 @@ export class HttpRastersDelegate implements RastersDelegate {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-    this.http.get(url, {params: params, headers: headers}).subscribe((response: any) => {
+    const options = {params: params, headers: headers};
+    this.http.get(url, options).subscribe((response: any) => {
       const values = JSON.parse(response.values).rastergroups;
       const arr = values.map((value: any) => {
         const id = value.rasterGroupId;
@@ -130,10 +131,11 @@ export class HttpRastersDelegate implements RastersDelegate {
       'Content-Type': 'application/json'
     });
     const result: BehaviorSubject<RasterImage> = new BehaviorSubject(null);
-    this.http.get(url, {
+    const options = {
       params: params,
       headers: headers
-    }).subscribe((response: any) => {
+    };
+    this.http.get(url, options).subscribe((response: any) => {
       result.next(this.toRasterImage(response));
     });
     return result;

@@ -25,7 +25,6 @@ export class SessionService {
    * 
    */
   private initToken(): void {
-    console.log("hello");
     this.token.next(localStorage.getItem("token"));
   }
 
@@ -52,10 +51,16 @@ export class SessionService {
    * 
    */
   public isNotLoggedIn(): boolean {
+    return !this.isLoggedIn();
+  }
+    
+  /**
+   * 
+   */
+  public isLoggedIn():boolean {
     return this.loggedin.value;
   }
-
-
+  
   /**
    * 
    */
@@ -83,7 +88,9 @@ export class SessionService {
    */
   public dummyrequest(): void {
     const url = this.baseUrl + "dummyrequest";
-    this.http.get(url).subscribe((r: any) => {
+    const key = Objects.isNull(this.token.value) ? "" : this.token.value;
+    const params = new HttpHeaders().set("AUTH-TOKEN", key);
+    this.http.get(url, {headers: params} ).subscribe((r: any) => {
       console.log(r);
     });
   }

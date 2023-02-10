@@ -19,6 +19,7 @@ public class LoginService {
   @Autowired
   private SessionManager manager;
   
+ 
   /**
    * 
    * @param credentials
