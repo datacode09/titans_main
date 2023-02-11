@@ -90,7 +90,7 @@ public class HrrrImporter implements Closeable {
    * @param datetimeref
    * @return
    */
-  private GribFile getGribFile(ZonedDateTime datetimeref, int forecaststep) {
+  public GribFile getGribFile(ZonedDateTime datetimeref, int forecaststep) {
     String filename = this.getGribFileName(forecaststep, datetimeref);
     File grib = new File(this.gribRootFolder, filename);
     File gribIdx = new File(this.gribRootFolder, filename + ".idx");

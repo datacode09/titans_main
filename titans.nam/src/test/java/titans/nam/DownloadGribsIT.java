@@ -6,14 +6,14 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import titans.nam.core.NamImporter;
-import titans.nam.core.NoaaVariable;
+import titans.nam.grib.GribFile;
 import titans.nam.grib.NamGribSource;
 
 /**
  *
  * @author Ricardo Marquez
  */
-public class DownloadAllForDay extends BaseSpringTest {
+public class DownloadGribsIT extends BaseSpringTest {
 
   @Autowired
   @Qualifier("nam.gribRootFolder")
@@ -29,16 +29,18 @@ public class DownloadAllForDay extends BaseSpringTest {
   public void test() {
     NamGribSource source = new NamGribSource();
     String parentKey = "NAM";
-    long minusDays = 0L; 
-    List<NoaaParameter> params = source.getCurrentNamParameters(minusDays, parentKey); 
-    NoaaVariable namVariable = new NoaaVariable("TMP_2-HTGL");
-    params.stream().forEach(p -> {
+    long minusDays = 0L;
+    List<NoaaParameter> params = source.getCurrentNamParameters(minusDays, parentKey);
+    NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, degribExe);
+    params.forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();
-      NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, degribExe);  
-      importer.getRaster(namVariable, p.datetime, p.fcststep);
+      GribFile gribfile = importer.getGribFile(p.datetime, p.fcststep);
+      if (gribfile.notExists()) {
+        source.download(gribfile);
+      }
       System.out.println("elapsed time = " + (System.currentTimeMillis() - tic));
     });
-
   }
+
 }

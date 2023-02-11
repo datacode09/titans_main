@@ -22,7 +22,6 @@ export class AuthInterceptor  implements HttpInterceptor{
    * 
    */
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log("intercepting...."); 
     let result; 
     if (request.url.endsWith("login") || request.url.endsWith("logout")) {
       result = next.handle(request);  

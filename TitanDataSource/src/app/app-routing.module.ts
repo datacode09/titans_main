@@ -6,6 +6,7 @@ import {DatasetsComponent} from 'src/pages/datasets/datasets.component';
 import {ModelsComponent} from 'src/pages/models/models.component';
 import {HomeComponent} from 'src/pages/home/home.component';
 import {LoginComponent} from 'src/pages/login/login.component';
+import {ProjectsComponent} from 'src/pages/projects/projects.components';
 
 const routes: Routes = [
   {
@@ -17,10 +18,11 @@ const routes: Routes = [
   
   , {
     path: 'home', component: HomeComponent, children: [
-      {path: 'main', component: MainComponent}
+      {path: 'main', component: MainComponent}  
       , {path: 'export-api', component: ExportApiComponent}
       , {path: 'datasets', component: DatasetsComponent}
       , {path: 'models', component: ModelsComponent}
+      , {path: 'projects', component: ProjectsComponent}
       , {path: '', component: MainComponent}
     ]
   }
@@ -41,5 +43,6 @@ export const routeComponents = [
   DatasetsComponent,
   ModelsComponent,
   HomeComponent,
-  LoginComponent
+  LoginComponent, 
+  ProjectsComponent
 ];

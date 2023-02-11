@@ -9,6 +9,7 @@ import {RoiQueryBarComponent} from 'src/pages/main/components/roiquerybar/roique
 import {PointsPlotLegendComponent} from 'src/pages/main/components/pointsplotlegend/pointsplotlegend.component';
 import {RasterSeriesPlots} from 'src/pages/main/components/rasterseriesplots/rasterseriesplots.component';
 import {ApiItemComponent} from 'src/pages/exportapi/apicomponent/apiitem.component';
+import {ProjectsGeographyComponent} from 'src/pages/projects/components/projectgeography/projectsgeography.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import {ApiItemComponent} from 'src/pages/exportapi/apicomponent/apiitem.compone
     , DatasetItemComponent 
     , ModelsItemComponent
     , ApiItemComponent
+    , ProjectsGeographyComponent
   ],
   imports: [
     CommonModule
@@ -39,6 +41,7 @@ import {ApiItemComponent} from 'src/pages/exportapi/apicomponent/apiitem.compone
     , DatasetItemComponent 
     , ModelsItemComponent
     , ApiItemComponent
+    , ProjectsGeographyComponent
   ]
 })
 export class ComponentsModule {

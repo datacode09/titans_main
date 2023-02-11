@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
    * 
    */
   public ngOnInit(): void {
-    this.service.isNotLoggedIn()
+    this.service.isNotLoggedIn(); 
   }
 
   /**

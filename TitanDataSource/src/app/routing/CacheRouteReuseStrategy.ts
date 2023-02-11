@@ -5,7 +5,8 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
   private storedRouteHandles = new Map<string, DetachedRouteHandle>();
 
   private allowRetrieveCache: any = {
-    'main': true
+    'main': true, 
+    'projects': true
   };
 
   /**

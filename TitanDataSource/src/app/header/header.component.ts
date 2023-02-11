@@ -20,8 +20,9 @@ export class HeaderComponent implements OnInit {
   /**
    * 
    */
-  public logout(): void {
+  public logout(event:any): void {
     this.session.logout();
+    event.preventDefault();
   }
 }
 
