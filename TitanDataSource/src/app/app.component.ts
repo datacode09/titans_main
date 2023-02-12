@@ -26,8 +26,9 @@ export class AppComponent implements OnInit, OnDestroy {
    * 
    */
   public ngOnInit(): void {
-    if (this.session.isNotLoggedIn()) {
-      this.router.navigateByUrl("/login", {skipLocationChange: false});
+    if (this.session.isNotLoggedIn()) {  
+      this.router.navigateByUrl("/login", {skipLocationChange: false, });
+      
     }
     this.session.loggedin.subscribe(this.initNavigationBasedOnLogin.bind(this));
   }
@@ -37,7 +38,9 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   private initNavigationBasedOnLogin(loggedin: boolean): void {
     if (loggedin) {
-      this.router.navigateByUrl("/home/main", {skipLocationChange: false});
+      if (this.location.path() === '/login') {  
+        this.router.navigateByUrl("/home/main", {skipLocationChange: false});
+      }
     } else if (this.location.path() !== "/login") {
       this.router.navigateByUrl("/login", {skipLocationChange: false});
     }

@@ -1,7 +1,34 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+import {OnInit, Component} from '@angular/core';
+
+
+/**
+ * 
  */
+@Component({
+  selector: "projectslist-root"
+  , templateUrl: "./projectslist.component.html"
+  , styleUrls: ["projectslist.component.css"]
+})
+export class ProjectsListComponent implements OnInit {
 
+  /**
+   * 
+   */
+  public constructor() {
+  }
 
+  /**
+   * 
+   */
+  public ngOnInit(): void {
+
+  }
+
+  
+  /**
+   * 
+   */
+  public onNewProject(): void {
+    
+  }
+}

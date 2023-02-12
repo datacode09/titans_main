@@ -9,11 +9,10 @@
 }
 
 .dataset {
-  font-family: 'Calibri';  
   line-height: 20px;
   margin-top: 20px;  
   margin-bottom: 20px; 
-  height: 120px;
+  height: 120px;  
   border: 1px solid lightgray;
   padding: 5px; 
   background-color: #fdfdfd;   

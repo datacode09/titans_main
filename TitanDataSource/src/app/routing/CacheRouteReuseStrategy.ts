@@ -48,10 +48,16 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
    * Overriding method
    */
   public shouldReuseRoute(before: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-    if (this.getPath(before) === 'detail' && this.getPath(curr) === 'search-result') {
-      this.allowRetrieveCache['search-results'] = true;
+    const beforepath = this.getPath(before);
+    const currpath = this.getPath(curr);
+    if (beforepath === 'login') {
+      Object.keys(this.allowRetrieveCache).forEach(k=>{        
+        this.allowRetrieveCache[k] = false;
+      });
     } else {
-      this.allowRetrieveCache['search-results'] = false;
+      Object.keys(this.allowRetrieveCache).forEach(k=>{        
+        this.allowRetrieveCache[k] = true;
+      });
     }
     return before.routeConfig === curr.routeConfig;
   }

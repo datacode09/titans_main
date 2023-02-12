@@ -29,6 +29,9 @@ export class NavComponent implements OnInit {
    */
   public ngOnInit(): void {
     this.router.events.subscribe(this.updateNavLinksActiveState.bind(this));
+    setTimeout(()=>{  
+      this.updateNavLinksActiveState();  
+    });
   }
 
   /**
@@ -46,7 +49,6 @@ export class NavComponent implements OnInit {
    */
   private getCurrentUrl():string {
     const result = this.location.path().replace("/home", "");
-    console.log(result); 
     return result;
   }
   
@@ -62,7 +64,7 @@ export class NavComponent implements OnInit {
    * 
    */
   private removeNavActiveState(navlink: any) {
-    $("#routernav-" + navlink.path).removeClass("active");
+    this.getRouterNavLink(navlink).removeClass("active");
   }
     
   /**
@@ -70,9 +72,15 @@ export class NavComponent implements OnInit {
    */
   private setNavLinkActiveState(navlink:any):void {
     if (navlink !== undefined) {
-      $("#routernav-" + navlink.path).addClass("active");
+      this.getRouterNavLink(navlink).addClass("active");
     }
   }
-
+  
+  /**
+   * 
+   */
+  private getRouterNavLink(navlink:any):any {
+    return $("#routernav-" + navlink.path);
+  }
 }
 

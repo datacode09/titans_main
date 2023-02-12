@@ -5,8 +5,7 @@
       <select id="queryPointsList" [(model)]="selectQueryPoint.id" (change)="onQueryPointChange($event)">
         <option *ngFor="let q of queryPointsArr" style="display:inline-block;" 
           [value]="q.id"
-          [selected]="q.id === selectQueryPoint.id"
-          
+          [selected]="q.id === selectQueryPoint.id"  
           > 
       <span> Point {{q.id}} </span> 
       </option>

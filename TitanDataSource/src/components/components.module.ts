@@ -10,6 +10,8 @@ import {PointsPlotLegendComponent} from 'src/pages/main/components/pointsplotleg
 import {RasterSeriesPlots} from 'src/pages/main/components/rasterseriesplots/rasterseriesplots.component';
 import {ApiItemComponent} from 'src/pages/exportapi/apicomponent/apiitem.component';
 import {ProjectsGeographyComponent} from 'src/pages/projects/components/projectgeography/projectsgeography.component';
+import {ProjectsListComponent} from 'src/pages/projects/components/projectslist/projectslist.component';
+import {ProjectDataSourcesComponent} from 'src/pages/projects/components/projectdatasources/projectdatasources.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import {ProjectsGeographyComponent} from 'src/pages/projects/components/projectg
     , ModelsItemComponent
     , ApiItemComponent
     , ProjectsGeographyComponent
+    , ProjectsListComponent
+    , ProjectDataSourcesComponent
   ],
   imports: [
     CommonModule
@@ -42,6 +46,8 @@ import {ProjectsGeographyComponent} from 'src/pages/projects/components/projectg
     , ModelsItemComponent
     , ApiItemComponent
     , ProjectsGeographyComponent
+    , ProjectsListComponent   
+    , ProjectDataSourcesComponent
   ]
 })
 export class ComponentsModule {
