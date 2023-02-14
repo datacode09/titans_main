@@ -5,7 +5,7 @@ import {ApiParameter} from './ApiParameter';
 @Component({
   selector: 'exportapi'
   , templateUrl: './exportapi.component.html'
-  , styleUrls: ['../../app/app.component.css', 'exportapi.component.css']  
+  , styleUrls: ['./exportapi.component.css']  
 })
 export class ExportApiComponent implements OnInit{
   public items:ApiItem[] = [

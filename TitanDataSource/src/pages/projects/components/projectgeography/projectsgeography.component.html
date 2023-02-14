@@ -1,7 +1,14 @@
 <div class="card">  
   <div class="card-header"> 
     <div class="card-title"> 
-      Geography
+      <span>Geography</span>
+      <div *ngIf="showmessage" style="float:right">
+        <span class="message" >
+          Define Project Envelope on the Map Below. 
+        </span>
+        <button *ngIf="!activatedraw" class="activatedraw" (click)="onActivate()">Activate Draw</button>
+        <button *ngIf="activatedraw" class="activatedraw" (click)="onDeactivate()">Deactivate Draw</button>
+      </div>
     </div>
   </div>
   <div class="card-body" style="height: 400px"> 

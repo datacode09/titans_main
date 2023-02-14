@@ -6,6 +6,9 @@
     </div>
   </div>
   <div class="card-body" style="height: 400px"> 
+    <div class="projectslist container" *ngFor="let d of projects"> 
+         <projectitem-root [project]="d"></projectitem-root>
+    </div>
   </div>
   <div class="card-footer">   
   </div>

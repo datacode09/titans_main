@@ -14,12 +14,11 @@ import {Location} from '@angular/common';
 })
 export class NavComponent implements OnInit {
   public navlinks: any[] = [
-    {name: "Home", path: "main"}
-    , {name: "Projects", path: "projects"}
-    , {name: "Data Sources", path: "datasets"}
-    , {name: "Models", path: "models"}
+    {name: "Projects", path: "projects"}
+    , {name: "View Data", path: "main"}  
     , {name: "Export API", path: "export-api"}
-    
+    , {name: "Data Sources", path: "datasets"}
+    , {name: "Custom Models", path: "models"}
   ];
 
   public constructor(private router: Router, private location:Location) {

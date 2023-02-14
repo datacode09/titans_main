@@ -1,1 +1,28 @@
+.message {
+  font-size: .8em;
+  animation: blinker 1s linear infinite;
+  color: blue;
+}
 
+.activatedraw{
+  font-size: .8em;
+}
+
+@keyframes blinker {  
+  50% { opacity: 0; }
+}
+
+.message {
+  animation: blink-animation 1s steps(20, start) infinite;
+  -webkit-animation: blink-animation 1s steps(20, start) infinite;
+}
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}

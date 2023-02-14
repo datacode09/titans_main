@@ -12,6 +12,8 @@ import {ApiItemComponent} from 'src/pages/exportapi/apicomponent/apiitem.compone
 import {ProjectsGeographyComponent} from 'src/pages/projects/components/projectgeography/projectsgeography.component';
 import {ProjectsListComponent} from 'src/pages/projects/components/projectslist/projectslist.component';
 import {ProjectDataSourcesComponent} from 'src/pages/projects/components/projectdatasources/projectdatasources.component';
+import {ProjectItemComponent} from 'src/pages/projects/components/projectslist/projectitem/projectitem.component';
+import {ProjectDataItemComponent} from 'src/pages/projects/components/projectdatasources/projectdataitem/projectdataitem.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import {ProjectDataSourcesComponent} from 'src/pages/projects/components/project
     , ProjectsGeographyComponent
     , ProjectsListComponent
     , ProjectDataSourcesComponent
+    , ProjectItemComponent
+    , ProjectDataItemComponent
   ],
   imports: [
     CommonModule
@@ -48,6 +52,8 @@ import {ProjectDataSourcesComponent} from 'src/pages/projects/components/project
     , ProjectsGeographyComponent
     , ProjectsListComponent   
     , ProjectDataSourcesComponent
+    , ProjectItemComponent
+    , ProjectDataItemComponent
   ]
 })
 export class ComponentsModule {

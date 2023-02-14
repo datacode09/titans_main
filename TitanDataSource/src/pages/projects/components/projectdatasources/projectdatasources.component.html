@@ -5,7 +5,10 @@
     </div>
 
   </div>
-  <div class="card-body" style="height: 400px"> 
+  <div class="card-body" style="height: 400px">
+    <div class="projectdatasources container" *ngFor="let data of datasets">
+         <projectdataitem-root [data]="data"> </projectdataitem-root>
+    </div>
   </div>
   <div class="card-footer">   
   </div>
