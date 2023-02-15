@@ -1,12 +1,12 @@
 package rm.titansdata;
 
+import org.apache.sis.geometry.DirectPosition2D;
+import org.apache.sis.referencing.CRS;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
-import org.apache.sis.geometry.DirectPosition2D;
-import org.apache.sis.referencing.CRS;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.CoordinateOperation;
@@ -81,6 +81,7 @@ public class SridUtils {
       try {
         int sourceSrid = p.getSRID();
         if (targetSrid == 4326) {
+          
           CoordinateReferenceSystem target = CRS.forCode("EPSG:" + targetSrid);
           CoordinateReferenceSystem source = CRS.forCode("EPSG:" + sourceSrid);
           CoordinateOperation op = CRS.findOperation(target, source, null);

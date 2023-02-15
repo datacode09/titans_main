@@ -6,6 +6,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import rm.titansdata.web.user.login.Credentials;
 
 /**
@@ -75,5 +77,13 @@ public class SessionManager implements ApplicationContextAware {
       .findFirst().orElse(null);
     return result;
   }
-
+  /**
+   * 
+   * @return 
+   */
+  public static String getSessionAuthToken()  {
+    ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+    String authToken = attr.getRequest().getHeader("AUTH-TOKEN");
+    return authToken;
+  }
 }

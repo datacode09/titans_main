@@ -6,6 +6,7 @@ import {DataSource} from './components/DataSource';
 import {Project} from './components/Project';
 import {ProjectStore} from './ProjectStore';
 import {ProjectSource} from './ProjectSource';
+import {RastersService} from 'src/services/rasterservices/RastersService';
 
 @Injectable({
   providedIn: 'root'
@@ -20,10 +21,11 @@ export class ProjectService {
   /**
    * 
    */
-  public constructor(private source: ProjectSource, private store: ProjectStore) {
+  public constructor(private service:RastersService, private source: ProjectSource, private store: ProjectStore) {
     this.projects.subscribe(this.store.storeProjects.bind(this.store));
     this.projects.subscribe(this.initGeographies.bind(this));
     this.projects.subscribe(this.initProjectDataSource.bind(this));
+    this.selectedProject.subscribe(this.store.storeSelectedProject.bind(this.store));
     setTimeout(() => {
       this.source.loadProjects().subscribe(projEntities => {
         const projects = projEntities.map(p => p.toProject());
@@ -34,6 +36,7 @@ export class ProjectService {
       });
     });
   }
+  
 
   /**
    * 
@@ -58,8 +61,8 @@ export class ProjectService {
   }
 
   /**
- * 
- */
+   * 
+   */
   private storeDataSources(projectId: number, a: DataSource[]) {
     this.store.storeDataSources(projectId, a.map(d => d.rastergroupid));
   }
@@ -71,18 +74,17 @@ export class ProjectService {
   private initProjectDataSource(projects: Project[]): void {
     projects.forEach(p => {
       if (!this.projectdata.has(p.id)) {
-        const arr: DataSource[] = [];
-        for (let i = 1; i <= Math.round(Math.random() * 10); i++) {
-          const d = new DataSource(i, "Fake data " + i.toPrecision(2) + " for " + p.title);
-          arr.push(d);
-        }
-        const sub = new BehaviorSubject(arr);
+        const sub = new BehaviorSubject([]);
+        this.service.getRasters().subscribe(arr=>{
+          sub.next(arr.map(a => new DataSource(a.id, a.name)));
+        }); 
         this.projectdata.set(p.id, sub);
         sub.subscribe(a => this.storeDataSources(p.id, a));
       }
     });
   }
-
+  
+  
 
   /*
    * 

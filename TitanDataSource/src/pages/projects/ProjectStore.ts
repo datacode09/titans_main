@@ -30,6 +30,19 @@ export class ProjectStore {
   /**
    * 
    */
+  public storeSelectedProject(p: Project): void {
+    const url = this.baseUrl + "/setProject";
+    const params = new HttpParams()
+      .set("project_id", p == null ? "" : p.id + "")
+    this.http.post(url, {}, {params: params}).subscribe(response => {
+      console.log(response);
+    });
+  }
+
+
+  /**
+   * 
+   */
   private storeProject(p: Project): void {
     const url = this.baseUrl + "/createProject";
     const params = new HttpParams()
@@ -68,11 +81,11 @@ export class ProjectStore {
     const url = this.baseUrl + "/setProjectGeometry";
     const params = new HttpParams()
       .set("project_id", projectId + "")
-      .set("lowerleft", g === null ? "": JSON.stringify(g.lowerleft()))
-      .set("upperright",g === null ? "": JSON.stringify(g.upperright()))
-      .set("srid", g === null ? "": g.srid() + "");
+      .set("lowerleft", g === null ? "" : JSON.stringify(g.lowerleft()))
+      .set("upperright", g === null ? "" : JSON.stringify(g.upperright()))
+      .set("srid", g === null ? "" : g.srid() + "");
     this.http.post(url, {}, {params: params}).subscribe((response: any) => {
-      console.log(response); 
+      console.log(response);
     });
   }
 }

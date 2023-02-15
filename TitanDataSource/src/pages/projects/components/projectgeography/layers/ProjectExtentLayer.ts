@@ -121,7 +121,7 @@ export class ProjectExtentLayer {
     const xmax = evt.geometry.xmax; 
     const ymin = evt.geometry.ymin; 
     const ymax = evt.geometry.ymax; 
-    const srid = evt.geometry.spatialReference.wkid;
+    const srid = 3857;
     const env = new Envelope(xmin, xmax, ymin, ymax, srid);
     const geography = new Geography({envelope:env});
     const projectId = this.service.getSelectedProjectValue().id;

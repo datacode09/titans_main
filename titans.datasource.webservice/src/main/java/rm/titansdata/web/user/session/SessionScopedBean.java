@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 public class SessionScopedBean<T> {
 
   private final SessionManager m;
-  private final Supplier<T> supplier;
+  private Supplier<T> supplier;
 
   public SessionScopedBean(SessionManager m, Supplier<T> supplier) {
     this.m = m;
@@ -29,5 +29,18 @@ public class SessionScopedBean<T> {
       result = null;
     }
     return result;
+  }
+
+  /**
+   * 
+   * @param authToken
+   * @param p 
+   */
+  public void setValue(String authToken, T p) {
+    if (this.m.existsByToken(authToken)) {
+      this.supplier = () -> p;
+    } else {
+      throw new RuntimeException(); 
+    }
   }
 }

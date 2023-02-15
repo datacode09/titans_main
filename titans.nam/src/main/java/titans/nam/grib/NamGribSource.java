@@ -10,9 +10,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import titans.nam.NoaaParameter;
 
@@ -23,49 +23,74 @@ import titans.nam.NoaaParameter;
 public class NamGribSource {
 
   private final String url = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/nam/prod/";
-  
-  
+
   /**
-   * 
+   *
    * @param parentKey
-   * @return 
+   * @return
    */
   public List<NoaaParameter> getCurrentNamParameters(String parentKey) {
     long minusDays = 2l;
     List<NoaaParameter> result = this.getCurrentNamParameters(minusDays, parentKey);
     return result;
   }
+
+  /**
+   *
+   * @param minusDays
+   * @param parentKey
+   * @return
+   */
+  public List<NoaaParameter> getCurrentNamParameters(long minusDays, String parentKey) {
+    ZonedDateTime date = this.getDateForNamParameters(minusDays);
+    String fullUrl = this.getNamParametersFullUrl(date);
+    List<NoaaParameter> result = new RmHttpReader.Builder(fullUrl)
+      .readTo((text) -> this.parseFullHtmlText(parentKey, date, text));
+    result.stream()
+      .sorted((o1, o2) -> -o1.datetime.compareTo(o2.datetime))
+      .findFirst()
+      //      .ifPresent(maxparameter -> result.removeIf(e -> !e.datetime.equals(maxparameter.datetime)));
+      .ifPresent(maxparameter -> result.removeIf(e -> !Objects.equal(e.datetime.getHour(), 0)));
+    return result;
+  }
   
   /**
    * 
    * @param minusDays
-   * @param parentKey
    * @return 
    */
-  public List<NoaaParameter> getCurrentNamParameters(long minusDays, String parentKey) {
-    DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("yyyyMMdd").toFormatter();
-    ZonedDateTime date = ZonedDateTime.now(ZoneId.of("UTC"))
+  private ZonedDateTime getDateForNamParameters(long minusDays) {
+    return ZonedDateTime.now(ZoneId.of("UTC"))
       .minusDays(minusDays)
       .truncatedTo(ChronoUnit.DAYS);
+  }
+  
+  /**
+   * 
+   * @param date
+   * @return 
+   */
+  private String getNamParametersFullUrl(ZonedDateTime date) {
+    DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+      .appendPattern("yyyyMMdd")
+      .toFormatter();
     String datetext = date
       .format(formatter);
     String fullUrl = this.url + "nam." + datetext;
-    List<NoaaParameter> result = new ArrayList<>();
-    String var = "TMP_2-HTGL";
-    new RmHttpReader.Builder(fullUrl).read((text) -> {
-      Arrays.stream(text.split("\n")) //
+    return fullUrl;
+  }
+  
+  private List<NoaaParameter> parseFullHtmlText(String parentKey, ZonedDateTime date, String text )  {
+        String var = "TMP_2-HTGL";
+    List<NoaaParameter> a = Arrays.stream(text.split("\n")) //
         .filter(this::isConusNestLine)
         .map(this::toForecastTimeRef)
         .map(d -> new NoaaParameter(parentKey, date, d, var))
-        .forEach(result::add);
-    });
-    result.stream()
-      .sorted((o1, o2) -> -o1.datetime.compareTo(o2.datetime))
-      .findFirst()
-//      .ifPresent(maxparameter -> result.removeIf(e -> !e.datetime.equals(maxparameter.datetime)));
-      .ifPresent(maxparameter -> result.removeIf(e -> !Objects.equal(e.datetime.getHour(), 0)));
-    return result;
+        .collect(Collectors.toList());
+      return a;
   }
+  
+  
 
   /**
    *
@@ -122,22 +147,46 @@ public class NamGribSource {
    * @param gribFile
    */
   public void download(GribFile gribFile) {
+    URL gribUrl = this.getGribUrl(gribFile);
+    this.createGribFileParent(gribFile);
+    if (!gribFile.exists()) {
+      this.doDownload(gribUrl, gribFile);
+    }
+  }
+
+  /**
+   *
+   * @param gribFile
+   * @return
+   */
+  private URL getGribUrl(GribFile gribFile) {
     String urlText = this.createUrl(gribFile);
     URL gribUrl = this.toUrlObject(urlText);
+    return gribUrl;
+  }
+
+  /**
+   *
+   * @param gribFile
+   * @param gribUrl
+   * @throws RuntimeException
+   */
+  private void doDownload(URL gribUrl, GribFile gribFile) {
+    System.out.println("Importing file : " + gribFile.grib);
+    try (OutputStream output = gribFile.getOutputStream()) {
+      IOUtils.copy(gribUrl.openStream(), output);
+    } catch (Exception ex) {
+      gribFile.delete();
+      throw new RuntimeException("Error on copying stream.  Check args:{"
+        + "output file : " + gribFile
+        + ", connection : " + gribUrl
+        + "}", ex);
+    }
+  }
+
+  private void createGribFileParent(GribFile gribFile) {
     if (!gribFile.grib.getParentFile().exists()) {
       gribFile.grib.getParentFile().mkdirs();
-    }
-    if (!gribFile.exists()) {
-      System.out.println("Importing file : " + gribFile.grib);
-      try (OutputStream output = gribFile.getOutputStream()) {
-        IOUtils.copy(gribUrl.openStream(), output);
-      } catch (Exception ex) {
-        gribFile.delete();
-        throw new RuntimeException("Error on copying stream.  Check args:{"
-          + "output file : " + gribFile
-          + ", connection : " + gribUrl
-          + "}", ex);
-      }
     }
   }
 

@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.annotation.SessionScope;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import rm.titansdata.web.project.ProjectEntity;
 
 /**
  *
@@ -20,6 +19,7 @@ public class UserScopeConfiguration {
   private SessionManager sessionManager;
 
   private final Map<String, SessionScopedBean<UserToken>> tokens = new HashMap<>();
+  private final Map<String, SessionScopedBean<ProjectEntity>> projects = new HashMap<>();
 
   /**
    *
@@ -39,13 +39,30 @@ public class UserScopeConfiguration {
   }
   
   /**
+   *
+   * @return
+   */
+  @SessionScope
+  @Bean("user.project")
+  public SessionScopedBean<ProjectEntity> userProject() {
+    String key = this.getKey();   
+    if (!this.projects.containsKey(key)) {
+      SessionScopedBean<ProjectEntity> result = new SessionScopedBean<>(this.sessionManager, () -> null);
+      this.projects.put(key, result);
+    }
+    SessionScopedBean<ProjectEntity> result = this.projects.get(key);
+    return result;
+  }
+  
+  /**
    * 
    * @return 
    */
   private String getKey() {
-    ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-    String authToken = attr.getRequest().getHeader("AUTH-TOKEN");
+    String authToken = SessionManager.getSessionAuthToken();
     String key = (authToken == null ? "" : authToken);
     return key;
   }
+  
+
 }

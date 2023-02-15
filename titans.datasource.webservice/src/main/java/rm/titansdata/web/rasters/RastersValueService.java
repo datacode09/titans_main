@@ -7,6 +7,7 @@ import org.apache.commons.math3.util.Pair;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
 import rm.titansdata.properties.Bounds;
@@ -15,6 +16,9 @@ import rm.titansdata.properties.Properties;
 import rm.titansdata.raster.Raster;
 import rm.titansdata.raster.RasterCells;
 import rm.titansdata.raster.RasterObj;
+import rm.titansdata.web.project.ProjectEntity;
+import rm.titansdata.web.user.session.SessionManager;
+import rm.titansdata.web.user.session.SessionScopedBean;
 
 /**
  *
@@ -28,6 +32,10 @@ public class RastersValueService {
 
   @Autowired
   private RasterFactorySupplier supplier;
+
+  @Autowired
+  @Qualifier("user.project")
+  private SessionScopedBean<ProjectEntity> projectBean;
 
   /**
    *
@@ -75,6 +83,8 @@ public class RastersValueService {
     Bounds bounds = rasterEntity.getBounds();
     Dimensions dims = rasterEntity.getDimensions();
     long typeId = rasterEntity.rasterTypeId;
+    ProjectEntity project = this.projectBean.getValue(SessionManager.getSessionAuthToken()); 
+    bounds = new Bounds(project.lowerleft, project.upperright);
     Raster raster = this.supplier.builder()
       .setTypeId(typeId)
       .setSourceTitle(key)
@@ -85,13 +95,13 @@ public class RastersValueService {
     RasterObj rasterObj = new RasterObj(key, properties, raster);
     return rasterObj;
   }
-  
+
   /**
-   * 
+   *
    * @param rasterId
    * @param parameters
    * @param point
-   * @return 
+   * @return
    */
   Map<Parameter, Double> getPointRasterValues(long rasterId, List<Parameter> parameters, Point point) {
     Map<Parameter, Double> result = parameters.stream()

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {DataSource} from '../../DataSource';
 
 
@@ -7,11 +7,11 @@ import {DataSource} from '../../DataSource';
   , templateUrl: "./projectdataitem.component.html"
   , styleUrls: ["projectdataitem.component.css"]
 })
-export class ProjectDataItemComponent implements OnInit {
-
+export class ProjectDataItemComponent implements OnInit, OnDestroy {
 
   @Input()
-  public data: DataSource;
+  public data: DataSource;  
+  public selected = true;  
   
   /**
    * 
@@ -23,6 +23,20 @@ export class ProjectDataItemComponent implements OnInit {
    * 
    */
   public ngOnInit(): void {
+    
   }
-
+  
+  /**
+   * 
+   */
+  public onSelectedChanged(evt:any) {
+    this.selected = !this.selected
+  }
+  
+  /**
+   * 
+   */
+  public ngOnDestroy(): void {
+    
+  }
 }
