@@ -4,6 +4,7 @@ import {Project} from '../../Project';
 import {Subscription, BehaviorSubject} from 'rxjs';
 import {Objects} from 'src/core/types/Objects';
 import {Geography} from '../../Geography';
+import {Envelope} from 'src/core/types/Envelope';
 
 declare var dojo: any;
 declare var esri: any;
@@ -14,8 +15,8 @@ export class ProjectExtentLayer {
   private toolbar: any = null;
   private geographySubscriber: Subscription = null;
   private activeToolbar: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  private layer:any = null;
-  
+  private layer: any = null;
+
   /**
    * 
    */
@@ -56,7 +57,7 @@ export class ProjectExtentLayer {
     }
     if (Objects.isNotNull(p)) {
       const projGeography = this.service.getProjectGeography(p.id);
-      
+
       this.geographySubscriber
         = projGeography.subscribe(this.onProjectGeographyChanged.bind(this));
     }
@@ -64,20 +65,21 @@ export class ProjectExtentLayer {
 
   private onProjectGeographyChanged(g: Geography): void {
     this.updateActiveState(g);
-    this.updateMapLayer(g); 
+    this.updateMapLayer(g);
   }
-  
+
   /**
    * 
    */
-  private updateMapLayer(g: Geography):void {
+  private updateMapLayer(g: Geography): void {
     this.layer.clear();
     if (g != null) {
-      const extent = esri.geometry.Extent(g.geometry);
-      const graphicSymbol = esri.symbol.SimpleFillSymbol(); 
+      console.log(g);
+      const extent = esri.geometry.Extent(g.toMapGeometry());
+      const graphicSymbol = esri.symbol.SimpleFillSymbol();
       const graphic = new esri.Graphic(extent, graphicSymbol);
-      this.layer.add(graphic); 
-      this.layer.getMap().centerAt(extent.getCenter()); 
+      this.layer.add(graphic);
+      this.layer.getMap().centerAt(extent.getCenter());
     }
   }
 
@@ -98,7 +100,7 @@ export class ProjectExtentLayer {
       dojo.addOnLoad(() => {
         self.initToolBar(map);
       });
-      self.initMapLayer(map); 
+      self.initMapLayer(map);
     }
   }
 
@@ -107,9 +109,24 @@ export class ProjectExtentLayer {
    */
   private onDrawComplete(evt: any): void {
     console.log(evt.geometry);
-    const geography = new Geography(evt.geometry);
-    this.service.setGeography(this.service.getSelectedProjectValue().id, geography); 
-    this.manager.setActivateDrawGeography(false); 
+    this.setGeographyFromDrawEvent(evt);
+    this.manager.setActivateDrawGeography(false);
+  }
+
+  /**
+   * 
+   */
+  private setGeographyFromDrawEvent(evt: any): void {
+    const xmin = evt.geometry.xmin; 
+    const xmax = evt.geometry.xmax; 
+    const ymin = evt.geometry.ymin; 
+    const ymax = evt.geometry.ymax; 
+    const srid = evt.geometry.spatialReference.wkid;
+    const env = new Envelope(xmin, xmax, ymin, ymax, srid);
+    const geography = new Geography({envelope:env});
+    const projectId = this.service.getSelectedProjectValue().id;
+    this.service.setGeography(projectId, geography);
+
   }
 
   /**
@@ -119,11 +136,11 @@ export class ProjectExtentLayer {
     this.layer = new esri.layers.GraphicsLayer();
     map.addLayer(this.layer);
   }
-  
+
   /**
    * 
    */
-  private initToolBar(map:any):void {
+  private initToolBar(map: any): void {
     this.toolbar = new esri.toolbars.Draw(map);
     this.toolbar.on("draw-end", this.onDrawComplete.bind(this));
     this.updateToolBar(this.manager.getActivateDrawGeographyValue());

@@ -16,21 +16,23 @@ export class ProjectService {
   private geographies: Map<number, BehaviorSubject<Geography>> = new Map();
   private projectdata: Map<number, BehaviorSubject<DataSource[]>> = new Map();
   private selectedProject: BehaviorSubject<Project> = new BehaviorSubject(null);
-  
+
   /**
    * 
    */
-  public constructor(private source:ProjectSource, private store:ProjectStore) {
+  public constructor(private source: ProjectSource, private store: ProjectStore) {
     this.projects.subscribe(this.store.storeProjects.bind(this.store));
     this.projects.subscribe(this.initGeographies.bind(this));
     this.projects.subscribe(this.initProjectDataSource.bind(this));
-    setTimeout(()=>{
-      this.source.loadProjects().subscribe(projEntities=>{
-        const projects = projEntities.map(p=>p.toProject());
+    setTimeout(() => {
+      this.source.loadProjects().subscribe(projEntities => {
+        const projects = projEntities.map(p => p.toProject());
         this.projects.next(projects);
-      }); 
+        projEntities.forEach(p => {
+          this.setGeography(p.projectId, p.toGeometry());
+        });
+      });
     });
-    
   }
 
   /**
@@ -39,7 +41,9 @@ export class ProjectService {
   private initGeographies(projects: Project[]): void {
     projects.forEach(p => {
       if (!this.geographies.has(p.id)) {
-        this.geographies.set(p.id, new BehaviorSubject(null));
+        const sub = new BehaviorSubject(null);
+        this.geographies.set(p.id, sub);
+        sub.subscribe(g => this.storeGeography(p.id, g));
       }
     });
   }
@@ -47,18 +51,38 @@ export class ProjectService {
   /**
    * 
    */
+  private storeGeography(projectId: number, g: Geography): void {
+    if (g != null) {
+      this.store.storeGeography(projectId, g);
+    }
+  }
+
+  /**
+ * 
+ */
+  private storeDataSources(projectId: number, a: DataSource[]) {
+    this.store.storeDataSources(projectId, a.map(d => d.rastergroupid));
+  }
+
+
+  /**
+   * 
+   */
   private initProjectDataSource(projects: Project[]): void {
     projects.forEach(p => {
       if (!this.projectdata.has(p.id)) {
-        const arr:DataSource[] = [];
-        for (let i = 1; i <= Math.round(Math.random()*10); i++) {
-          const d = new DataSource("Fake data 01 for " + p.title);
-          arr.push(d); 
+        const arr: DataSource[] = [];
+        for (let i = 1; i <= Math.round(Math.random() * 10); i++) {
+          const d = new DataSource(i, "Fake data " + i.toPrecision(2) + " for " + p.title);
+          arr.push(d);
         }
-        this.projectdata.set(p.id, new BehaviorSubject(arr));
+        const sub = new BehaviorSubject(arr);
+        this.projectdata.set(p.id, sub);
+        sub.subscribe(a => this.storeDataSources(p.id, a));
       }
     });
   }
+
 
   /*
    * 

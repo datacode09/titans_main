@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Project} from './components/Project';
 import {HttpClient, HttpParams} from '@angular/common/http';
+import {Geography} from './components/Geography';
 
 
 @Injectable({
@@ -18,14 +19,14 @@ export class ProjectStore {
   public storeProjects(projects: Project[]): void {
     projects.forEach(this.storeProjectIfNotExists.bind(this));
   }
-  
+
   /**
    * 
    */
-  private storeProjectIfNotExists(project:Project):void {
-    this.ifProjectNotExists(project.id, () => this.storeProject(project)); 
+  private storeProjectIfNotExists(project: Project): void {
+    this.ifProjectNotExists(project.id, () => this.storeProject(project));
   }
-  
+
   /**
    * 
    */
@@ -50,6 +51,28 @@ export class ProjectStore {
       if (!response.exists) {
         consumer();
       }
+    });
+  }
+
+  /**
+   * 
+   */
+  public storeDataSources(projectId: number, a: number[]) {
+
+  }
+
+  /**
+   * 
+   */
+  public storeGeography(projectId: number, g: Geography): void {
+    const url = this.baseUrl + "/setProjectGeometry";
+    const params = new HttpParams()
+      .set("project_id", projectId + "")
+      .set("lowerleft", g === null ? "": JSON.stringify(g.lowerleft()))
+      .set("upperright",g === null ? "": JSON.stringify(g.upperright()))
+      .set("srid", g === null ? "": g.srid() + "");
+    this.http.post(url, {}, {params: params}).subscribe((response: any) => {
+      console.log(response); 
     });
   }
 }

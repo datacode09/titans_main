@@ -39,10 +39,10 @@ public class ProjectServlet extends HttpServlet {
     int project_id = new RequestParser(req).getInteger("project_id");
     boolean exists = this.service.projectExists(project_id);
     HashMap<String, Object> result = new HashMap<>();
-    result.put("exists", exists); 
+    result.put("exists", exists);
     this.responseHelper.send(result, response);
   }
-  
+
   /**
    *
    * @param req
@@ -55,7 +55,7 @@ public class ProjectServlet extends HttpServlet {
   public void createProject(HttpServletRequest req, HttpServletResponse response) {
     int project_id = new RequestParser(req).getInteger("project_id");
     String name = new RequestParser(req).getString("project_name");
-    this.service.createProject(project_id, name);   
+    this.service.createProject(project_id, name);
     this.responseHelper.send(new HashMap<>(), response);
   }
 
@@ -85,11 +85,15 @@ public class ProjectServlet extends HttpServlet {
   )
   public void setProjectGeometry(HttpServletRequest req, HttpServletResponse response) {
     int project_id = new RequestParser(req).getInteger("project_id");
-    int srid = new RequestParser(req).getInteger("srid");
-    Point lowerleft = new RequestParser(req).getPoint("lowerleft", srid);
-    Point upperright = new RequestParser(req).getPoint("upperright", srid);
-    this.service.setProjectGeometry(project_id, lowerleft, upperright);
-    this.responseHelper.send(new HashMap<>(), response);
+    if (!req.getParameter("srid").isEmpty()) {  
+      int srid = new RequestParser(req).getInteger("srid");
+      Point lowerleft = new RequestParser(req).getPoint("lowerleft", srid);
+      Point upperright = new RequestParser(req).getPoint("upperright", srid);
+      this.service.setProjectGeometry(project_id, lowerleft, upperright);
+    } else {
+      this.service.setProjectGeometry(project_id, null, null);
+    }
+    this.responseHelper.send(new HashMap<>(), response);  
   }
 
   /**
@@ -123,7 +127,7 @@ public class ProjectServlet extends HttpServlet {
     this.service.removeProjectDataSources(project_id, raster_ids);
     this.responseHelper.send(new HashMap<>(), response);
   }
-  
+
   /**
    *
    * @param req
@@ -139,6 +143,5 @@ public class ProjectServlet extends HttpServlet {
     map.put("projects", projects);
     this.responseHelper.send(map, response);
   }
-  
-  
+
 }

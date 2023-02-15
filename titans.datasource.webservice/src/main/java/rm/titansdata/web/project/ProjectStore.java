@@ -90,19 +90,23 @@ public class ProjectStore {
    * @return
    */
   private String getSaveProjectGeometry(int projectId, Point lowerleft, Point upperight) {
-    int srid = upperight.getSRID();
-    if (!Objects.equal(upperight.getSRID(), lowerleft.getSRID())) {
-      throw new RuntimeException("Srids are not equal");
+    String result;  
+    if (lowerleft == null && upperight == null) {
+      result = "delete from projects.project_envelope p where p.project_id = " + projectId;
+    } else {
+      int srid = upperight.getSRID();
+      if (!Objects.equal(upperight.getSRID(), lowerleft.getSRID())) {
+        throw new RuntimeException("Srids are not equal");
+      }
+      result = "insert into \n"
+        + "projects.project_envelope(project_id, lowerleft, upperright, srid) \n"
+        + String.format("values (%d, POINT(%f,%f), POINT(%f,%f), %d) \n",
+          projectId, lowerleft.getX(), lowerleft.getY(), upperight.getX(), upperight.getY(), srid)
+        + "on conflict (project_id) do update \n"
+        + "set lowerleft=excluded.lowerleft\n"
+        + ", upperright=excluded.upperright\n"
+        + ", srid=excluded.srid";
     }
-    String result = "insert into \n"
-      + "projects.project_envelope(project_id, lowerleft, upperright, srid) \n"
-      + String.format("values (%d, POINT(%f,%f), POINT(%f,%f), %d) \n", 
-        projectId, lowerleft.getX(), lowerleft.getY(), upperight.getX(), upperight.getY(), srid)
-      + "on conflict (project_id) do update \n"
-      + "set lowerleft=excluded.lowerleft\n"
-      + ", upperright=excluded.lowerleft\n"
-      + ", srid=excluded.srid"
-      ;
     return result;
   }
 
@@ -117,7 +121,7 @@ public class ProjectStore {
       .mapToObj(Long::toString)
       .collect(Collectors.joining(","));
     String query = "delete from projects.projectdatasource where \n"
-      + String.format("project_id = %d\n", projectId)  
+      + String.format("project_id = %d\n", projectId)
       + String.format(" and rastergroup_id = any(array[%s])", q);
     return query;
   }

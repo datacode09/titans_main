@@ -9,6 +9,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -119,11 +120,11 @@ public class RequestParser {
       .toOffsetDateTime().atZoneSimilarLocal(ZoneId.of(zoneId));
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param param
-   * @return 
+   * @return
    */
   public Long getLong(String param) {
     long result = Long.parseLong(this.request.getParameter(param));
@@ -131,10 +132,10 @@ public class RequestParser {
   }
 
   /**
-   * 
+   *
    * @param geometry
    * @param srid
-   * @return 
+   * @return
    */
   public Geometry parseGeometry(String geometry, int srid) {
     try {
@@ -144,18 +145,50 @@ public class RequestParser {
       Geometry result = reader.read(text);
       return result;
     } catch (ParseException ex) {
-      throw new RuntimeException(ex); 
+      throw new RuntimeException(ex);
     }
   }
 
-  public long[] getLongArray(String rastergroupids) {
+  /**
+   *
+   * @param rastergroupids
+   * @return
+   */
+  public long[] getLongArray(String rastergroupids) {  
     //To change body of generated methods, choose Tools | Templates.
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
-  public Point getPoint(String lowerleft, int srid) {
-    //To change body of generated methods, choose Tools | Templates.
-    throw new UnsupportedOperationException("Not supported yet.");
+  /**
+   * 
+   * @param paramname
+   * @param srid
+   * @return 
+   */
+  public Point getPoint(String paramname, int srid) { 
+    String json = this.request.getParameter(paramname);
+    Point result = RequestParser.getPointFromJsonText(json, srid);
+    return result;
+  }
+  /**
+   *
+   * @param jsontext
+   * @param srid
+   * @return
+   */
+  public static Point getPointFromJsonText(String jsontext, int srid) {
+    try {
+      PrecisionModel model = new PrecisionModel(PrecisionModel.FLOATING);
+      GeometryFactory factory = new GeometryFactory(model, srid);
+      JSONObject obj = new JSONObject(jsontext);
+      double x = obj.getDouble("x");
+      double y = obj.getDouble("y");
+      Coordinate coordinate = new Coordinate(x, y);
+      Point point = factory.createPoint(coordinate);
+      return point;
+    } catch(Exception ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 }

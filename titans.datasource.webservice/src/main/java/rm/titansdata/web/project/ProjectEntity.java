@@ -37,8 +37,7 @@ public class ProjectEntity implements Serializable{
    */
   @Override
   public String toString() {
-    return "{" + "projectId=" + projectId + ", projectName=" + projectName + '}';
+    return "ProjectEntity{" + "projectId=" + projectId + ", projectName=" + projectName + ", lowerleft=" + lowerleft + ", upperright=" + upperright + ", rastergroupIds=" + rastergroupIds + '}';
   }
-  
   
 }

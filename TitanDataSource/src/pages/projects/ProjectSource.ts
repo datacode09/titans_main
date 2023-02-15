@@ -36,26 +36,25 @@ export class ProjectSource {
     const result = response.projects.map(this.toProjectEntity.bind(this));
     return result;
   }
-    
+
   /**
    * 
    */
-  private toProjectEntity(p:any):ProjectEntity {
-    console.log(p); 
+  private toProjectEntity(p: any): ProjectEntity {
     const id: number = p.projectId;
-      const title: string = p.projectName;
-      const srid: number = p.srid;
-      const lowerleft: any = p.lowerleft;
-      const upperright: any = p.upperright;
-      const rastergroupIds: any = p.rastergroupIds;
-      const result = new ProjectEntity({
-        projectId: id,
-        name: title,
-        lowerleft: lowerleft,
-        upperright: upperright,
-        srid: srid,
-        rastergroupIds: rastergroupIds,
-      });
-      return result;
+    const title: string = p.projectName;
+    const srid: number = p.lowerleft.srid;
+    const lowerleft: any = p.lowerleft;
+    const upperright: any = p.upperright;
+    const rastergroupIds: any = p.rastergroupIds;
+    const result = new ProjectEntity({
+      projectId: id,
+      name: title,
+      lowerleft: lowerleft,
+      upperright: upperright,
+      srid: srid,
+      rastergroupIds: rastergroupIds,
+    });
+    return result;
   }
 }

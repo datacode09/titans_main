@@ -1,4 +1,7 @@
 import {Project} from './components/Project';
+import {Geography} from './components/Geography';
+import {Envelope} from 'src/core/types/Envelope';
+import {Objects} from 'src/core/types/Objects';
 
 
 export class ProjectEntity {
@@ -24,11 +27,28 @@ export class ProjectEntity {
     this.srid = arg.srid;
     this.rastergroupIds = arg.rastergroupIds;
   }
-    
+
   /**
    * 
    */
-  public toProject():Project {
+  public toGeometry(): Geography {
+    let result: Geography = null;
+    if (Objects.isNotNull(this.srid)) {
+      const xmin = this.lowerleft.x;
+      const xmax = this.upperright.x;
+      const ymin = this.lowerleft.y;
+      const ymax = this.upperright.y;
+      const spatialReference = this.srid;
+      const envelope = new Envelope(xmin, xmax, ymin, ymax, spatialReference);
+      result = new Geography({envelope:envelope});
+    } 
+    return result;
+  }
+
+  /**
+   * 
+   */
+  public toProject(): Project {
     const result = new Project(this.projectId, this.name);
     return result;
   }
