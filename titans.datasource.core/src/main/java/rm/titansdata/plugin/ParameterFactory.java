@@ -1,6 +1,7 @@
 package rm.titansdata.plugin;
 
 import java.util.List;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import rm.titansdata.Parameter;
 
@@ -41,5 +42,13 @@ public interface ParameterFactory {
    * @return
    */
   public List<Parameter> getParameters(Clazz... clazzes);
+
+  
+  /**
+   * 
+   * @param arr
+   * @return 
+   */
+  public List<Clazz> getClasses(JSONArray arr);
 
 }

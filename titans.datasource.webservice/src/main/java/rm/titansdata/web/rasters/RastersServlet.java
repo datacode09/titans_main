@@ -17,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import rm.titansdata.Parameter;
+import rm.titansdata.plugin.ClassType;
+import rm.titansdata.plugin.Clazz;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.raster.RasterCells;
 import rm.titansdata.web.RequestParser;
@@ -46,7 +48,7 @@ public class RastersServlet {
 
   @Autowired
   private AbstractParameterFactory parameterFactory;
-  
+
   @Autowired
   @Qualifier("user.project")
   private SessionScopedBean<ProjectEntity> projectEntity;
@@ -69,27 +71,67 @@ public class RastersServlet {
     map.put("values", obj.toString());
     this.responseHelper.send(map, response);
   }
-  
+
   /**
-   * 
+   *
    * @param req
-   * @param response 
+   * @param response
    */
-  @RequestMapping(path="/getRasterParameters", //
+  @RequestMapping(path = "/getRasterClasses",
+    params = {"rasterId"},
+    method = RequestMethod.GET
+  )
+  public void getRasterClasses(HttpServletRequest req, HttpServletResponse response) {
+    RequestParser parser = new RequestParser(req);
+    Long rasterId = parser.getLong("rasterId");
+    RasterEntity raster = this.rastersSourceService.getRaster(rasterId);
+    String sourceTitle = raster.sourceTitle;
+    Map<ClassType, List<Clazz>> a = this.parameterFactory.getClasses(sourceTitle);
+    JSONObject f = new JSONObject();
+    a.forEach((k, v) -> {
+      JSONArray jsonObj = new JSONArray();
+      for (Clazz clazze : v) {
+        jsonObj.put(clazze.toJson());
+      }
+      try {
+        f.put(k.name(), jsonObj);
+      } catch (JSONException ex) {
+        throw new RuntimeException(ex);
+      }
+    });
+    Map<String, Object> map = new HashMap<>();
+    map.put("clazzes", f);
+    this.responseHelper.send(map, response);
+  }
+
+  /**
+   *
+   * @param req
+   * @param response
+   */
+  @RequestMapping(path = "/getRasterParameters", //
     method = RequestMethod.GET, //
-    params = {"rasterId"})//
+    params = {"rasterId", "clazzes"
+    })//
   public void getRasterParameters(HttpServletRequest req, HttpServletResponse response) {
     RequestParser parser = new RequestParser(req);
-    Long rasterId = parser.getLong("rasterId");  
+    Long rasterId = parser.getLong("rasterId");
+
     RasterEntity raster = this.rastersSourceService.getRaster(rasterId);
-    String sourceTitle = raster.sourceTitle; 
-    List<JSONObject> params = this.parameterFactory.getParameters(sourceTitle)
-      .stream()    
-      .map(p->p.toJSONObject())
-      .collect(Collectors.toList())
-      ;
+    String sourceTitle = raster.sourceTitle;
+    JSONArray jsonArray;
+    try {
+      jsonArray = new JSONArray(req.getParameter("clazzes"));
+    } catch (JSONException ex) {
+      throw new RuntimeException(ex);
+    }
+    List<Clazz> clazzes = this.parameterFactory.getClasse(sourceTitle, jsonArray);
+    List<JSONObject> params = this.parameterFactory.getParameters(sourceTitle, clazzes)
+      .stream()
+      .map(p -> p.toJSONObject())
+      .collect(Collectors.toList());
     Map<String, Object> map = new HashMap<>();
-    map.put("values", params); 
+    map.put("values", params);
     this.responseHelper.send(map, response);
   }
 
@@ -173,9 +215,9 @@ public class RastersServlet {
   }
 
   /**
-   * 
+   *
    * @param req
-   * @param res 
+   * @param res
    */
   @RequestMapping(
     path = "/getRasterValue",
@@ -191,14 +233,14 @@ public class RastersServlet {
     Parameter param = parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
     double value = this.rastersValueService.getRasterValue(rasterId, param, point);
-    map.put("value", value);  
+    map.put("value", value);
     this.responseHelper.send(map, res);
   }
-    
+
   /**
-   * 
+   *
    * @param req
-   * @param res 
+   * @param res
    */
   @RequestMapping(
     path = "/getRasterPointValues",
@@ -211,12 +253,12 @@ public class RastersServlet {
     int srid = parser.getInteger("srid");
     Point point = (Point) parser.parseGeometry("point", srid);
     JSONArray jsonObject = this.getParametersJsonArray(parser);
-    List<Parameter> param = this.parameterFactory.get(jsonObject);  
-    Map<String, Object> map = new HashMap<>();  
+    List<Parameter> param = this.parameterFactory.get(jsonObject);
+    Map<String, Object> map = new HashMap<>();
     Map<Parameter, Double> values = this.rastersValueService.getPointRasterValues(rasterId, param, point);
     Map<String, Double> s = values.entrySet().stream()
-      .collect(Collectors.toMap(d->d.getKey().getKey(), d->d.getValue()));
-    map.put("values", s);    
+      .collect(Collectors.toMap(d -> d.getKey().getKey(), d -> d.getValue()));
+    map.put("values", s);
     this.responseHelper.send(map, res);
   }
 
@@ -235,7 +277,7 @@ public class RastersServlet {
     }
     return result;
   }
-  
+
   /**
    *
    * @param parser
@@ -245,7 +287,7 @@ public class RastersServlet {
     JSONArray result;
     try {
       String string = parser.getString("parameters");
-      result = new JSONArray(string); 
+      result = new JSONArray(string);
     } catch (JSONException ex) {
       throw new RuntimeException(ex);
     }
@@ -260,7 +302,7 @@ public class RastersServlet {
   public void getRasterImage(HttpServletRequest req, HttpServletResponse res) {
     RequestParser parser = new RequestParser(req);
     long rasterId = parser.getLong("rasterId");
-    JSONObject jsonObject = this.getParameterJson(parser); 
+    JSONObject jsonObject = this.getParameterJson(parser);
     Parameter param = parameterFactory.get(jsonObject);
     Bounds bounds = this.getBoundsFromProject();
     RasterImageResult image = this.rastersImageService.getRasterImage(rasterId, param, bounds);
@@ -269,15 +311,13 @@ public class RastersServlet {
     this.responseHelper.send(map, res);
     // {"datetime":"2023012112","parentKey":"North American Model Forecasts","zoneid":"UTC","fcststep":0,"key":"2023012112-0"}
   }
-  
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   private Bounds getBoundsFromProject() {
     ProjectEntity project = this.projectEntity.getValue(SessionManager.getSessionAuthToken());
-    return new Bounds(project.lowerleft, project.upperright); 
+    return new Bounds(project.lowerleft, project.upperright);
   }
 }
-
-

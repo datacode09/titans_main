@@ -2,10 +2,13 @@ package rm.test_source;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
+import rm.titansdata.plugin.ClassType;
+import rm.titansdata.plugin.Clazz;
 import rm.titansdata.plugin.ParameterFactory;
 
 /**
@@ -21,7 +24,22 @@ public class TestParametersFactory implements ParameterFactory {
   }
 
   @Override
-  public List<Parameter> getParameters() {
+  public List<ClassType> getClassTypes() {
+    return new ArrayList<>();
+  }
+
+  @Override
+  public List<Clazz> getClasses(ClassType classtype) {
+    return new ArrayList<>();
+  }
+  
+  
+  /**
+   * 
+   * @return 
+   */
+  @Override
+  public List<Parameter> getParameters(Clazz... clazzes) {
     List<Parameter> result = new ArrayList<>();
     result.add(new Parameter() {
       @Override
@@ -66,4 +84,9 @@ public class TestParametersFactory implements ParameterFactory {
     };
   }
 
+  @Override
+  public List<Clazz> getClasses(JSONArray arr) {
+    //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
 }

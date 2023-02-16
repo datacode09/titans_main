@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
+import rm.titansdata.plugin.ClassType;
+import rm.titansdata.plugin.Clazz;
 import rm.titansdata.plugin.ParameterFactory;
 
 /**
@@ -27,6 +29,18 @@ public class AbstractParameterFactory {
    */
   public void add(String key, ParameterFactory factory) {
     this.factories.put(key, factory);
+  }
+
+  /**
+   *
+   * @param key
+   * @param arr
+   * @return
+   */
+  public List<Clazz> getClasse(String key, JSONArray arr) {
+    ParameterFactory paramFactory = this.factories.get(key);
+    List<Clazz> result = paramFactory.getClasses(arr);
+    return result;
   }
 
   /**
@@ -54,8 +68,8 @@ public class AbstractParameterFactory {
         ParameterFactory factory = this.getFactory(jsonParam);
         Parameter param = factory.create(jsonParam);
         result.add(param);
-      } catch(Exception ex) {
-        throw new RuntimeException(ex); 
+      } catch (Exception ex) {
+        throw new RuntimeException(ex);
       }
     }
     return result;
@@ -100,12 +114,26 @@ public class AbstractParameterFactory {
    * @param key
    * @return
    */
-  List<Parameter> getParameters(String key) {
+  List<Parameter> getParameters(String key, List<Clazz> classes) {
     if (!this.factories.containsKey(key)) {
       throw new RuntimeException(String.format("Invalid key '%s'", key));
     }
     ParameterFactory factory = this.factories.get(key);
-    List<Parameter> result = factory.getParameters();
+    List<Parameter> result = factory.getParameters(classes.toArray(new Clazz[0]));
+    return result;
+  }
+  
+  /**
+   * 
+   * @param sourceTitle
+   * @return 
+   */
+  Map<ClassType, List<Clazz>> getClasses(String sourceTitle) {
+    ParameterFactory f = this.factories.get(sourceTitle);
+    Map<ClassType, List<Clazz>> result = new HashMap<>();
+    for (ClassType classtype : f.getClassTypes()) {
+      result.put(classtype, f.getClasses(classtype));    
+    }
     return result;
   }
 

@@ -11,4 +11,10 @@ public interface Clazz {
    * @return 
    */
   public String getKey();
+  
+  
+  /**
+   * 
+   */
+  public String toJson();
 }

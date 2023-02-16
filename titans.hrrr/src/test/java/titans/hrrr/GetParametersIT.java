@@ -8,13 +8,12 @@ import rm.titansdata.Parameter;
 import rm.titansdata.plugin.ClassType;
 import rm.titansdata.plugin.Clazz;
 import titans.hrrr.classes.HrrrDateClazz;
-import titans.hrrr.classes.HrrrVarClazz;
-
+import titans.nam.classes.NoaaVarClazz;
 /**
  *
  * @author Ricardo Marquez
  */
-public class GetParametersIT extends BaseSpringTest{
+public class GetParametersIT extends BaseSpringITest{
   @Autowired
   private HrrrParametersFactory factory;
     
@@ -22,8 +21,8 @@ public class GetParametersIT extends BaseSpringTest{
    * 
    */
   @Test
-  public void get() {
-    HrrrVarClazz defaultClazz = new HrrrVarClazz("TMP_2-HTGL", "TMP_2-HTGL"); 
+  public void getasfea() {
+    NoaaVarClazz defaultClazz = new NoaaVarClazz("TMP_2-HTGL"); 
     List<Parameter> parameters = this.factory.getParameters(defaultClazz, HrrrDateClazz.TODAY); 
     int expected = 49;
     Assert.assertEquals(expected, parameters.size());

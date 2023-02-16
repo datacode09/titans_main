@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.beans.property.ListProperty;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,9 +19,9 @@ import rm.titansdata.plugin.classes.BaseDateClassType;
 import rm.titansdata.plugin.classes.ForecastStepClassType;
 import rm.titansdata.plugin.classes.ForecastStepClazz;
 import rm.titansdata.plugin.classes.ValueClassType;
-import titans.hrrr.classes.HrrrVarClazz;
 import titans.hrrr.core.grib.HrrrInventoryReader;
 import titans.nam.NoaaParameter;
+import titans.nam.classes.NoaaVarClazz;
 
 /**
  *
@@ -35,7 +36,7 @@ public class HrrrParametersFactory implements ParameterFactory {
 
   public static ClassType BASEDATE_CLASSTYPE = new BaseDateClassType();
   public static ClassType FORECAST_CLASSTYPE = new ForecastStepClassType();
-  public static ClassType VALUE_CLASSTYPE = new ValueClassType("Atm. Variable");
+  public static ClassType VALUE_CLASSTYPE = new ValueClassType("NOAA_VAR");
 
   /**
    *
@@ -70,7 +71,6 @@ public class HrrrParametersFactory implements ParameterFactory {
       .map(p -> (NoaaParameter) p)
       .map(p -> p.setVar(noaaVar));
     return arrayList;
-
   }
 
   /**
@@ -123,12 +123,72 @@ public class HrrrParametersFactory implements ParameterFactory {
    * @return
    */
   private String getNoaaVar(Clazz[] clazzes) {
-    HrrrVarClazz varClazz = Arrays.stream(clazzes)
-      .filter(c -> c instanceof HrrrVarClazz)
-      .map(c -> (HrrrVarClazz) c)
+    NoaaVarClazz varClazz = Arrays.stream(clazzes)
+      .filter(c -> c instanceof NoaaVarClazz)
+      .map(c -> (NoaaVarClazz) c)
       .findFirst()
       .orElseThrow(RuntimeException::new);
     String result = varClazz.getVarName();
     return result;
+  }
+  
+  /**
+   * 
+   * @param arr
+   * @return 
+   */
+  @Override
+  public List<Clazz> getClasses(JSONArray arr) {
+    try {
+      List<Clazz> result = new ArrayList<>();
+      for (int i = 0; i < arr.length(); i++) {
+        JSONObject o = (JSONObject) arr.get(i);
+        String key = o.getString("key");
+        Clazz e = this.getParser(key).parse(o);
+        result.add(e);
+      }
+      return result;
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+  
+   /**
+   *
+   * @param key
+   * @return
+   */
+  private Parser getParser(String key) {
+    Parser result;
+    switch (key) {
+      case "NOAA_VAR":
+        result = (JSONObject o) -> {
+          try {
+            String varName = o.getString("varName");
+            return new NoaaVarClazz(varName);
+          } catch(Exception ex) {
+            throw new RuntimeException(ex); 
+          }
+        };
+        break;
+      default:
+        throw new RuntimeException( //
+          String.format("Invalid key : '%s'", key));
+    }
+    return result;
+  } 
+    
+  
+    /**
+   *
+   */
+  private static interface Parser {
+
+    /**
+     *
+     * @param o
+     * @return
+     */
+    Clazz parse(JSONObject o);
   }
 }

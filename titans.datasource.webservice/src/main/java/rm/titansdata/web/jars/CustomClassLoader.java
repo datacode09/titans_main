@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
 import org.locationtech.jts.awt.PointShapeFactory.X;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -220,7 +221,13 @@ public class CustomClassLoader {
         .filter(n -> n.endsWith(".class"))
         .findFirst()
         .orElseThrow(() -> new RuntimeException());
-      Class<?> Bclass = Class.forName(someUniqueResourceInBJar.replace("/", ".").replace(".class", ""));
+      String className = StringUtils.removeEnd(someUniqueResourceInBJar.replace("/", "."), ".class");
+      Class<?> Bclass;
+      try {
+        Bclass = Class.forName(className);
+      } catch(Exception ex) {
+        throw new RuntimeException(ex);
+      }
       URL url = Bclass.getResource("/" + beansXml);
       InputStream stream = url.openStream();
       InputSource inputSource = new InputSource(new InputStreamReader(stream));

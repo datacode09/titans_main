@@ -3,10 +3,10 @@ package titans.hrrr;
 
 import java.util.List;
 import org.junit.Test;
-import titans.hrrr.classes.HrrrVarClazz;
 import titans.hrrr.core.grib.HrrrGribSource;
 import titans.hrrr.core.grib.HrrrInventoryReader;
 import titans.nam.NoaaParameter;
+import titans.nam.classes.NoaaVarClazz;
 
 /**
  *
@@ -25,7 +25,7 @@ public class HrrrGribSourceIT {
   @Test
   public void test02() {
     HrrrInventoryReader reader = new HrrrInventoryReader();
-    List<HrrrVarClazz> vars = reader.read();
+    List<NoaaVarClazz> vars = reader.read();
     vars.forEach(System.out::println);
   }
 }

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +16,8 @@ import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestContextManager;
 import org.springframework.test.context.web.WebAppConfiguration;
 import rm.titansdata.Parameter;
+import rm.titansdata.plugin.ClassType;
+import rm.titansdata.plugin.Clazz;
 
 /**
  *
@@ -76,9 +80,23 @@ public class RastersSourceServiceIT {
     "1", 
     "2"
   })
-  public void getparameters_by_rasterId(long rasterId) {
+  public void getparameters_by_rasterId(long rasterId) throws Exception {
     String key = this.service.getRaster(rasterId).sourceTitle;
-    List<Parameter> params = this.parameterFactory.getParameters(key);
+    JSONArray arr = new JSONArray();
+    arr.put(new JSONObject("{'key': 'NOAA_VAR', 'varName': 'TMP_2-HTGL'}")); 
+    List<Clazz> clazz = this.parameterFactory.getClasse(key, arr);
+    List<Parameter> params = this.parameterFactory.getParameters(key, clazz);
     params.forEach(System.out::println);
+  }
+  
+  @Test
+  @Parameters({
+    "1", 
+    "2"
+  })
+  public void getclasses_by_rasterId(long rasterId) throws Exception {
+    String key = this.service.getRaster(rasterId).sourceTitle;
+    Map<ClassType, List<Clazz>> clazzes = this.parameterFactory.getClasses(key); 
+    clazzes.entrySet().forEach(e->System.out.println(e.getKey() + ", " + e.getValue()));
   }
 }

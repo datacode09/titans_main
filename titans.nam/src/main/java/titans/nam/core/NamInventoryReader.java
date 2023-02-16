@@ -1,4 +1,4 @@
-package titans.hrrr.core.grib;
+package titans.nam.core;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,14 +8,13 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import titans.nam.classes.NoaaVarClazz;
 
-
 /**
  *
  * @author Ricardo Marquez
  */
-public class HrrrInventoryReader {
+public class NamInventoryReader {
 
-  public HrrrInventoryReader() {
+  public NamInventoryReader() {
   }
 
   public List<NoaaVarClazz> read() {
@@ -23,20 +22,20 @@ public class HrrrInventoryReader {
     try {
       List<String> lines = IOUtils.readLines(a, Charset.forName("UTF-8"));
       lines.remove(0);
-      List<NoaaVarClazz> result = lines.stream().filter(this::isDataLine).map(this::toHrrrVarClazz)
+      List<NoaaVarClazz> result = lines.stream().filter(this::isDataLine).map(this::toNoaaVarClazz)
         .collect(Collectors.toList());
       return result;
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
   }
-  
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   private InputStream getInputStream() {
-    String inventoryfile = "hrrr.inventory.txt";
+    String inventoryfile = "nam.inventory.txt";
     InputStream a = this.getClass().getClassLoader().getResourceAsStream(inventoryfile);
     return a;
   }
@@ -55,7 +54,7 @@ public class HrrrInventoryReader {
    * @param line
    * @return
    */
-  private NoaaVarClazz toHrrrVarClazz(String line) {
+  private NoaaVarClazz toNoaaVarClazz(String line) {
     String[] parts0 = line.split(",");
     String[] parts = parts0[3].split("=");
     String varname = parts[0] + "_" + parts0[4].trim();

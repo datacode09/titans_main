@@ -17,7 +17,7 @@ import rm.titansdata.SridUtils;
     }
   )
 })
-public class BaseSpringTest {
+public class BaseSpringITest {
   
   /**
    * 

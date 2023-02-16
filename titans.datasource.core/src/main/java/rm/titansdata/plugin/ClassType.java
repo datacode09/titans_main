@@ -6,5 +6,9 @@ package rm.titansdata.plugin;
  */
 public interface ClassType {
   
+  /**
+   * 
+   * @return 
+   */
   public String name();
 }

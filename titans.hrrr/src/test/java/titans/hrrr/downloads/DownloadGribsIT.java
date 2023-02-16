@@ -5,7 +5,7 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import titans.hrrr.BaseSpringTest;
+import titans.hrrr.BaseSpringITest;
 import titans.hrrr.core.HrrrImporter;
 import titans.hrrr.core.grib.HrrrGribSource;
 import titans.nam.NoaaParameter;
@@ -15,7 +15,7 @@ import titans.nam.grib.GribFile;
  *
  * @author Ricardo Marquez
  */
-public class DownloadGribsIT extends BaseSpringTest {
+public class DownloadGribsIT extends BaseSpringITest {
 
   @Autowired
   @Qualifier("hrrr.gribRootFolder")

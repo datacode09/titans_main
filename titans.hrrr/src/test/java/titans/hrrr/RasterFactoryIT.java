@@ -23,7 +23,7 @@ import titans.nam.grib.ForecastTimeReference;
  *
  * @author Ricardo Marquez
  */
-public class RasterFactoryIT extends BaseSpringTest {
+public class RasterFactoryIT extends BaseSpringITest {
 
   @Autowired
   private HrrrRasterFactory factory;

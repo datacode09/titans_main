@@ -127,6 +127,7 @@ public class RastersServletIT {
   public void getPatterns(long rasterId) {
     JSONObject jsonObj = new MockHelper(this.mockMvc, "/getRasterParameters")
       .setParam("rasterId", String.valueOf(rasterId))
+      .setParam("clazzes", "[{'key': 'NOAA_VAR', 'varName': 'TMP_2-HTGL'}]")
       .perform();
     System.out.println("jsonObj = " + jsonObj);
   }

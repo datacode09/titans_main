@@ -6,7 +6,7 @@ import rm.titansdata.plugin.Clazz;
  *
  * @author Ricardo Marquez
  */
-public class ForecastStepClazz implements Clazz {
+public final class ForecastStepClazz implements Clazz {
 
   public final int step;
 
@@ -31,4 +31,11 @@ public class ForecastStepClazz implements Clazz {
   public String toString() {
     return "{" + "step=" + step + '}';
   }
+
+  @Override
+  public String toJson() {
+    return "{'step':" + this.step + "}";
+  }
+  
+  
 }

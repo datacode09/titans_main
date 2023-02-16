@@ -2,6 +2,7 @@ package titans.goes;
 
 import java.util.List;
 import javafx.beans.property.ListProperty;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,4 +51,11 @@ public class GoesParameterFactory implements ParameterFactory {
     //To change body of generated methods, choose Tools | Templates.
     throw new UnsupportedOperationException("Not supported yet.");
   }
+
+  @Override
+  public List<Clazz> getClasses(JSONArray arr) {
+    //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+  
 }
