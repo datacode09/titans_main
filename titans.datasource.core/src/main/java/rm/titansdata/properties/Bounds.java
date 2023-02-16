@@ -9,6 +9,7 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.PrecisionModel;
 import rm.titansdata.SridUtils;
 
 /**
@@ -141,6 +142,20 @@ public class Bounds implements Serializable {
     Bounds result = new Bounds(lowerleft, upperright);
     return result;
   }
+  
+  /**
+   *
+   * @param p1
+   * @param p2
+   * @return
+   */
+  public static Bounds fromPoints(Coordinate p1, Coordinate p2, int srid) {
+    GeometryFactory factory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), srid);
+    Point lowerleft = factory.createPoint(p1);
+    Point upperright = factory.createPoint(p2);
+    Bounds result = new Bounds(lowerleft, upperright);
+    return result;
+  }
 
   /**
    *
@@ -213,5 +228,17 @@ public class Bounds implements Serializable {
   @Override
   public String toString() {
     return "{" + "lowerleft=" + lowerleft + ", upperright=" + upperright + '}';
+  }
+  
+  /**
+   * 
+   * @param srid
+   * @return 
+   */
+  public Bounds transform(int srid) {
+    Point p1 = SridUtils.transform(lowerleft, srid); 
+    Point p2 = SridUtils.transform(upperright, srid);
+    Bounds result = new Bounds(p1, p2); 
+    return result; 
   }
 }

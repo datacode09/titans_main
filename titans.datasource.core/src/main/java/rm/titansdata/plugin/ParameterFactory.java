@@ -9,26 +9,37 @@ import rm.titansdata.Parameter;
  * @author Ricardo Marquez
  */
 public interface ParameterFactory {
-  
-  
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   public String key();
   
-  
   /**
-   * 
+   *
+   * @return
+   */
+  public List<ClassType> getClassTypes();
+
+  /**
+   *
+   * @param classtype
+   * @return
+   */
+  public List<Clazz> getClasses(ClassType classtype);
+
+  /**
+   *
    * @param obj
-   * @return 
+   * @return
    */
-  public Parameter create(JSONObject obj); 
-  
+  public Parameter create(JSONObject obj);
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
-  public List<Parameter> getParameters();
-  
+  public List<Parameter> getParameters(Clazz... clazzes);
+
 }

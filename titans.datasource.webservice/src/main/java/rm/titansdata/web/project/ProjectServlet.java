@@ -47,7 +47,8 @@ public class ProjectServlet extends HttpServlet {
     String authToken = req.getHeader("AUTH-TOKEN");
     if (!req.getParameter("project_id").isEmpty()) {
       int projectId = new RequestParser(req).getInteger("project_id");
-      ProjectEntity p = this.service.getProjects().stream().filter(a -> Objects.equals(a.projectId, projectId))
+      ProjectEntity p = this.service.getProjects().stream() //
+        .filter(a -> Objects.equals(a.projectId, projectId))
         .findFirst().orElse(null);
       this.project.setValue(authToken, p);
     } else {

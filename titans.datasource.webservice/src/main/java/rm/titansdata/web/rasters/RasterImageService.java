@@ -14,6 +14,7 @@ import rm.titansdata.SridUtils;
 import rm.titansdata.colormap.ColorMap;
 import rm.titansdata.images.RasterImage;
 import rm.titansdata.plugin.ColorMapProvider;
+import rm.titansdata.properties.Bounds;
 import rm.titansdata.raster.RasterObj;
 import rm.titansdata.web.rasters.colormap.ColorMapProviderFactory;
 
@@ -36,9 +37,9 @@ public class RasterImageService {
    * @param rasterId
    * @return
    */
-  public RasterImageResult getRasterImage(long rasterId, Parameter param) {
-    RasterObj r = this.getRasterObj(rasterId, param); 
-    ColorMap cmap = this.getColorMap(rasterId, param);      
+  public RasterImageResult getRasterImage(long rasterId, Parameter param, Bounds bounds) {
+    RasterObj r = this.getRasterObj(rasterId, param, bounds); 
+    ColorMap cmap = this.getColorMap(rasterId, param, bounds);      
     RasterImage img = new RasterImage(r, cmap);  
     RasterImageResult result = this.toRasterImageResult(rasterId, img);
     return result;
@@ -67,7 +68,7 @@ public class RasterImageService {
    * @param r
    * @return 
    */
-  private ColorMap getColorMap(long rasterId, Parameter param) {
+  private ColorMap getColorMap(long rasterId, Parameter param, Bounds bounds) {
     ColorMapProvider cm = this.factory.getProvider(rasterId);
     ColorMap result = cm.getColorMap(param); 
     return result;
@@ -79,8 +80,8 @@ public class RasterImageService {
    * @param rasterId
    * @return
    */
-  private RasterObj getRasterObj(long rasterId, Parameter p) {
-    RasterObj result = this.rastersValueService.getRasterObj(rasterId, p); 
+  private RasterObj getRasterObj(long rasterId, Parameter p, Bounds bounds) {
+    RasterObj result = this.rastersValueService.getRasterObj(rasterId, p, bounds); 
     return result;
   }
 

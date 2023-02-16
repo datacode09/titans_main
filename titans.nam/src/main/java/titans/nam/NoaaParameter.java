@@ -17,10 +17,9 @@ import titans.nam.grib.ForecastTimeReference;
 public class NoaaParameter implements Parameter {
 
   private final String parentKey;
-
   public final ZonedDateTime datetime;
   public final int fcststep;
-  public final String namVar;
+  public final String noaaVar;
 
   /**
    *
@@ -29,10 +28,32 @@ public class NoaaParameter implements Parameter {
    */
   public NoaaParameter(String parentKey, ZonedDateTime datetime, //
     ForecastTimeReference d, String namVar) {
+    this(parentKey, datetime.plusHours(d.refhour), d.fcsthourAhead, namVar);
+  }
+  
+  /**
+   * 
+   * @param parentKey
+   * @param datetime
+   * @param fcststep
+   * @param namVar 
+   */
+  public NoaaParameter(String parentKey, ZonedDateTime datetime, int fcststep, String namVar) {
     this.parentKey = parentKey;
-    this.datetime = datetime.plusHours(d.refhour);
-    this.fcststep = d.fcsthourAhead;
-    this.namVar = namVar;
+    this.datetime = datetime;
+    this.fcststep = fcststep;
+    this.noaaVar = namVar;
+  }
+  
+  
+  /**
+   * 
+   * @param var
+   * @return 
+   */
+  public NoaaParameter setVar(String var) {
+    NoaaParameter result = new NoaaParameter(parentKey, datetime, fcststep, var);
+    return result;
   }
 
   /**
@@ -56,6 +77,7 @@ public class NoaaParameter implements Parameter {
       result.put("key", key);
       result.put("parentKey", this.parentKey);
       result.put("fcststep", this.fcststep);
+      result.put("noaaVar", this.noaaVar);
       result.put("datetime", this.datetime.format(getDateTimeFormatter()));
       result.put("zoneid", this.datetime.getZone().getId());
       result.put("validtime", this.getValidTime());

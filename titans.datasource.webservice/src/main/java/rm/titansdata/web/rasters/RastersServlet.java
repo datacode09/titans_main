@@ -12,13 +12,18 @@ import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import rm.titansdata.Parameter;
+import rm.titansdata.properties.Bounds;
 import rm.titansdata.raster.RasterCells;
 import rm.titansdata.web.RequestParser;
 import rm.titansdata.web.ResponseHelper;
+import rm.titansdata.web.project.ProjectEntity;
+import rm.titansdata.web.user.session.SessionManager;
+import rm.titansdata.web.user.session.SessionScopedBean;
 
 /**
  *
@@ -41,6 +46,10 @@ public class RastersServlet {
 
   @Autowired
   private AbstractParameterFactory parameterFactory;
+  
+  @Autowired
+  @Qualifier("user.project")
+  private SessionScopedBean<ProjectEntity> projectEntity;
 
   /**
    *
@@ -253,11 +262,21 @@ public class RastersServlet {
     long rasterId = parser.getLong("rasterId");
     JSONObject jsonObject = this.getParameterJson(parser); 
     Parameter param = parameterFactory.get(jsonObject);
-    RasterImageResult image = this.rastersImageService.getRasterImage(rasterId, param);
+    Bounds bounds = this.getBoundsFromProject();
+    RasterImageResult image = this.rastersImageService.getRasterImage(rasterId, param, bounds);
     Map<String, Object> map = new HashMap<>();
     map.put("value", image);
     this.responseHelper.send(map, res);
     // {"datetime":"2023012112","parentKey":"North American Model Forecasts","zoneid":"UTC","fcststep":0,"key":"2023012112-0"}
+  }
+  
+  /**
+   * 
+   * @return 
+   */
+  private Bounds getBoundsFromProject() {
+    ProjectEntity project = this.projectEntity.getValue(SessionManager.getSessionAuthToken());
+    return new Bounds(project.lowerleft, project.upperright); 
   }
 }
 

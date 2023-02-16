@@ -1,5 +1,6 @@
 package rm.titansdata.web.user.session;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -22,11 +23,12 @@ public class SessionScopedBean<T> {
    * @return
    */
   public T getValue(String auth) {
+    Objects.requireNonNull(auth, "Auth token is undefined");
     T result;
     if (this.m.existsByToken(auth)) {
       result = this.supplier.get();
     } else {
-      result = null;
+      throw new RuntimeException("Invalid auth token");
     }
     return result;
   }

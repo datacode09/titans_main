@@ -7,8 +7,10 @@ import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
 import rm.titansdata.colormap.ColorMap;
 import rm.titansdata.plugin.ColorMapProvider;
+import rm.titansdata.properties.Bounds;
 import rm.titansdata.raster.RasterObj;
 import rm.titansdata.raster.RasterSearch;
+import rm.titansdata.web.rasters.RastersSourceService;
 import rm.titansdata.web.rasters.RastersValueService;
 
 /**
@@ -20,6 +22,9 @@ public class ColorMapProviderFactory {
 
   @Autowired
   private RastersValueService rastersValueService;
+  
+    @Autowired
+  private RastersSourceService sourceService;
   
   private final Map<Long, ColorMapProvider> providers = new HashMap<>();
   
@@ -53,7 +58,8 @@ public class ColorMapProviderFactory {
    * @param param 
    */
   public ColorMap defaultColorMap(long rasterId, Parameter param) {
-    RasterObj r = this.rastersValueService.getRasterObj(rasterId, param);
+    Bounds bounds = this.sourceService.getRaster(rasterId).getBounds();
+    RasterObj r = this.rastersValueService.getRasterObj(rasterId, param, bounds); 
     RasterSearch s = new RasterSearch(r.getBounds(), r.getDimensions()); 
     double max = s.stream(b -> r.getValue(b))
       .mapToDouble(i -> i.getValue().getValue())

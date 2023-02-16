@@ -29,6 +29,4 @@ public class BaseSpringTest {
     TestContextManager testContextManager = new TestContextManager(getClass());
     testContextManager.prepareTestInstance(this);
   }
-  
-  
 }

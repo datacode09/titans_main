@@ -7,7 +7,6 @@ import org.apache.commons.math3.util.Pair;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
 import rm.titansdata.properties.Bounds;
@@ -16,9 +15,6 @@ import rm.titansdata.properties.Properties;
 import rm.titansdata.raster.Raster;
 import rm.titansdata.raster.RasterCells;
 import rm.titansdata.raster.RasterObj;
-import rm.titansdata.web.project.ProjectEntity;
-import rm.titansdata.web.user.session.SessionManager;
-import rm.titansdata.web.user.session.SessionScopedBean;
 
 /**
  *
@@ -32,10 +28,6 @@ public class RastersValueService {
 
   @Autowired
   private RasterFactorySupplier supplier;
-
-  @Autowired
-  @Qualifier("user.project")
-  private SessionScopedBean<ProjectEntity> projectBean;
 
   /**
    *
@@ -54,9 +46,17 @@ public class RastersValueService {
     RasterCells result = subset.interleave();
     return result;
   }
-
+  
+  /**
+   * 
+   * @param rasterId
+   * @param p
+   * @param point
+   * @return 
+   */
   double getRasterValue(Long rasterId, Parameter p, Point point) {
-    RasterObj rasterObj = this.getRasterObj(rasterId, p);
+    RasterEntity rasterEntity = this.sourceService.getRaster(rasterId);
+    RasterObj rasterObj = this.getRasterObj(rasterEntity, rasterEntity.sourceTitle, p, rasterEntity.getBounds()); 
     double result = rasterObj.getValue(point);
     return result;
   }
@@ -66,11 +66,15 @@ public class RastersValueService {
    * @param rasterId
    * @return
    */
-  public RasterObj getRasterObj(Long rasterId, Parameter p) {
+  public RasterObj getRasterObj(Long rasterId, Parameter p, Bounds bounds) {
     RasterEntity rasterEntity = this.sourceService.getRaster(rasterId);
     String sourceTitle = rasterEntity.sourceTitle;
-    RasterObj result = getRasterObj(rasterEntity, sourceTitle, p);
+    RasterObj result = this.getRasterObj(rasterEntity, sourceTitle, p, bounds);
     return result;
+  }
+
+  private RasterObj getRasterObj(RasterEntity rasterEntity, String key, Parameter p) {
+    return this.getRasterObj(rasterEntity, key, p, rasterEntity.getBounds());
   }
 
   /**
@@ -79,12 +83,9 @@ public class RastersValueService {
    * @param key
    * @return
    */
-  private RasterObj getRasterObj(RasterEntity rasterEntity, String key, Parameter p) {
-    Bounds bounds = rasterEntity.getBounds();
+  private RasterObj getRasterObj(RasterEntity rasterEntity, String key, Parameter p, Bounds bounds) {
     Dimensions dims = rasterEntity.getDimensions();
     long typeId = rasterEntity.rasterTypeId;
-    ProjectEntity project = this.projectBean.getValue(SessionManager.getSessionAuthToken()); 
-    bounds = new Bounds(project.lowerleft, project.upperright);
     Raster raster = this.supplier.builder()
       .setTypeId(typeId)
       .setSourceTitle(key)
@@ -103,7 +104,8 @@ public class RastersValueService {
    * @param point
    * @return
    */
-  Map<Parameter, Double> getPointRasterValues(long rasterId, List<Parameter> parameters, Point point) {
+  Map<Parameter, Double> getPointRasterValues( //
+    long rasterId, List<Parameter> parameters, Point point) {
     Map<Parameter, Double> result = parameters.stream()
       .map(param -> Pair.create(param, this.getRasterValue(rasterId, param, point)))
       .collect(Collectors.toMap(pair -> pair.getKey(), pair -> pair.getValue()));

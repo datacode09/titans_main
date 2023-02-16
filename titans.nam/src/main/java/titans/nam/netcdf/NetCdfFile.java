@@ -167,7 +167,7 @@ public class NetCdfFile {
    * @return
    */
   public static NetCdfFile create(File baseFolder, NoaaParameter namParameter) {
-    NoaaVariable var = new NoaaVariable(namParameter.namVar);
+    NoaaVariable var = new NoaaVariable(namParameter.noaaVar);
     NetCdfFileOrganization org = new NetCdfFileOrganization(
       baseFolder, namParameter.fcststep, namParameter.datetime, var);
     File file = org.getFile();
