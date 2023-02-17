@@ -7,6 +7,7 @@ import {RasterParameter} from 'src/core/rasters/RasterParameter';
 import {RastersService} from 'src/services/rasterservices/RastersService';
 import {RastersVisibilityService} from 'src/services/rasterstates/RastersVisibilityService';
 import {Objects} from 'src/core/types/Objects';
+import {RasterParamsService} from 'src/services/rasterservices/RasterParamsService';
 
 @Component({
   selector: 'datasourcelist'
@@ -25,6 +26,7 @@ export class DataSourceList implements OnInit {
    * 
    */
   public constructor(private service: RastersService,
+    private paramsService: RasterParamsService,
     private visibilityService: RastersVisibilityService) {
   }
 
@@ -147,7 +149,7 @@ export class DataSourceList implements OnInit {
       if (raster != null) {
         const rasternodeid = this.addRasterNode(node, raster);
         this.elements.set(rasternodeid, raster);
-        this.service.getParameters(rasterId).subscribe(params => {
+        this.paramsService.getParameters(rasterId).subscribe(params => {
           params.forEach((param) => {
             const rasterParamNodeId = this.addRasterParamNode(param);
             this.elements.set(rasterParamNodeId, param);

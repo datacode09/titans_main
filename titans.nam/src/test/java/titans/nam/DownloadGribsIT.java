@@ -42,5 +42,13 @@ public class DownloadGribsIT extends BaseSpringTest {
       System.out.println("elapsed time = " + (System.currentTimeMillis() - tic));
     });
   }
-
+  
+  @Test
+  public void test2() {
+    NamGribSource source = new NamGribSource();
+    String parentKey = "NAM";
+    long minusDays = 0L;
+    List<NoaaParameter> params = source.getCurrentNamParameters(minusDays, parentKey);
+    System.out.println("params = " + params.size());
+  }
 }

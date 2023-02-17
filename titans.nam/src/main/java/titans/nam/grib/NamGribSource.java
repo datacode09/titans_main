@@ -10,9 +10,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import titans.nam.NoaaParameter;
 
@@ -46,6 +44,7 @@ public class NamGribSource {
     String fullUrl = this.getNamParametersFullUrl(date);
     List<NoaaParameter> result = new RmHttpReader.Builder(fullUrl)
       .readTo((text) -> this.parseFullHtmlText(parentKey, date, text));
+    result.removeIf(p -> p == null);
     result.stream()
       .sorted((o1, o2) -> -o1.datetime.compareTo(o2.datetime))
       .findFirst()
@@ -53,22 +52,22 @@ public class NamGribSource {
       .ifPresent(maxparameter -> result.removeIf(e -> !Objects.equal(e.datetime.getHour(), 0)));
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param minusDays
-   * @return 
+   * @return
    */
   private ZonedDateTime getDateForNamParameters(long minusDays) {
     return ZonedDateTime.now(ZoneId.of("UTC"))
       .minusDays(minusDays)
       .truncatedTo(ChronoUnit.DAYS);
   }
-  
+
   /**
-   * 
+   *
    * @param date
-   * @return 
+   * @return
    */
   private String getNamParametersFullUrl(ZonedDateTime date) {
     DateTimeFormatter formatter = new DateTimeFormatterBuilder()
@@ -79,18 +78,25 @@ public class NamGribSource {
     String fullUrl = this.url + "nam." + datetext;
     return fullUrl;
   }
-  
-  private List<NoaaParameter> parseFullHtmlText(String parentKey, ZonedDateTime date, String text )  {
-        String var = "TMP_2-HTGL";
-    List<NoaaParameter> a = Arrays.stream(text.split("\n")) //
-        .filter(this::isConusNestLine)
-        .map(this::toForecastTimeRef)
-        .map(d -> new NoaaParameter(parentKey, date, d, var))
-        .collect(Collectors.toList());
-      return a;
+
+  /**
+   *
+   * @param parentKey
+   * @param date
+   * @param text
+   * @return
+   */
+  private NoaaParameter parseFullHtmlText(String parentKey, ZonedDateTime date, String text) {
+    String var = "TMP_2-HTGL";
+    NoaaParameter result;
+    if (this.isConusNestLine(text)) {
+      ForecastTimeReference d = this.toForecastTimeRef(text);
+      result = new NoaaParameter(parentKey, date, d, var);
+    } else {
+      result = null;
+    }
+    return result;
   }
-  
-  
 
   /**
    *

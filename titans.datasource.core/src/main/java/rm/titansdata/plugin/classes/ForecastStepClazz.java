@@ -1,5 +1,7 @@
 package rm.titansdata.plugin.classes;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import rm.titansdata.plugin.Clazz;
 
 /**
@@ -20,7 +22,7 @@ public final class ForecastStepClazz implements Clazz {
    */
   @Override
   public String getKey() {
-    return "" + step;
+    return "FCST_STEP";
   }
 
   /**
@@ -29,13 +31,32 @@ public final class ForecastStepClazz implements Clazz {
    */
   @Override
   public String toString() {
-    return "{" + "step=" + step + '}';
-  }
-
-  @Override
-  public String toJson() {
-    return "{'step':" + this.step + "}";
+    return "{key = " + this.getKey() +  ", step=" + step + '}';
   }
   
+  /**
+   * 
+   * @return 
+   */
+  @Override
+  public String toJson() {
+    JSONObject obj = toJSONObj();
+    return obj.toString();
+  }
+    /**
+   * 
+   * @return
+   * @throws JSONException 
+   */
+  private JSONObject toJSONObj() {
+    try {
+      JSONObject obj = new JSONObject();
+      obj.append("key", this.getKey());
+      obj.append("step", this.step);
+      return obj;
+    } catch (JSONException ex) {
+      throw new RuntimeException(ex); 
+    }
+  }
   
 }

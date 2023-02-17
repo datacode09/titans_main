@@ -97,6 +97,6 @@ public class RastersSourceServiceIT {
   public void getclasses_by_rasterId(long rasterId) throws Exception {
     String key = this.service.getRaster(rasterId).sourceTitle;
     Map<ClassType, List<Clazz>> clazzes = this.parameterFactory.getClasses(key); 
-    clazzes.entrySet().forEach(e->System.out.println(e.getKey() + ", " + e.getValue()));
+    clazzes.entrySet().forEach(e->System.out.println(e.getKey() + ", " + e.getValue().size()));
   }
 }

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, BehaviorSubject, Subject} from 'rxjs';
 import {RastersDelegate} from './delegates/RastersDelegate';
-import {InternalRastersDelegate} from './delegates/InternalRastersDelegate';
+
 import {HttpRastersDelegate} from './delegates/HttpRastersDelegate';
 import {RastersGroup} from 'src/core/rasters/RastersGroup';
 import {RasterEntity} from 'src/core/rasters/RasterEntity';
@@ -23,14 +23,44 @@ export class RastersService {
   rasterProperties: Map<number, any> = new Map();
   private selectedItem: BehaviorSubject<any> = new BehaviorSubject(null);
   private rasterParameters: Map<number, BehaviorSubject<RasterParameter[]>> = new Map();
-
+  private selectedRaster: BehaviorSubject<RasterEntity> = new BehaviorSubject(null); 
+  
+  /**
+   * 
+   */
+  public static singleton(http: HttpClient): RastersService {
+    let result: RastersService;
+    if (httpsources) {
+      result = new RastersService(new HttpRastersDelegate(http));
+    } else {
+      throw new Error("Not yet supported"); 
+    }
+    return result;
+  }
+  
+  
+  /**
+   * 
+   */
+  public constructor(private rastersDelegate: RastersDelegate) {
+    setTimeout(() => {
+      rastersDelegate.setHost(this);
+      rastersDelegate.loadRasters();
+    }, 1000);
+    this.getSelectedItem().subscribe(item=>{
+      if (item instanceof RasterEntity) {
+        this.selectedRaster.next(<RasterEntity> item); 
+      }
+    }); 
+  }
+  
   /**
    * 
    */
   public getSelectedItem(): Observable<any> {
     return this.selectedItem;
   }
-  
+
   /**
    * 
    */
@@ -47,28 +77,9 @@ export class RastersService {
     }
   }
 
-  /**
-   * 
-   */
-  public static singleton(http: HttpClient): RastersService {
-    let result: RastersService;
-    if (httpsources) {
-      result = new RastersService(new HttpRastersDelegate(http));
-    } else {
-      result = new RastersService(new InternalRastersDelegate());
-    }
-    return result;
-  }
 
-  /**
-   * 
-   */
-  public constructor(private rastersDelegate: RastersDelegate) {
-    setTimeout(() => {
-      rastersDelegate.setHost(this);
-      rastersDelegate.loadRasters();
-    }, 1000);
-  }
+
+
 
   /**
    * 
@@ -99,7 +110,7 @@ export class RastersService {
   public getAllRasters(): Observable<RastersGroup[]> {
     return this.rastersDelegate.getAllRasters();
   }
-  
+
   /**
    * 
    */
@@ -114,29 +125,13 @@ export class RastersService {
     return this.rasterGroups.value;
   }
   
-  /**
-   * 
-   */
-  public getParametersValue(rasterId: number): RasterParameter[] {
-    const result = this.rasterParameters.get(rasterId).value;
-    return result;
+  
+  public getSelectedRaster(): Observable<RasterEntity> {
+    return this.selectedRaster;
   }
 
-  /**
-   * 
-   */
-  public getParameters(rasterId: number): Observable<RasterParameter[]> {
-    if (!this.rasterParameters.has(rasterId)) {
-      const r: Observable<RasterParameter[]>
-        = this.rastersDelegate.getParameters(rasterId);
-      const value = new BehaviorSubject(null);
-      r.subscribe(e => value.next(e)); 
-      this.rasterParameters.set(rasterId, value);
-    }
-    const result = this.rasterParameters.get(rasterId); 
-    return result;
-  }
-  
+
+
   /**
    * 
    */

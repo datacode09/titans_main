@@ -41,8 +41,9 @@ public class SessionScopedBean<T> {
   public void setValue(String authToken, T p) {
     if (this.m.existsByToken(authToken)) {
       this.supplier = () -> p;
-    } else {
-      throw new RuntimeException(); 
+    } else { 
+      throw new RuntimeException(
+        String.format("Invalid token '%s'", authToken));   
     }
   }
 }

@@ -32,9 +32,11 @@ public class HrrrDateClazz implements Clazz {
    */
   @Override
   public String toJson() {
-    DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("").toFormatter();
+    DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+      .appendPattern("yyyyMMddHHmm")
+      .toFormatter();
     String formatteddatetime = this.datetime.format(formatter);
-    return "{'key': '" + this.getKey() + "', 'datetime':' " + formatteddatetime  + "'}";
+    return "{\"key\": \"" + this.getKey() + "\", \"datetime\":\""+ formatteddatetime  + "\"}";
   }
   
   

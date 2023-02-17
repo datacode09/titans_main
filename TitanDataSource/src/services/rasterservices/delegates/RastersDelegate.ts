@@ -2,6 +2,7 @@ import {Observable} from 'rxjs';
 import {RasterParameter} from 'src/core/rasters/RasterParameter';
 import {RasterImage} from 'src/core/rasters/RasterImage';
 import {RastersGroup} from 'src/core/rasters/RastersGroup';
+import {Clazz} from 'src/core/rasters/Clazz';
 
 
 /**
@@ -31,9 +32,9 @@ export interface RastersDelegate {
   /**
    * 
    */
-  getParameters(rasterId: number): Observable<RasterParameter[]>; 
+  getParameters(rasterId: number, clazzes:Map<string, Clazz>): Observable<RasterParameter[]>; 
   
-  
+   
   /**
    * 
    */

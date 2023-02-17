@@ -58,7 +58,7 @@ public class HrrrInventoryReader {
   private NoaaVarClazz toHrrrVarClazz(String line) {
     String[] parts0 = line.split(",");
     String[] parts = parts0[3].split("=");
-    String varname = parts[0] + "_" + parts0[4].trim();
+    String varname = parts[0].trim() + "_" + parts0[4].trim();
     NoaaVarClazz result = new NoaaVarClazz(varname);
     return result;
   }

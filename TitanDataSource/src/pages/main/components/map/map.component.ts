@@ -4,6 +4,7 @@ import {RastersService} from 'src/services/rasterservices/RastersService';
 import {RastersVisibilityService} from 'src/services/rasterstates/RastersVisibilityService';
 import {PointLayer} from './geometries/PointLayer';
 import {AddPointManager} from 'src/services/addpoints/AddPointManager';
+import {RasterParamsService} from 'src/services/rasterservices/RasterParamsService';
 
 declare var dojo: any;
 declare var esri: any;
@@ -19,6 +20,7 @@ declare var $: any;
 export class MapComponent implements OnInit {
   
   public constructor(private service:RastersService, 
+    private paramsService:RasterParamsService, 
     private visibilityService: RastersVisibilityService, 
     private addPointManager: AddPointManager
     ) {
@@ -67,7 +69,7 @@ export class MapComponent implements OnInit {
     this.service.getRasters().subscribe(groups=>{
       groups.forEach(g=>{
         g.rasterIds.forEach(rasterId=>{
-          const params = this.service.getParameters(rasterId); 
+          const params = this.paramsService.getParameters(rasterId); 
           params.subscribe((params)=>{
             params.forEach((p)=>{
               layer.onMapReady(map, p);

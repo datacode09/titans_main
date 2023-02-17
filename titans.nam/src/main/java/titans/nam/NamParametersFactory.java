@@ -58,10 +58,36 @@ public class NamParametersFactory implements ParameterFactory {
 
   @Override
   public List<Parameter> getParameters(Clazz... clazzes) {
+    String noaaVar = this.getNoaaVar(clazzes);
     List<Parameter> arrayList = new ArrayList<>(this.parameters.getValue());
+    arrayList.stream()
+      .map(p -> (NoaaParameter) p)
+      .map(p -> p.setVar(noaaVar));
     return arrayList;
-  } 
+  }
 
+  
+    /**
+   *
+   * @param clazzes
+   * @return
+   */
+  private String getNoaaVar(Clazz[] clazzes) {
+    NoaaVarClazz varClazz = Arrays.stream(clazzes)
+      .filter(c -> c instanceof NoaaVarClazz)
+      .map(c -> (NoaaVarClazz) c)
+      .findFirst()
+      .orElseThrow(RuntimeException::new);
+    String result = varClazz.getVarName();
+    return result;
+  }
+  
+    
+  /**
+   * 
+   * @param classtype
+   * @return 
+   */
   @Override
   public List<Clazz> getClasses(ClassType classtype) {
     List<? extends Clazz> result;
@@ -111,10 +137,20 @@ public class NamParametersFactory implements ParameterFactory {
     try {
       List<Clazz> result = new ArrayList<>();
       for (int i = 0; i < arr.length(); i++) {
-        JSONObject o = (JSONObject) arr.get(i);
-        String key = o.getString("key");
-        Clazz e = this.getParser(key).parse(o);
-        result.add(e);
+        JSONObject o;
+        Object value = arr.get(i);
+        if (value instanceof JSONObject) {
+          o = arr.getJSONObject(i);
+        } else if (value instanceof String) {
+          o = ((String) value).isEmpty() ? null : new JSONObject((String) value);
+        } else {
+          throw new RuntimeException(String.format("Invalid type '%s'", value));
+        }
+        if (o != null) {
+          String key = o.getString("key");
+          Clazz e = this.getParser(key).parse(o);
+          result.add(e);
+        }
       }
       return result;
     } catch (Exception ex) {
@@ -135,6 +171,16 @@ public class NamParametersFactory implements ParameterFactory {
           try {
             String varName = o.getString("varName");
             return new NoaaVarClazz(varName);
+          } catch (Exception ex) {
+            throw new RuntimeException(ex);
+          }
+        };
+        break;
+      case "FCST_STEP":
+        result = (JSONObject o) -> {  
+          try {
+            int step = o.getInt("step");
+            return new ForecastStepClazz(step);
           } catch (Exception ex) {
             throw new RuntimeException(ex);
           }
