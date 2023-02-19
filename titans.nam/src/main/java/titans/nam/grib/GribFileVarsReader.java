@@ -138,7 +138,13 @@ public class GribFileVarsReader {
    * @return
    */
   private String lineToVarMsgNumber(String line) {
-    return line.split(",")[0];
+    try {
+      String result = line.split(",")[0];
+      return result;
+    } catch(Exception ex) {
+      throw new RuntimeException(String.format("Parsing line ''%s", line), ex); 
+    }
+    
   }
 
 }

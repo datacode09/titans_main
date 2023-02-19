@@ -79,7 +79,17 @@ public class HrrrImporter implements Closeable {
   private GribFile downloadGribFile(ZonedDateTime datetimeref, int forecaststep) {
     GribFile gribFile = this.getGribFile(datetimeref, forecaststep);
     if (gribFile.notExists()) {
-      this.source.download(gribFile);
+      if (gribFile.isNotLocked()) {
+        this.source.download(gribFile);
+      } else {
+        while(gribFile.isLocked()) {
+          try {
+            Thread.sleep(2000);
+          } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+          }
+        }
+      }
     }
     return gribFile;
   }

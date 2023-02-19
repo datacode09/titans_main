@@ -33,6 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
     registry.addMapping("/**")     
       .allowCredentials(true)    
       .allowedOrigins("http://localhost:4200")
+      .allowedOrigins("http://localhost:8081/titans.datasource")
 //      .allowedOrigins(this.consumerUiOrigins)
       ;
   }

@@ -26,26 +26,29 @@ export class AppComponent implements OnInit, OnDestroy {
    * 
    */
   public ngOnInit(): void {
-    if (this.session.isNotLoggedIn()) {  
-      this.router.navigateByUrl("/login", {skipLocationChange: false, });
-      
+    console.log("application on init ");
+    if (this.session.isNotLoggedIn()) {
+      console.log("routing to login");
+      this.router.navigateByUrl("/login", {skipLocationChange: false});
+    } else {
+      this.session.loggedin.subscribe(this.initNavigationBasedOnLogin.bind(this));
     }
-    this.session.loggedin.subscribe(this.initNavigationBasedOnLogin.bind(this));
   }
 
   /**
    * 
    */
   private initNavigationBasedOnLogin(loggedin: boolean): void {
-    if (loggedin) {
-      if (this.location.path() === '/login') {  
-        this.router.navigateByUrl("/home/main", {skipLocationChange: false});
-      }
-    } else if (this.location.path() !== "/login") {
+    const locationpath = this.location.path();
+    console.log("location path = " + locationpath);
+    console.log("loggedin =" + loggedin);
+    if (loggedin && (locationpath === '/login' || locationpath === '')) {
+      this.router.navigateByUrl("/home/main", {skipLocationChange: false});
+    } else if (!loggedin && locationpath !== "/login") {
       this.router.navigateByUrl("/login", {skipLocationChange: false});
     }
   }
-  
+
   /**
    * 
    */

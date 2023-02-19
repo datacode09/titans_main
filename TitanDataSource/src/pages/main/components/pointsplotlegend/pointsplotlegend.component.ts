@@ -35,14 +35,14 @@ export class PointsPlotLegendComponent implements OnInit {
     this.manager.getQueryPoints().subscribe(this.onQueryPointsChanged.bind(this));
     this.manager.getSelectedQueryPoint().subscribe(this.onQueryPointSelected.bind(this));
   }
-  
-  public onRowClicked(evt:any, queryPointId:number) {
+
+  public onRowClicked(evt: any, queryPointId: number) {
     const arr = this.manager.getQueryPointsValue();
     const index = arr.findIndex(q => q.id === queryPointId);
-    const queryPoint = arr[index]; 
-    this.manager.setSelectedQueryPoint(queryPoint); 
+    const queryPoint = arr[index];
+    this.manager.setSelectedQueryPoint(queryPoint);
   }
-  
+
   /**
    * 
    */
@@ -150,6 +150,7 @@ export class PointsPlotLegendComponent implements OnInit {
 
     popup.css("position", "absolute")
       .css("background-color", "white")
+      .css("line-height", "initial")
       .css("z-index", "100")
 
       .css("left", $(window).width() / 2 - width / 2)
@@ -187,6 +188,7 @@ export class PointsPlotLegendComponent implements OnInit {
       .css("bottom", 0)
       .css("right", 0)
       .css("padding", 20)
+
       .css("text-align", "right")
       .append(savebtn)
       .append(cancelbtn);

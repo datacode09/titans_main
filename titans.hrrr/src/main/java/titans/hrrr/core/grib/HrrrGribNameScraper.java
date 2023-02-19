@@ -23,6 +23,7 @@ public class HrrrGribNameScraper {
     DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("yyyyMMdd").toFormatter();
     ZonedDateTime date = ZonedDateTime.now(ZoneId.of("UTC"))
       .minusDays(minusDays)
+      .minusHours(3)
       .truncatedTo(ChronoUnit.DAYS);
     String datetext = date
       .format(formatter);

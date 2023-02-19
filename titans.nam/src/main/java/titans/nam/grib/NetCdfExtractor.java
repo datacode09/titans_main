@@ -41,7 +41,11 @@ public class NetCdfExtractor {
     }
     return netCdfFile;
   }
-
+  
+  /**
+   * 
+   * @param netCdfFile 
+   */
   private void createParentFileIfDoesNotExists(NetCdfFile netCdfFile) {
     if (!netCdfFile.file.getParentFile().exists()) {
       netCdfFile.file.getParentFile().mkdirs();

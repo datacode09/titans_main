@@ -29,7 +29,6 @@ export class HttpParamDelegate implements ParamDelegate {
    * 
    */
   private responseToClazzes(response: any): Map<string, Clazz[]> {
-    console.log(response);
     const result = new Map();
     const map = response.clazzes.map;
     const keys = Object.keys(map);

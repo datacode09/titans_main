@@ -51,6 +51,7 @@ export class RasterParamsService {
    */
   private onRasterSelected(raster: RasterEntity): void {
     let val;
+    console.log(raster); 
     if (raster != null) {
       const subj = this.rasterClasses.get(raster.rasterId);
       val = subj.getValue();
@@ -66,8 +67,6 @@ export class RasterParamsService {
   private onRastersChanged(arr: RastersGroup[]): void {
     arr.forEach(g => {
       g.rasterIds.forEach(this.initRasterParameters.bind(this));
-
-
     });
   }
 

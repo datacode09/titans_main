@@ -19,10 +19,10 @@ import org.postgresql.jdbc.PgArray;
  */
 public class ProjectSource {
 
-  private final DbConnection dbconn;
+  private final DbConnection dbconn;   
 
   public ProjectSource(DbConnection dbconn) {
-    this.dbconn = dbconn;
+    this.dbconn = dbconn;         
   }
 
   /**
@@ -35,7 +35,7 @@ public class ProjectSource {
     List<ResultSet> a = this.dbconn.executeQuery(query, (rs) -> rs);
     boolean result = a.size() == 1;
     if (a.size() > 1) {
-      throw new RuntimeException();
+      throw new RuntimeException();  
     }
     return result;
   }
@@ -97,7 +97,6 @@ public class ProjectSource {
     }
     ProjectEntity result = new ProjectEntity(projectId, projectName, //
       lowerleft, upperright, rasterids);
-    System.out.println("result = " + lowerleft + "," + upperright);
     return result;
   }
 

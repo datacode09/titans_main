@@ -2,6 +2,7 @@ package titans.nam.grib;
 
 import com.google.common.base.Objects;
 import common.http.RmHttpReader;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -59,9 +60,11 @@ public class NamGribSource {
    * @return
    */
   private ZonedDateTime getDateForNamParameters(long minusDays) {
-    return ZonedDateTime.now(ZoneId.of("UTC"))
+    ZonedDateTime result = ZonedDateTime.now(ZoneId.of("UTC"))
       .minusDays(minusDays)
+      .minusHours(3)
       .truncatedTo(ChronoUnit.DAYS);
+    return result;
   }
 
   /**
@@ -180,7 +183,8 @@ public class NamGribSource {
   private void doDownload(URL gribUrl, GribFile gribFile) {
     System.out.println("Importing file : " + gribFile.grib);
     try (OutputStream output = gribFile.getOutputStream()) {
-      IOUtils.copy(gribUrl.openStream(), output);
+      InputStream inputStream = gribUrl.openStream();
+      IOUtils.copy(inputStream, output);
     } catch (Exception ex) {
       gribFile.delete();
       throw new RuntimeException("Error on copying stream.  Check args:{"
@@ -219,7 +223,7 @@ public class NamGribSource {
    * @param filename
    * @return
    */
-  private String createUrl(GribFile gribFile) {
+  public String createUrl(GribFile gribFile) {
     String dateTxt = gribFile.datetimeref
       .toOffsetDateTime().atZoneSameInstant(ZoneId.of("UTC"))
       .format(new DateTimeFormatterBuilder().appendPattern("yyyyMMdd").toFormatter());
