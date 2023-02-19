@@ -1,5 +1,7 @@
 package rm.test_source;
 
+import javax.measure.quantity.Quantity;
+import javax.measure.unit.Unit;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Lazy;
@@ -40,7 +42,7 @@ public class TestSourceRasterFactory implements InitializingBean, RasterFactory 
    */
   @Override
   public Raster create(Parameter r, Bounds bounds, Dimensions dims) {
-    BasicRaster result = new BasicRaster(bounds, dims) {
+    BasicRaster result = new BasicRaster(Unit.ONE, bounds, dims) {
       @Override
       public double getValue(Point point) {
         if (bounds.contains(point)) {
@@ -49,6 +51,12 @@ public class TestSourceRasterFactory implements InitializingBean, RasterFactory 
           return Double.NaN;
         }
       }
+
+      @Override
+      public Unit<? extends Quantity> getUnits() {
+        return super.getUnits();
+      }
+      
     };
     return result;
   }

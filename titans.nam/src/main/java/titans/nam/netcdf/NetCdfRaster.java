@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.measure.quantity.Quantity;
+import javax.measure.unit.Unit;
 import org.locationtech.jts.geom.Point;
 import rm.titansdata.SridUtils;
 import rm.titansdata.properties.Bounds;
@@ -40,7 +42,8 @@ public class NetCdfRaster implements Closeable {
     Bounds bounds = netCdfFile.getBounds();
     Dimensions dims = netCdfFile.getDimensions();
     NetCdfRaster self = this;
-    Raster raster = new BasicRaster(bounds, dims) {
+    Unit<? extends Quantity> units = netCdfFile.getUnits();
+    Raster raster = new BasicRaster(units, bounds, dims) {
       @Override
       public double getValue(Point point) {
         double result = self.getValue(netCdfFile, point);

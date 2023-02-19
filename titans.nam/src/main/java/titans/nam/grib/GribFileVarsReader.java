@@ -8,7 +8,10 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.measure.quantity.Quantity;
+import javax.measure.unit.Unit;
 import org.apache.commons.io.IOUtils;
+import rm.titansdata.units.UnitsUtils;
 
 /**
  *
@@ -44,11 +47,45 @@ public class GribFileVarsReader {
    * @return
    */
   public String getVarMsgNumber(String varName) {
+    String line = this.getLineForVarName(varName);
+    String result = this.lineToVarMsgNumber(line);
+    return result;
+  }
+
+  /**
+   *
+   * @param varName
+   * @return
+   */
+  private String getLineForVarName(String varName) {
     ProcessBuilder process = this.createGribInventoryProcess();
     List<String> processOutput = this.getProcessOutput(process);
     String line = processOutput.stream().filter(l -> this.toVarName(l).equals(varName))
       .findFirst().orElse(null);
-    String result = this.lineToVarMsgNumber(line);
+    return line;
+  }
+
+  /**
+   *
+   * @param varName
+   * @return
+   */
+  public Unit<? extends Quantity> getUnit(String varName) {
+    String line = this.getLineForVarName(varName);
+    String description = line.split(",")[3];
+    int istart = description.indexOf("[");
+    int iend = description.indexOf("]");
+    Unit<?> result;
+    if (istart >= 0 && iend >= 0) {
+      String unitstext = description.substring(istart + 1, iend);
+      result = UnitsUtils.valueOf(unitstext);
+      if (result == null) {
+        System.out.println("varName, unitstext = " + varName + ", " + unitstext);
+        Unit<?> a = UnitsUtils.valueOf(unitstext);
+      }
+    } else {
+      result = null;
+    }
     return result;
   }
 
@@ -75,8 +112,8 @@ public class GribFileVarsReader {
       String elementPrefix = parts[3].split("=")[0].trim();
       String level = parts[4].trim();
       result = elementPrefix + "_" + level;
-    } catch(Exception ex) {
-      RmExceptions.throwException(ex, "An error occured on parsing line: '%s'", line); 
+    } catch (Exception ex) {
+      RmExceptions.throwException(ex, "An error occured on parsing line: '%s'", line);
     }
     return result;
   }
@@ -141,10 +178,10 @@ public class GribFileVarsReader {
     try {
       String result = line.split(",")[0];
       return result;
-    } catch(Exception ex) {
-      throw new RuntimeException(String.format("Parsing line ''%s", line), ex); 
+    } catch (Exception ex) {
+      throw new RuntimeException(String.format("Parsing line ''%s", line), ex);
     }
-    
+
   }
 
 }

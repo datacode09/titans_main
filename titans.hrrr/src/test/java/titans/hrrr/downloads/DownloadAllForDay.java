@@ -38,7 +38,6 @@ public class DownloadAllForDay extends BaseSpringITest {
     params.stream().forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();
-      
       importer.getRaster(namVariable, p.datetime, p.fcststep);      
       System.out.println("elapsed time = " + (System.currentTimeMillis() - tic));
     });

@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.util.Objects;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Quantity;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 import org.apache.commons.lang.math.DoubleRange;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -15,6 +17,7 @@ import rm.titansdata.SridUtils;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimension;
 import rm.titansdata.properties.Dimensions;
+import rm.titansdata.units.UnitsUtils;
 import titans.nam.NoaaParameter;
 import titans.nam.core.NoaaVariable;
 import ucar.nc2.dataset.VariableDS;
@@ -30,7 +33,6 @@ public class NetCdfFile {
 
   private final String varName;
   public final File file;
-  
 
   public NetCdfFile(String varName, File file) {
     this.varName = varName;
@@ -41,7 +43,7 @@ public class NetCdfFile {
    *
    * @return
    */
-  Dimensions getDimensions() {
+  public Dimensions getDimensions() {
     try (GridDataset gds = GridDataset.open(file.getAbsolutePath())) {
       Gridset gridSet = gds.getGridsets().get(0);
       ucar.nc2.Dimension x = gridSet.getGeoCoordSystem().getDomain().get(0);
@@ -65,7 +67,7 @@ public class NetCdfFile {
    *
    * @return
    */
-  Bounds getBounds() {
+  public Bounds getBounds() {
     try (GridDataset gds = GridDataset.open(file.getAbsolutePath())) {
       LatLonRect bbox = gds.getBoundingBox();
       PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.FLOATING);
@@ -85,7 +87,7 @@ public class NetCdfFile {
    *
    * @return
    */
-  String getVarName() {
+  public String getVarName() {
     return this.varName;
   }
 
@@ -121,18 +123,32 @@ public class NetCdfFile {
     }
     return true;
   }
-  
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   @Override
   public String toString() {
     return "NetCdfFile{" + "varName=" + varName + ", file=" + file + '}';
   }
-  
-  
 
+  /**
+   *
+   * @return
+   */
+  public Unit<? extends Quantity> getUnits() {
+    Unit<? extends Quantity> result;
+    try (GridDataset gds = GridDataset.open(file.getAbsolutePath())) {
+      VariableDS datavariable = this.getDataVariable(gds);
+      String unitsString = datavariable.getUnitsString(); 
+      result = UnitsUtils.valueOf(unitsString) ;
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+    return result;
+  }
+  
   /**
    *
    * @return
@@ -140,7 +156,7 @@ public class NetCdfFile {
   public DoubleRange getValueRange() {
     try (GridDataset gds = GridDataset.open(file.getAbsolutePath())) {
       VariableDS datavariable = this.getDataVariable(gds);
-      double min = datavariable.getValidMin(); 
+      double min = datavariable.getValidMin();
       double max = datavariable.getValidMax();
       DoubleRange result = new DoubleRange(min, max);
       return result;
@@ -148,11 +164,11 @@ public class NetCdfFile {
       throw new RuntimeException(ex);
     }
   }
-  
+
   /**
-   * 
+   *
    * @param gds
-   * @return 
+   * @return
    */
   private VariableDS getDataVariable(final GridDataset gds) {
     String replace = varName.replace("-", "_");
@@ -174,4 +190,5 @@ public class NetCdfFile {
     NetCdfFile instance = new NetCdfFile(var.getGribVarName(), file);
     return instance;
   }
+
 }

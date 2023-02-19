@@ -1,25 +1,44 @@
 package rm.titansdata.raster;
 
+import java.util.List;
+import javax.measure.quantity.Quantity;
+import javax.measure.unit.Unit;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
-import java.util.List;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
-import rm.titansdata.raster.Cell;
 
 /**
  *
  * @author Ricardo Marquez
  */
 public abstract class BasicRaster implements Raster {
+  private Unit<? extends Quantity> units;
   private final Bounds bounds;
   private final Dimensions dims;
   
   
-  public BasicRaster(Bounds bounds, Dimensions dims) {
+  /**
+   * 
+   * @param units
+   * @param bounds
+   * @param dims 
+   */
+  public BasicRaster(Unit<? extends Quantity> units, Bounds bounds, Dimensions dims) {
     this.bounds = bounds;
     this.dims = dims;
   }
+  
+  /**
+   * 
+   * @return 
+   */
+  @Override
+  public Unit<? extends Quantity> getUnits() {
+    return this.units;
+  }
+  
+  
   
   /**
    * 

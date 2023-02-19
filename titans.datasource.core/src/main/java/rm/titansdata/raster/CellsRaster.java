@@ -1,11 +1,14 @@
 package rm.titansdata.raster;
 
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.Point;
 import java.util.List;
+import java.util.Objects;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Quantity;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import rm.titansdata.properties.Bounds;
 
 /**
@@ -19,12 +22,14 @@ public class CellsRaster implements Raster {
   private final double[][] data;
   private final int Nx, Ny;
   private final List<Cell> cells;
+  private final Unit<? extends Quantity> units;
 
-  public CellsRaster(List<Cell> cells, Bounds bounds, Measure<Length> dx, Measure<Length> dy) {
+  public CellsRaster(List<Cell> cells, Unit<? extends Quantity> units, Bounds bounds, Measure<Length> dx, Measure<Length> dy) {
     this.cells = cells;
-    this.bounds = bounds;
-    this.dx = dx;
-    this.dy = dy;
+    this.units = Objects.requireNonNull(units);
+    this.bounds = Objects.requireNonNull(bounds);
+    this.dx = Objects.requireNonNull(dx);
+    this.dy = Objects.requireNonNull(dy);
     double lengthX = bounds.getLengthX();
     this.Nx = Double.valueOf(lengthX / dx.doubleValue(SI.METRE)).intValue() - 1;
     double lengthY = bounds.getLengthY();
@@ -40,7 +45,16 @@ public class CellsRaster implements Raster {
       } 
     }
   }
-
+  
+  /**
+   * 
+   * @return 
+   */
+  @Override
+  public Unit<? extends Quantity> getUnits() {
+    return this.units;
+  }
+  
   /**
    *
    * @param point

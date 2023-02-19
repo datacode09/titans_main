@@ -1,13 +1,15 @@
 package rm.titansdata.testdata;
 
 
+import javax.measure.Measure;
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
-import javax.measure.Measure;
-import javax.measure.quantity.Length;
-import javax.measure.unit.SI;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.properties.Properties;
@@ -40,7 +42,8 @@ public class RasterITTestData {
     Bounds b = getBounds();
     Properties p = getProperties(b); 
     Dimensions dims = p.getDimensions();
-    Raster result = new BasicRaster(b, dims) {
+    Unit<Temperature> units = SI.KELVIN;
+    Raster result = new BasicRaster(units, b, dims) {
       @Override
       public double getValue(Point point) {
         double result;
@@ -54,7 +57,11 @@ public class RasterITTestData {
     };
     return result;
   }
-
+  
+  /**
+   * 
+   * @return 
+   */
   private static Bounds getBounds() {
     int srid = 32610;
     GeometryFactory factory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), srid);
