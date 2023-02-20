@@ -37,7 +37,7 @@ public class DownloadAllForDay extends BaseSpringTest {
     params.stream().forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();
-      NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, degribExe);  
+      NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, 0, degribExe);  
       importer.getRaster(namVariable, p.datetime, p.fcststep);
       System.out.println("elapsed time = " + (System.currentTimeMillis() - tic));
     });

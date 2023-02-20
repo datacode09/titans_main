@@ -22,5 +22,5 @@ public interface RasterFactory {
    * @param bounds
    * @param dims 
    */
-  public Raster create(Parameter param, Bounds bounds, Dimensions dims); 
+  public Raster create(int projectId, Parameter param, Bounds bounds, Dimensions dims); 
 }

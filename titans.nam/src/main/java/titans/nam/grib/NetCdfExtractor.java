@@ -19,11 +19,13 @@ public class NetCdfExtractor {
 
   private final File degribExe;
   private final File netcdfdir;
+  private final int subFolderId;
   private final NoaaVariable var;
 
-  public NetCdfExtractor(File degribExe, File netcdfdir, NoaaVariable var) {
+  public NetCdfExtractor(File degribExe, File netcdfdir, int subFolderId, NoaaVariable var) {
     this.degribExe = degribExe;
     this.netcdfdir = netcdfdir;
+    this.subFolderId = subFolderId;
     this.var = var;
   }
 
@@ -129,7 +131,7 @@ public class NetCdfExtractor {
    */
   public NetCdfFile getNetCdfFile(ZonedDateTime datetimeref, int forecaststep) {
     NetCdfFileOrganization org = new NetCdfFileOrganization( //
-      this.netcdfdir, forecaststep, datetimeref, var);
+      this.netcdfdir, this.subFolderId, forecaststep, datetimeref, var);
     NetCdfFile result = org.getNetCdfFile();
     return result;
   }

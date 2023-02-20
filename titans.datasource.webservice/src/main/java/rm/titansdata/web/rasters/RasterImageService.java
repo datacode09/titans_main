@@ -37,9 +37,9 @@ public class RasterImageService {
    * @param rasterId
    * @return
    */
-  public RasterImageResult getRasterImage(long rasterId, Parameter param, Bounds bounds) {
-    RasterObj r = this.getRasterObj(rasterId, param, bounds); 
-    ColorMap cmap = this.getColorMap(rasterId, param, bounds);      
+  public RasterImageResult getRasterImage(long rasterId, int projectId, Parameter param, Bounds bounds) {
+    RasterObj r = this.getRasterObj(rasterId, projectId, param, bounds); 
+    ColorMap cmap = this.getColorMap(rasterId, projectId, param, bounds);      
     RasterImage img = new RasterImage(r, cmap);  
     RasterImageResult result = this.toRasterImageResult(rasterId, img);
     return result;
@@ -68,9 +68,9 @@ public class RasterImageService {
    * @param r
    * @return 
    */
-  private ColorMap getColorMap(long rasterId, Parameter param, Bounds bounds) {
-    ColorMapProvider cm = this.factory.getProvider(rasterId);
-    ColorMap result = cm.getColorMap(param); 
+  private ColorMap getColorMap(long rasterId, int projectId, Parameter param, Bounds bounds) {
+    ColorMapProvider cm = this.factory.getProvider(rasterId, projectId);
+    ColorMap result = cm.getColorMap(projectId, param); 
     return result;
     
   }
@@ -80,8 +80,8 @@ public class RasterImageService {
    * @param rasterId
    * @return
    */
-  private RasterObj getRasterObj(long rasterId, Parameter p, Bounds bounds) {
-    RasterObj result = this.rastersValueService.getRasterObj(rasterId, p, bounds); 
+  private RasterObj getRasterObj(long rasterId, int projectId, Parameter p, Bounds bounds) {
+    RasterObj result = this.rastersValueService.getRasterObj(rasterId, projectId, p, bounds); 
     return result;
   }
 

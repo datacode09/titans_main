@@ -16,5 +16,5 @@ public interface ColorMapProvider {
    * @param param
    * @return
    */
-  public ColorMap getColorMap(Parameter param);
+  public ColorMap getColorMap(int projectId, Parameter param);
 }

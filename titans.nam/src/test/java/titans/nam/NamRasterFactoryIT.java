@@ -42,6 +42,7 @@ public class NamRasterFactoryIT extends BaseSpringTest{
   public void getRasters(String userId) {
     long ms = System.currentTimeMillis();
     GeometryFactory geomfactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326); 
+    int projectid = 0;
     Point p1 = geomfactory.createPoint(new Coordinate(-119.43, 42.26));
     Point p2 = geomfactory.createPoint(new Coordinate(-121.43, 44.26));
     int targetSrid = 32610;    
@@ -59,7 +60,8 @@ public class NamRasterFactoryIT extends BaseSpringTest{
     String var = "TMP_2-HTGL";
     Unit<?> unit = new NamInventoryReader().getUnit(var);
     NoaaParameter p = new NoaaParameter("NAM", datetime, d, var, unit);
-    Raster r = factory.create(p, b, dims);
+    
+    Raster r = factory.create(projectid, p, b, dims);
     Point point = geomfactory.createPoint(new Coordinate(-120.43, 43.26));
     double value = r.getValue(SridUtils.transform(point, targetSrid));
     System.out.println("value = " + value);

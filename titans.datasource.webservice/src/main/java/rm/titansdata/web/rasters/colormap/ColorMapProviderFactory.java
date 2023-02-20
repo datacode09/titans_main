@@ -22,45 +22,46 @@ public class ColorMapProviderFactory {
 
   @Autowired
   private RastersValueService rastersValueService;
-  
-    @Autowired
+
+  @Autowired
   private RastersSourceService sourceService;
-  
+
   private final Map<Long, ColorMapProvider> providers = new HashMap<>();
   
+  
   /**
-   * 
+   *
    * @param rasterId
-   * @param provider 
+   * @param provider
    */
   public void put(long rasterId, ColorMapProvider provider) {
-    this.providers.put(rasterId, provider); 
+    this.providers.put(rasterId, provider);
   }
-  
+
   /**
    *
    * @param rasterId
    * @return
    */
-  public ColorMapProvider getProvider(long rasterId) {
+  public ColorMapProvider getProvider(long rasterId, int projectId) {
     ColorMapProvider result;
     if (providers.containsKey(rasterId)) {
-      result = this.providers.get(rasterId); 
+      result = this.providers.get(rasterId);
     } else {
-      result = (Parameter param) -> defaultColorMap(rasterId, param); 
+      result = (int projectId1, Parameter param) -> defaultColorMap(projectId1, projectId1, param);
     }
-    return result; 
+    return result;
   }
-  
+
   /**
-   * 
+   *
    * @param rasterId
-   * @param param 
+   * @param param
    */
-  public ColorMap defaultColorMap(long rasterId, Parameter param) {
+  public ColorMap defaultColorMap(long rasterId, int projectId, Parameter param) {
     Bounds bounds = this.sourceService.getRaster(rasterId).getBounds();
-    RasterObj r = this.rastersValueService.getRasterObj(rasterId, param, bounds); 
-    RasterSearch s = new RasterSearch(r.getBounds(), r.getDimensions()); 
+    RasterObj r = this.rastersValueService.getRasterObj(rasterId, projectId, param, bounds);
+    RasterSearch s = new RasterSearch(r.getBounds(), r.getDimensions());
     double max = s.stream(b -> r.getValue(b))
       .mapToDouble(i -> i.getValue().getValue())
       .max()
@@ -69,7 +70,6 @@ public class ColorMapProviderFactory {
       .mapToDouble(i -> i.getValue().getValue())
       .min()
       .orElseThrow(() -> new RuntimeException());
-
     ColorMap cmap = new ColorMap.Builder()
       .setXmin(min)
       .setXmax(max)

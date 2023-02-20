@@ -22,7 +22,7 @@ public class GoesRasterFactory implements RasterFactory {
   }
 
   @Override
-  public Raster create(Parameter param, Bounds bounds, Dimensions dims) {
+  public Raster create(int projectId, Parameter param, Bounds bounds, Dimensions dims) {
     //To change body of generated methods, choose Tools | Templates.
     throw new UnsupportedOperationException("Not supported yet.");
   }

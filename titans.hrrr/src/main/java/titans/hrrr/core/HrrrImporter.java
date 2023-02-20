@@ -44,9 +44,9 @@ public class HrrrImporter implements Closeable {
    * @param datetimeref
    * @return
    */
-  public RasterObj getRaster(NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
+  public RasterObj getRaster(int projectId, NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
     NetCdfFile netCdfFile;
-    NetCdfExtractor extractor = new NetCdfExtractor(this.degribExe, this.netCdfRootFolder, var);
+    NetCdfExtractor extractor = new NetCdfExtractor(this.degribExe, this.netCdfRootFolder, projectId, var);
     if (!extractor.netCdfFileExists(datetimeref, forecaststep)) {
       netCdfFile = this.downloadAndExtract(extractor, datetimeref, forecaststep);
     } else {

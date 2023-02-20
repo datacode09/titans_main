@@ -10,8 +10,7 @@ public class QuickIT {
   
   @Test
   public void test() {
-    System.out.println(String.format("%03d", 3)); 
-    
+    System.out.println(String.format("%03d", 3));    
     
   }
 }

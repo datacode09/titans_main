@@ -1,9 +1,5 @@
 package rm.titansdata.web.rasters;
 
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.PrecisionModel;
-import org.locationtech.jts.io.WKTReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import junitparams.JUnitParamsRunner;
@@ -11,6 +7,10 @@ import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.WKTReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
@@ -52,7 +52,8 @@ public class RastersValueServiceIT {
     String decodeWkt = URLDecoder.decode(wkt, StandardCharsets.UTF_8.toString());
     Geometry geom = new WKTReader(factory).read(decodeWkt);
     Parameter p = null;
-    RasterCells values = this.service.getRasterValues(rasterId, p, geom);
+    int projectId = 0;
+    RasterCells values = this.service.getRasterValues(rasterId, projectId, p, geom);
     System.out.println("values = " + values);
   }
 }

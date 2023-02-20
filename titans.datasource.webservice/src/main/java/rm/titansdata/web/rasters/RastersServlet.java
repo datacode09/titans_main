@@ -209,7 +209,8 @@ public class RastersServlet {
     JSONObject jsonObject = this.getParameterJson(parser);
     Parameter param = parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
-    RasterCells values = this.rastersValueService.getRasterValues(rasterId, param, geometry);
+    int projectId = this.getProjectId();
+    RasterCells values = this.rastersValueService.getRasterValues(rasterId, projectId, param, geometry);
     map.put("values", values);
     this.responseHelper.send(map, res);
   }
@@ -232,7 +233,8 @@ public class RastersServlet {
     JSONObject jsonObject = this.getParameterJson(parser);
     Parameter param = parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
-    double value = this.rastersValueService.getRasterValue(rasterId, param, point);
+    int projectId = this.getProjectId();
+    double value = this.rastersValueService.getRasterValue(rasterId, projectId, param, point);
     map.put("value", value);
     this.responseHelper.send(map, res);
   }
@@ -255,7 +257,9 @@ public class RastersServlet {
     JSONArray jsonObject = this.getParametersJsonArray(parser);
     List<Parameter> param = this.parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
-    Map<Parameter, Double> values = this.rastersValueService.getPointRasterValues(rasterId, param, point);
+    int projectId = this.getProjectId();
+    Map<Parameter, Double> values = this.rastersValueService.getPointRasterValues( //
+      rasterId, projectId, param, point);
     Map<String, Double> s = values.entrySet().stream()
       .collect(Collectors.toMap(d -> d.getKey().getKey(), d -> d.getValue()));
     map.put("values", s);
@@ -305,11 +309,12 @@ public class RastersServlet {
     JSONObject jsonObject = this.getParameterJson(parser);
     Parameter param = parameterFactory.get(jsonObject);
     Bounds bounds = this.getBoundsFromProject();
-    RasterImageResult image = this.rastersImageService.getRasterImage(rasterId, param, bounds);
+    int projectId = this.getProjectId();
+    RasterImageResult image = this.rastersImageService.getRasterImage( //
+      rasterId, projectId, param, bounds);
     Map<String, Object> map = new HashMap<>();
     map.put("value", image);
     this.responseHelper.send(map, res);
-    // {"datetime":"2023012112","parentKey":"North American Model Forecasts","zoneid":"UTC","fcststep":0,"key":"2023012112-0"}
   }
 
   /**
@@ -317,7 +322,21 @@ public class RastersServlet {
    * @return
    */
   private Bounds getBoundsFromProject() {
-    ProjectEntity project = this.projectEntity.getValue(SessionManager.getSessionAuthToken());
-    return new Bounds(project.lowerleft, project.upperright);
+    String authToken = SessionManager.getSessionAuthToken();
+    ProjectEntity project = this.projectEntity.getValue(authToken);
+    Bounds result = new Bounds(project.lowerleft, project.upperright);
+    return result;
   }
+
+  /**
+   *
+   * @return
+   */
+  private int getProjectId() {
+    String authToken = SessionManager.getSessionAuthToken();
+    ProjectEntity proj = this.projectEntity.getValue(authToken);
+    int result = proj.projectId;
+    return result;
+  }
+
 }

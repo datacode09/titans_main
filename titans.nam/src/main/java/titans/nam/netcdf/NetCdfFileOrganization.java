@@ -4,7 +4,10 @@ import java.io.File;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import javax.measure.unit.Unit;
+import titans.nam.NoaaParameter;
 import titans.nam.core.NoaaVariable;
+import titans.nam.grib.ForecastTimeReference;
 
 /**
  *
@@ -13,9 +16,10 @@ import titans.nam.core.NoaaVariable;
 public class NetCdfFileOrganization {
 
   private final File baseFolder;
-  private int fcststep;
-  private ZonedDateTime datetime;
-  private NoaaVariable var;
+  private final int subFolderId;
+  private final int fcststep;
+  private final ZonedDateTime datetime;
+  private final NoaaVariable var;
 
   /**
    *
@@ -24,10 +28,12 @@ public class NetCdfFileOrganization {
    * @param datetime
    * @param var
    */
-  public NetCdfFileOrganization(File baseFolder, int fcststep, ZonedDateTime datetime, NoaaVariable var) {
+  public NetCdfFileOrganization( //
+    File baseFolder, int subFolderId, int fcststep, ZonedDateTime datetime, NoaaVariable var) {
     this.baseFolder = baseFolder;
-    this.fcststep = fcststep;
+    this.subFolderId = subFolderId;
     this.datetime = datetime;
+    this.fcststep = fcststep;
     this.var = var;
   }
 
@@ -44,7 +50,9 @@ public class NetCdfFileOrganization {
     String format = this.datetime.format(formatter);
     String filename = String.format("%s_%s_%03d.nc", var.getGribVarName(), format, this.fcststep);
     String child = String.format("%04d/%02d/%02d/%s", year, month, day, filename);
-    File result = new File(baseFolder, child);
+    String subfolder = String.format("%04d", this.subFolderId);
+    File baseFolder1 = new File(baseFolder, subfolder);
+    File result = new File(baseFolder1, child);
     return result;
   }
   
@@ -53,9 +61,10 @@ public class NetCdfFileOrganization {
    * @return 
    */
   public NetCdfFile getNetCdfFile() {
-    File file = this.getFile();
-    String gribVarName = var.getGribVarName();
-    NetCdfFile result = new NetCdfFile(gribVarName, file);
+    String gribVarName = this.var.getGribVarName();
+    ForecastTimeReference d = new ForecastTimeReference(0, fcststep);
+    NoaaParameter namParameter = new NoaaParameter(gribVarName, datetime, d, gribVarName, Unit.ONE);
+    NetCdfFile result = NetCdfFile.create(baseFolder, subFolderId, namParameter);
     return result;
   }
 }

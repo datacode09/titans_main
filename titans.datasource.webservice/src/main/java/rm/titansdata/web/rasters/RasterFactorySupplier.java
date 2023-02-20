@@ -61,13 +61,13 @@ public class RasterFactorySupplier {
      *
      * @return
      */
-    public Raster createRaster(Parameter p) {
+    public Raster createRaster(int projectId, Parameter p) {
       Raster result;
       int intValue = Long.valueOf(this.typeId).intValue();
       switch (intValue) {
         case 0:
           result = this.rasterModelsRegistry.get(this.sourceTitle)
-            .create(p, bounds, dims);
+            .create(projectId, p, bounds, dims);
           break;
         default:
           throw new RuntimeException();

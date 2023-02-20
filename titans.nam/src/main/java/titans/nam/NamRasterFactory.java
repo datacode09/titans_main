@@ -23,7 +23,7 @@ import titans.nam.utils.InvalidArgumentTypeException;
 @Component
 @DependsOn({"nam.gribRootFolder", "nam.degribExe"}) 
 public class NamRasterFactory implements RasterFactory {
-  private final NamImporter namImporter;
+  private final NamImporter.Builder namImporterBuilder;
   
   /**
    *
@@ -34,7 +34,7 @@ public class NamRasterFactory implements RasterFactory {
     @Qualifier("nam.gribRootFolder") File gribRootFolder, 
     @Qualifier("nam.netCdfRootFolder") File netCdfRootFolder, 
     @Qualifier("nam.degribExe") File degribExe) {
-    this.namImporter = new NamImporter(gribRootFolder, netCdfRootFolder, degribExe); 
+    this.namImporterBuilder = new NamImporter.Builder().setGribRootFolder(gribRootFolder).setNetCdfRootFolder(netCdfRootFolder).setDegribExe(degribExe);
   }
   
   /**
@@ -54,14 +54,15 @@ public class NamRasterFactory implements RasterFactory {
    * @return
    */
   @Override
-  public Raster create(Parameter p, Bounds bounds, Dimensions dims) {
+  public Raster create(int projectId, Parameter p, Bounds bounds, Dimensions dims) {
     if (p instanceof NoaaParameter) {
       NoaaParameter namparam = (NoaaParameter) p;
       int fcststep = namparam.fcststep;
       ZonedDateTime datetime = namparam.datetime;
       String varName = "TMP_2-HTGL";
       NoaaVariable var = new NoaaVariable(varName, new NamInventoryReader().getUnit(varName));
-      RasterObj rasterObj = this.namImporter.getRaster(var, datetime, fcststep);
+      NamImporter importer = this.namImporterBuilder.setSubfolderId(projectId).build();
+      RasterObj rasterObj = importer.getRaster(var, datetime, fcststep);
       Raster result = rasterObj.getRaster();
       return result;
     } else {

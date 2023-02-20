@@ -54,7 +54,7 @@ public class HrrrRasterFactory implements RasterFactory {
    * @return 
    */
   @Override
-  public Raster create(Parameter p, Bounds bounds, Dimensions dims) {
+  public Raster create(int projectId, Parameter p, Bounds bounds, Dimensions dims) {
     if (p instanceof NoaaParameter) {
       NoaaParameter namparam = (NoaaParameter) p;
       int fcststep = namparam.fcststep;
@@ -62,7 +62,7 @@ public class HrrrRasterFactory implements RasterFactory {
       String name = "TMP_2-HTGL";
       Unit<?> unit = new HrrrInventoryReader().getUnit(name);
       NoaaVariable var = new NoaaVariable(name, unit);
-      RasterObj rasterObj = this.importer.getRaster(var, datetime, fcststep);
+      RasterObj rasterObj = this.importer.getRaster(projectId, var, datetime, fcststep);
       Raster result = rasterObj.getRaster();
       return result;
     } else {

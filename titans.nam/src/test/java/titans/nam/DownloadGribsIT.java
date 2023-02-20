@@ -31,7 +31,7 @@ public class DownloadGribsIT extends BaseSpringTest {
     String parentKey = "NAM";
     long minusDays = 0L;
     List<NoaaParameter> params = source.getCurrentNamParameters(minusDays, parentKey);
-    NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, degribExe);
+    NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, 0, degribExe);
     params.forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();

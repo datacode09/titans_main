@@ -48,7 +48,8 @@ public class RasterImageServiceIT extends BaseSpringTest {
     Coordinate p1 = new Coordinate(-121.43, 37.36);
     Coordinate p2 = new Coordinate(p1.x + 0.1, p1.y + 0.1);
     Bounds bounds = Bounds.fromPoints(p1, p2, 4326).transform(32610);
-    RasterImageResult img = this.imageService.getRasterImage(rasterId, param, bounds); 
+    int projectId = 0;
+    RasterImageResult img = this.imageService.getRasterImage(rasterId, projectId, param, bounds); 
     System.out.println("img = " + img);
   }
 }

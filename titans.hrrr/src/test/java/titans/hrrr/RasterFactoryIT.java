@@ -54,7 +54,8 @@ public class RasterFactoryIT extends BaseSpringITest {
     String var = "TMP_2-HTGL";
     Unit<?> unit = new HrrrInventoryReader().getUnit(var);
     NoaaParameter p = new NoaaParameter("HRRR", datetime, d, var, unit);
-    Raster raster = factory.create(p, b, dims);
+    Integer projectId = 0;
+    Raster raster = factory.create(projectId, p, b, dims);
     Point point = geomfactory.createPoint(new Coordinate(-120.43, 43.26));
     double value = raster.getValue(SridUtils.transform(point, targetSrid));
     System.out.println("value = " + value);

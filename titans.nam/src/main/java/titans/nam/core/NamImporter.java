@@ -24,15 +24,17 @@ public class NamImporter implements Closeable {
   private final NamGribSource source = new NamGribSource();
   private final File gribRootFolder;
   private final File netCdfRootFolder;
+  private final int subfolderId;
   private final File degribExe;
 
   /**
    *
    * @param gribRootFolder
    */
-  public NamImporter(File gribRootFolder, File netCdfRootFolder, File degribExe) {
+  public NamImporter(File gribRootFolder, File netCdfRootFolder, int subfolderId, File degribExe) {
     this.gribRootFolder = gribRootFolder;
     this.netCdfRootFolder = netCdfRootFolder;
+    this.subfolderId = subfolderId;
     this.degribExe = degribExe;
   }
 
@@ -44,7 +46,7 @@ public class NamImporter implements Closeable {
    */
   public RasterObj getRaster(NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
     NetCdfFile netCdfFile;
-    NetCdfExtractor extractor = new NetCdfExtractor(this.degribExe, this.netCdfRootFolder, var); 
+    NetCdfExtractor extractor = new NetCdfExtractor(this.degribExe, this.netCdfRootFolder, this.subfolderId, var); 
     if (!extractor.netCdfFileExists(datetimeref, forecaststep)) {
       netCdfFile = this.downloadAndExtract(extractor, datetimeref, forecaststep); 
     } else {
@@ -130,6 +132,46 @@ public class NamImporter implements Closeable {
   @Override
   public void close() throws IOException {
     this.rasterLoader.close();
+  }
+  
+  public static class Builder {
+    private File gribRootFolder;
+    private File netCdfRootFolder;
+    private int subfolderId;
+    private File degribExe;
+  
+    public Builder() {
+    }
+
+    public Builder setGribRootFolder(File gribRootFolder) {
+      this.gribRootFolder = gribRootFolder;
+      return this;
+    }
+
+    public Builder setNetCdfRootFolder(File netCdfRootFolder) {
+      this.netCdfRootFolder = netCdfRootFolder;
+      return this;
+    }
+
+    public Builder setSubfolderId(int subfolderId) {
+      this.subfolderId = subfolderId;
+      return this;
+    }
+
+    public Builder setDegribExe(File degribExe) {
+      this.degribExe = degribExe;
+      return this;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public NamImporter build() {
+      return new NamImporter(gribRootFolder, netCdfRootFolder, subfolderId, degribExe); 
+    }
+    
+    
   }
 
 }

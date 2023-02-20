@@ -41,7 +41,7 @@ public class TestSourceRasterFactory implements InitializingBean, RasterFactory 
    * @return
    */
   @Override
-  public Raster create(Parameter r, Bounds bounds, Dimensions dims) {
+  public Raster create(int projectId, Parameter r, Bounds bounds, Dimensions dims) {
     BasicRaster result = new BasicRaster(Unit.ONE, bounds, dims) {
       @Override
       public double getValue(Point point) {

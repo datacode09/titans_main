@@ -42,10 +42,11 @@ public class DownloadAllForDay extends BaseSpringITest {
     String varName = "TMP_2-HTGL";
     Unit<?> unit = new HrrrInventoryReader().getUnit(varName);
     NoaaVariable namVariable = new NoaaVariable(varName, unit);
+    int projectId = 0;      
     params.stream().forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();
-      importer.getRaster(namVariable, p.datetime, p.fcststep);      
+      importer.getRaster(projectId, namVariable, p.datetime, p.fcststep);      
       System.out.println("elapsed time = " + (System.currentTimeMillis() - tic));
     });
   }

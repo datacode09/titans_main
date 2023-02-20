@@ -31,10 +31,11 @@ import ucar.unidata.geoloc.LatLonRect;
  */
 public class NetCdfFile {
 
+
   private final String varName;
   public final File file;
 
-  public NetCdfFile(String varName, File file) {
+  private NetCdfFile(String varName, File file) {
     this.varName = varName;
     this.file = file;
   }
@@ -182,13 +183,25 @@ public class NetCdfFile {
    * @param namParameter
    * @return
    */
-  public static NetCdfFile create(File baseFolder, NoaaParameter namParameter) {
+  public static NetCdfFile create(File baseFolder, int subFolderId, NoaaParameter namParameter) {
     NoaaVariable var = new NoaaVariable(namParameter.noaaVar, namParameter.getUnit());
+    String varName = var.getGribVarName();
     NetCdfFileOrganization org = new NetCdfFileOrganization(
-      baseFolder, namParameter.fcststep, namParameter.datetime, var);
+      baseFolder, subFolderId, namParameter.fcststep, namParameter.datetime, var);
     File file = org.getFile();
-    NetCdfFile instance = new NetCdfFile(var.getGribVarName(), file);
+    NetCdfFile instance = new NetCdfFile(varName, file);
     return instance;
+  }
+  
+  
+  /**
+   * 
+   * @param varName
+   * @param file
+   * @return 
+   */
+  public static NetCdfFile test(String varName, File file) {
+    return new NetCdfFile(varName, file);
   }
 
 }
