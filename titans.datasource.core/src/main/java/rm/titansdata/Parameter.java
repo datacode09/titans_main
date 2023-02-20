@@ -1,5 +1,6 @@
 package rm.titansdata;
 
+import javax.measure.unit.Unit;
 import org.json.JSONObject;
 
 /**
@@ -21,4 +22,8 @@ public interface Parameter {
   public String getKey();
   
   
+  /**
+   * 
+   */
+  public Unit<?> getUnit();
 }

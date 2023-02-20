@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.beans.property.ListProperty;
+import javax.measure.unit.Unit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,10 +67,11 @@ public class HrrrParametersFactory implements ParameterFactory {
   @Override
   public List<Parameter> getParameters(Clazz... clazzes) {
     String noaaVar = this.getNoaaVar(clazzes);
+    Unit<?> unit = this.getUnit(noaaVar);
     List<Parameter> arrayList = new ArrayList<>(this.parameters.getValue());
     arrayList.stream()
       .map(p -> (NoaaParameter) p)
-      .map(p -> p.setVar(noaaVar));
+      .map(p -> p.setVar(noaaVar, unit));
     return arrayList;
   }
 
@@ -85,7 +87,7 @@ public class HrrrParametersFactory implements ParameterFactory {
       result = new HrrrInventoryReader().read();
     } else if (classtype == FORECAST_CLASSTYPE) {
       result = IntStream.range(0, 50) //
-        .mapToObj(i->new ForecastStepClazz(i)) //
+        .mapToObj(i -> new ForecastStepClazz(i)) //
         .collect(Collectors.toList());
     } else {
       result = new ArrayList<>();
@@ -116,6 +118,12 @@ public class HrrrParametersFactory implements ParameterFactory {
     }
     return param;
   }
+  
+  private Unit<?> getUnit(String noaaVar) {
+    HrrrInventoryReader reader = new HrrrInventoryReader();
+    Unit<?> unit = reader.getUnit(noaaVar);
+    return unit;
+  }
 
   /**
    *
@@ -131,11 +139,11 @@ public class HrrrParametersFactory implements ParameterFactory {
     String result = varClazz.getVarName();
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param arr
-   * @return 
+   * @return
    */
   @Override
   public List<Clazz> getClasses(JSONArray arr) {
@@ -154,7 +162,7 @@ public class HrrrParametersFactory implements ParameterFactory {
         if (o != null) {
           String key = o.getString("key");
           Clazz e = this.getParser(key).parse(o);
-          result.add(e);   
+          result.add(e);
         }
       }
       return result;
@@ -162,8 +170,8 @@ public class HrrrParametersFactory implements ParameterFactory {
       throw new RuntimeException(ex);
     }
   }
-  
-   /**
+
+  /**
    *
    * @param key
    * @return
@@ -175,9 +183,9 @@ public class HrrrParametersFactory implements ParameterFactory {
         result = (JSONObject o) -> {
           try {
             String varName = o.getString("varName");
-            return new NoaaVarClazz(varName);
-          } catch(Exception ex) {
-            throw new RuntimeException(ex); 
+            return new NoaaVarClazz(varName, this.getUnit(varName));
+          } catch (Exception ex) {
+            throw new RuntimeException(ex);
           }
         };
         break;
@@ -186,8 +194,8 @@ public class HrrrParametersFactory implements ParameterFactory {
           try {
             int step = o.getInt("step");
             return new ForecastStepClazz(step);
-          } catch(Exception ex) {
-            throw new RuntimeException(ex); 
+          } catch (Exception ex) {
+            throw new RuntimeException(ex);
           }
         };
         break;
@@ -196,10 +204,9 @@ public class HrrrParametersFactory implements ParameterFactory {
           String.format("Invalid key : '%s'", key));
     }
     return result;
-  } 
-    
-  
-    /**
+  }
+
+  /**
    *
    */
   private static interface Parser {

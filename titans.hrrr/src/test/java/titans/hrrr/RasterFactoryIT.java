@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -16,6 +17,7 @@ import rm.titansdata.SridUtils;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
+import titans.hrrr.core.grib.HrrrInventoryReader;
 import titans.nam.NoaaParameter;
 import titans.nam.grib.ForecastTimeReference;
 
@@ -50,7 +52,8 @@ public class RasterFactoryIT extends BaseSpringITest {
       .minusDays(1);
     ForecastTimeReference d = new ForecastTimeReference(0, 1);
     String var = "TMP_2-HTGL";
-    NoaaParameter p = new NoaaParameter("HRRR", datetime, d, var);
+    Unit<?> unit = new HrrrInventoryReader().getUnit(var);
+    NoaaParameter p = new NoaaParameter("HRRR", datetime, d, var, unit);
     Raster raster = factory.create(p, b, dims);
     Point point = geomfactory.createPoint(new Coordinate(-120.43, 43.26));
     double value = raster.getValue(SridUtils.transform(point, targetSrid));

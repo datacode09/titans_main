@@ -1,5 +1,6 @@
 package titans.goes;
 
+import javax.measure.unit.Unit;
 import org.json.JSONObject;
 import rm.titansdata.Parameter;
 
@@ -20,5 +21,10 @@ public class GoesParameter implements Parameter{
     //To change body of generated methods, choose Tools | Templates.
     throw new UnsupportedOperationException("Not supported yet.");
   }
-  
+
+  @Override
+  public Unit<?> getUnit() {
+    //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
 }

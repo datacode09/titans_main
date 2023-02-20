@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.beans.property.ListProperty;
+import javax.measure.unit.Unit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +33,11 @@ public class NamParametersFactory implements ParameterFactory {
   public static ClassType BASEDATE_CLASSTYPE = new BaseDateClassType();
   public static ClassType FORECAST_CLASSTYPE = new ForecastStepClassType();
   public static ClassType VALUE_CLASSTYPE = new ValueClassType("NOAA_VAR");
+  
   @Autowired
   @Qualifier("nam.parameters")
   private ListProperty<NoaaParameter> parameters;
-
+  
   /**
    *
    * @return
@@ -55,15 +57,27 @@ public class NamParametersFactory implements ParameterFactory {
       BASEDATE_CLASSTYPE, FORECAST_CLASSTYPE, VALUE_CLASSTYPE);
     return result;
   }
-
+  
+  /**
+   * 
+   * @param clazzes
+   * @return 
+   */
   @Override
   public List<Parameter> getParameters(Clazz... clazzes) {
     String noaaVar = this.getNoaaVar(clazzes);
+    Unit<?> unit = this.getUnit(noaaVar);
     List<Parameter> arrayList = new ArrayList<>(this.parameters.getValue());
     arrayList.stream()
       .map(p -> (NoaaParameter) p)
-      .map(p -> p.setVar(noaaVar));
+      .map(p -> p.setVar(noaaVar, unit));
     return arrayList;
+  }
+
+  private Unit<?> getUnit(String noaaVar) {
+    NamInventoryReader reader = new NamInventoryReader();
+    Unit<?> unit = reader.getUnit(noaaVar);
+    return unit;
   }
 
   
@@ -170,7 +184,7 @@ public class NamParametersFactory implements ParameterFactory {
         result = (JSONObject o) -> {
           try {
             String varName = o.getString("varName");
-            return new NoaaVarClazz(varName);
+            return new NoaaVarClazz(varName, this.getUnit(varName));
           } catch (Exception ex) {
             throw new RuntimeException(ex);
           }

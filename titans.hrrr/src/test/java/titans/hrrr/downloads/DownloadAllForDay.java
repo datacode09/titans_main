@@ -2,12 +2,14 @@ package titans.hrrr.downloads;
 
 import java.io.File;
 import java.util.List;
+import javax.measure.unit.Unit;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import titans.hrrr.BaseSpringITest;
 import titans.hrrr.core.HrrrImporter;
 import titans.hrrr.core.grib.HrrrGribSource;
+import titans.hrrr.core.grib.HrrrInventoryReader;
 import titans.nam.NoaaParameter;
 import titans.nam.core.NoaaVariable;
 
@@ -26,7 +28,10 @@ public class DownloadAllForDay extends BaseSpringITest {
   @Autowired
   @Qualifier("hrrr.degribExe")
   File degribExe;
-
+  
+  /**
+   * 
+   */
   @Test
   public void test() {
     HrrrGribSource source = new HrrrGribSource();
@@ -34,7 +39,9 @@ public class DownloadAllForDay extends BaseSpringITest {
     String parentKey = "HRRR";
     int minusDays = 0; 
     List<NoaaParameter> params = source.getCurrentParameters(parentKey, minusDays); 
-    NoaaVariable namVariable = new NoaaVariable("TMP_2-HTGL");
+    String varName = "TMP_2-HTGL";
+    Unit<?> unit = new HrrrInventoryReader().getUnit(varName);
+    NoaaVariable namVariable = new NoaaVariable(varName, unit);
     params.stream().forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();

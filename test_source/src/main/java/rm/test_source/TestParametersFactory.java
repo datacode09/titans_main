@@ -2,6 +2,7 @@ package rm.test_source;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.measure.unit.Unit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +59,13 @@ public class TestParametersFactory implements ParameterFactory {
       public String getKey() {
         return "test_source_01";
       }
+
+      @Override
+      public Unit<?> getUnit() {
+        return Unit.ONE;
+      }
+      
+      
     });
     return result;
   }
@@ -81,6 +89,13 @@ public class TestParametersFactory implements ParameterFactory {
         //To change body of generated methods, choose Tools | Templates.
         throw new UnsupportedOperationException("Not supported yet.");
       }
+
+      @Override
+      public Unit<?> getUnit() {
+        //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
+      }
+      
     };
   }
 

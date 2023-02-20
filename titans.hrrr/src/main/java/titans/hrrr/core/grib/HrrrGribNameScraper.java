@@ -10,6 +10,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.measure.unit.Unit;
 import titans.nam.NoaaParameter;
 import titans.nam.grib.ForecastTimeReference;
 
@@ -30,11 +31,13 @@ public class HrrrGribNameScraper {
     String fullUrl = url + "hrrr." + datetext + "/conus";
     List<NoaaParameter> result = new ArrayList<>();
     String var = "TMP_2-HTGL";
+    Unit<?> unit = new HrrrInventoryReader().getUnit(var);
     new RmHttpReader.Builder(fullUrl).read((text) -> {
+      
       Arrays.stream(text.split("\n")) //
         .filter(this::isConusNestLine)
         .map(this::toForecastTimeRef)
-        .map(d -> new NoaaParameter(parentKey, date, d, var))
+        .map(d -> new NoaaParameter(parentKey, date, d, var, unit))
         .forEach(result::add);
     });
     result.stream()

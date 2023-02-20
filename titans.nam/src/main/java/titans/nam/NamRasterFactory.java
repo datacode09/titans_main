@@ -12,6 +12,7 @@ import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
 import rm.titansdata.raster.RasterObj;
 import titans.nam.core.NamImporter;
+import titans.nam.core.NamInventoryReader;
 import titans.nam.core.NoaaVariable;
 import titans.nam.utils.InvalidArgumentTypeException;
 
@@ -58,7 +59,8 @@ public class NamRasterFactory implements RasterFactory {
       NoaaParameter namparam = (NoaaParameter) p;
       int fcststep = namparam.fcststep;
       ZonedDateTime datetime = namparam.datetime;
-      NoaaVariable var = new NoaaVariable("TMP_2-HTGL");
+      String varName = "TMP_2-HTGL";
+      NoaaVariable var = new NoaaVariable(varName, new NamInventoryReader().getUnit(varName));
       RasterObj rasterObj = this.namImporter.getRaster(var, datetime, fcststep);
       Raster result = rasterObj.getRaster();
       return result;

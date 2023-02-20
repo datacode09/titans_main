@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import javax.measure.unit.Unit;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import rm.titansdata.Parameter;
@@ -13,6 +14,7 @@ import rm.titansdata.images.RasterImage;
 import rm.titansdata.plugin.ColorMapProvider;
 import rm.titansdata.raster.RasterObj;
 import titans.nam.core.NamImporter;
+import titans.nam.core.NamInventoryReader;
 import titans.nam.core.NoaaVariable;
 import titans.nam.grib.ForecastTimeReference;
 
@@ -45,15 +47,17 @@ public class NamImporterIT {
     ZoneId timeZone = ZoneId.of("UTC");
     ZonedDateTime refdate = ZonedDateTime //
       .now(timeZone) //
+      .minusHours(3)
       .truncatedTo(ChronoUnit.DAYS);
     int forecastStep = 0;
     
     try (NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, degribExe)) {
-      NoaaVariable var = new NoaaVariable(varName);
+      Unit<?> unit = new NamInventoryReader().getUnit(varName);
+      NoaaVariable var = new NoaaVariable(varName, unit);
       raster = importer.getRaster(var, refdate, forecastStep);
       ColorMapProvider cmprovider = new NamColorMapProvider(netCdfRootFolder);
       ForecastTimeReference ref = new ForecastTimeReference(refdate.getHour(), forecastStep);
-      Parameter param = new NoaaParameter(parentKey, refdate, ref, varName);
+      Parameter param = new NoaaParameter(parentKey, refdate, ref, varName, unit);
       ColorMap cmap = cmprovider.getColorMap(param);
       RasterImage image = new RasterImage(raster, cmap);
       File output = new File(gribRootFolder, "image.png");

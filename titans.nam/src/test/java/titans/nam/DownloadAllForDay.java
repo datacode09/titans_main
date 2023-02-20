@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import titans.nam.core.NamImporter;
+import titans.nam.core.NamInventoryReader;
 import titans.nam.core.NoaaVariable;
 import titans.nam.grib.NamGribSource;
 
@@ -31,7 +32,8 @@ public class DownloadAllForDay extends BaseSpringTest {
     String parentKey = "NAM";
     long minusDays = 0L; 
     List<NoaaParameter> params = source.getCurrentNamParameters(minusDays, parentKey); 
-    NoaaVariable namVariable = new NoaaVariable("TMP_2-HTGL");
+    String varName = "TMP_2-HTGL";
+    NoaaVariable namVariable = new NoaaVariable(varName, new NamInventoryReader().getUnit(varName));
     params.stream().forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();

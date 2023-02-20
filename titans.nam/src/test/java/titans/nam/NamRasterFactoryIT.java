@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -19,6 +20,7 @@ import rm.titansdata.SridUtils;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
+import titans.nam.core.NamInventoryReader;
 import titans.nam.grib.ForecastTimeReference;
 
 /**
@@ -55,7 +57,8 @@ public class NamRasterFactoryIT extends BaseSpringTest{
       .minusDays(1);
     ForecastTimeReference d = new ForecastTimeReference(0, 0);
     String var = "TMP_2-HTGL";
-    NoaaParameter p = new NoaaParameter("NAM", datetime, d, var);
+    Unit<?> unit = new NamInventoryReader().getUnit(var);
+    NoaaParameter p = new NoaaParameter("NAM", datetime, d, var, unit);
     Raster r = factory.create(p, b, dims);
     Point point = geomfactory.createPoint(new Coordinate(-120.43, 43.26));
     double value = r.getValue(SridUtils.transform(point, targetSrid));

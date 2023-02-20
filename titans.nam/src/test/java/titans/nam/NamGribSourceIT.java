@@ -22,6 +22,9 @@ public class NamGribSourceIT {
     list.forEach(System.out::println);
   }
   
+  /**
+   * 
+   */
   @Test
   public void test02() {
     String line = "<a href=\"nam.t00z.class1.bufr_priconest.tm00\">nam.t00z.class1.bufr_priconest.tm00</a>         13-Jan-2023 02:31  2.0M  ";

@@ -139,7 +139,11 @@ public class NetCdfRaster implements Closeable {
       }
     }
   }
-
+  
+  /**
+   * 
+   * @throws IOException 
+   */
   @Override
   public void close() throws IOException {
     if (this.gds == null) {

@@ -12,8 +12,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import javax.measure.unit.Unit;
 import org.apache.commons.io.IOUtils;
 import titans.nam.NoaaParameter;
+import titans.nam.core.NamInventoryReader;
 
 /**
  *
@@ -92,9 +94,11 @@ public class NamGribSource {
   private NoaaParameter parseFullHtmlText(String parentKey, ZonedDateTime date, String text) {
     String var = "TMP_2-HTGL";
     NoaaParameter result;
+    
     if (this.isConusNestLine(text)) {
       ForecastTimeReference d = this.toForecastTimeRef(text);
-      result = new NoaaParameter(parentKey, date, d, var);
+      Unit<?> unit = new NamInventoryReader().getUnit(var);
+      result = new NoaaParameter(parentKey, date, d, var, unit);
     } else {
       result = null;
     }

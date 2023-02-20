@@ -1,6 +1,7 @@
 package titans.nam.classes;
 
 import java.util.Objects;
+import javax.measure.unit.Unit;
 import org.json.JSONException;
 import org.json.JSONObject;
 import rm.titansdata.plugin.Clazz;
@@ -12,10 +13,12 @@ import rm.titansdata.plugin.Clazz;
 public class NoaaVarClazz implements Clazz{
   private final String key;
   private final String varName;
+  private final Unit<?> unit;
 
-  public NoaaVarClazz(String varName) {
+  public NoaaVarClazz(String varName, Unit<?> unit) {
     this.key = "NOAA_VAR";
     this.varName = varName;
+    this.unit = unit;
   }
   
   /**
@@ -90,10 +93,28 @@ public class NoaaVarClazz implements Clazz{
       JSONObject obj = new JSONObject();
       obj.append("key", this.getKey());
       obj.append("varName", this.getVarName());
+      obj.append("unit", this.unit);
       return obj;
     } catch (JSONException ex) {
       throw new RuntimeException(ex); 
     }
+  }
+
+  /**
+   * 
+   * @return 
+   */
+  public Unit<?> getUnit() {
+    return this.unit;
+  }
+  
+  /**
+   * 
+   * @return 
+   */
+  @Override
+  public String toString() {
+    return "{" + "key=" + key + ", varName=" + varName + ", unit=" + unit + '}';
   }
   
 }
