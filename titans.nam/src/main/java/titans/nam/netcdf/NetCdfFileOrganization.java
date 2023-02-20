@@ -41,24 +41,53 @@ public class NetCdfFileOrganization {
    *
    */
   public File getFile() {
-    int year = this.datetime.getYear();
-    int month = this.datetime.getMonthValue();
-    int day = this.datetime.getDayOfMonth();
-    DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-      .appendPattern("yyyyMMddHHmm")
-      .toFormatter();
-    String format = this.datetime.format(formatter);
-    String filename = String.format("%s_%s_%03d.nc", var.getGribVarName(), format, this.fcststep);
-    String child = String.format("%04d/%02d/%02d/%s", year, month, day, filename);
-    String subfolder = String.format("%04d", this.subFolderId);
-    File baseFolder1 = new File(baseFolder, subfolder);
-    File result = new File(baseFolder1, child);
+    String subfilepath = this.getSubFilePath();
+    File realBaseFolder = this.getBaseFolder();
+    File result = new File(realBaseFolder, subfilepath);
     return result;
   }
   
   /**
    * 
    * @return 
+   */
+  private String getSubFilePath() {
+    String filename = this.getFileName();
+    int year = this.datetime.getYear();
+    int month = this.datetime.getMonthValue();
+    int day = this.datetime.getDayOfMonth();
+    String child = String.format("%04d/%02d/%02d/%s", year, month, day, filename);
+    return child;
+  }
+  
+  /**
+   * 
+   * @return 
+   */
+  private String getFileName() {
+    DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+      .appendPattern("yyyyMMddHHmm")
+      .toFormatter();
+    String format = this.datetime.format(formatter);
+    String varName = var.getGribVarName();
+    String filename = String.format("%s_%s_%03d.nc", varName, format, this.fcststep);
+    return filename;
+  }
+  
+  /**
+   * 
+   * @return 
+   */
+  private File getBaseFolder() {
+    String subfolder = this.subFolderId < 0 ? "test" : String.format("%04d", this.subFolderId);
+    File realBaseFolder = new File(baseFolder, subfolder);
+    return realBaseFolder;
+  }
+    
+  
+  /**
+   *
+   * @return
    */
   public NetCdfFile getNetCdfFile() {
     String gribVarName = this.var.getGribVarName();
