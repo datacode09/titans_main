@@ -18,7 +18,11 @@ public class NamInventoryReader {
 
   public NamInventoryReader() {
   }
-
+  
+  /**
+   * 
+   * @return 
+   */
   public List<NoaaVarClazz> read() {
     InputStream a = this.getInputStream();
     try {
@@ -31,7 +35,12 @@ public class NamInventoryReader {
       throw new RuntimeException(ex);
     }
   }
-
+  
+  /**
+   * 
+   * @param var
+   * @return 
+   */
   public Unit<?> getUnit(String var) {
     InputStream a = this.getInputStream();
     try {

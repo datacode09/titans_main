@@ -27,8 +27,6 @@ public class RasterImageServiceIT extends BaseSpringTest {
   @Autowired
   private RasterImageService imageService;
   
-  
-  
   /**
    * 
    * @param a 
@@ -43,7 +41,7 @@ public class RasterImageServiceIT extends BaseSpringTest {
     ZonedDateTime datetime = ZonedDateTime
       .now(ZoneId.of("UTC"))
       .minusDays(1l)
-      .truncatedTo(ChronoUnit.DAYS);
+      .truncatedTo(ChronoUnit.DAYS);  
     ForecastTimeReference fcststep = new ForecastTimeReference(0, 0);
     Unit<?> unit = new NamInventoryReader().getUnit(varName);
     Parameter param = new NoaaParameter(parentKey, datetime, fcststep, varName, unit);

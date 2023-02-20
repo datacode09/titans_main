@@ -17,7 +17,7 @@ public class UserScopeConfiguration {
 
   @Autowired
   private SessionManager sessionManager;
-
+  
   private final Map<String, SessionScopedBean<UserToken>> tokens = new HashMap<>();
   private final Map<String, SessionScopedBean<ProjectEntity>> projects = new HashMap<>();
 
@@ -63,6 +63,4 @@ public class UserScopeConfiguration {
     String key = (authToken == null ? "" : authToken);
     return key;
   }
-  
-
 }

@@ -1,6 +1,7 @@
 package rm.titansdata.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -17,9 +18,9 @@ import rm.titansdata.web.user.session.AuthenticationHandlerInterceptor;
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
   
-//  @Autowired()
-//  @Qualifier("consumerUiOrigins")
-//  private String[] consumerUiOrigins;
+  @Autowired()
+  @Qualifier("cors-list")
+  private String consumerUiOrigins;
 
   @Bean
   public MappedInterceptor myInterceptor(  
@@ -29,11 +30,11 @@ public class WebConfig implements WebMvcConfigurer {
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
+    System.out.println("cors"  + this.consumerUiOrigins);
     WebMvcConfigurer.super.addCorsMappings(registry);  
     registry.addMapping("/**")     
       .allowCredentials(true)    
-      .allowedOrigins("http://localhost:4200")
-      .allowedOrigins("http://localhost:8081/titans.datasource")
+      .allowedOrigins(this.consumerUiOrigins.split(","))
 //      .allowedOrigins(this.consumerUiOrigins)
       ;
   }

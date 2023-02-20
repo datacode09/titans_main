@@ -19,6 +19,21 @@ export class SessionService {
     this.initToken();
     this.token.subscribe(this.updateLoginState.bind(this));
     this.token.subscribe(this.storeToken.bind(this));
+    setTimeout(() => {
+      this.validateToken();
+    });
+  }
+
+  /**
+   * 
+   */
+  private validateToken() {
+    const url = this.baseUrl + "isLoggedIn";
+    this.http.get(url).subscribe((response: any) => {
+      if (!response.result) {
+        this.token.next(null);
+      }
+    });
   }
 
   /**
@@ -53,14 +68,14 @@ export class SessionService {
   public isNotLoggedIn(): boolean {
     return !this.isLoggedIn();
   }
-    
+
   /**
    * 
    */
-  public isLoggedIn():boolean {
+  public isLoggedIn(): boolean {
     return this.loggedin.value;
   }
-  
+
   /**
    * 
    */
@@ -90,7 +105,7 @@ export class SessionService {
     const url = this.baseUrl + "dummyrequest";
     const key = Objects.isNull(this.token.value) ? "" : this.token.value;
     const params = new HttpHeaders().set("AUTH-TOKEN", key);
-    this.http.get(url, {headers: params} ).subscribe((r: any) => {
+    this.http.get(url, {headers: params}).subscribe((r: any) => {
       console.log(r);
     });
   }
