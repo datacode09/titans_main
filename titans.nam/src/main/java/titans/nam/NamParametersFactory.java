@@ -20,6 +20,7 @@ import rm.titansdata.plugin.classes.BaseDateClassType;
 import rm.titansdata.plugin.classes.ForecastStepClassType;
 import rm.titansdata.plugin.classes.ForecastStepClazz;
 import rm.titansdata.plugin.classes.ValueClassType;
+import rm.titansdata.units.UnitsUtils;
 import titans.nam.classes.NoaaVarClazz;
 import titans.nam.core.NamInventoryReader;
 
@@ -33,11 +34,11 @@ public class NamParametersFactory implements ParameterFactory {
   public static ClassType BASEDATE_CLASSTYPE = new BaseDateClassType();
   public static ClassType FORECAST_CLASSTYPE = new ForecastStepClassType();
   public static ClassType VALUE_CLASSTYPE = new ValueClassType("NOAA_VAR");
-  
+
   @Autowired
   @Qualifier("nam.parameters")
   private ListProperty<NoaaParameter> parameters;
-  
+
   /**
    *
    * @return
@@ -57,21 +58,22 @@ public class NamParametersFactory implements ParameterFactory {
       BASEDATE_CLASSTYPE, FORECAST_CLASSTYPE, VALUE_CLASSTYPE);
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param clazzes
-   * @return 
+   * @return
    */
   @Override
   public List<Parameter> getParameters(Clazz... clazzes) {
     String noaaVar = this.getNoaaVar(clazzes);
     Unit<?> unit = this.getUnit(noaaVar);
     List<Parameter> arrayList = new ArrayList<>(this.parameters.getValue());
-    arrayList.stream()
+    List<Parameter> result = arrayList.stream()
       .map(p -> (NoaaParameter) p)
-      .map(p -> p.setVar(noaaVar, unit));
-    return arrayList;
+      .map(p -> p.setVar(noaaVar, unit))
+      .collect(Collectors.toList());
+    return result;
   }
 
   private Unit<?> getUnit(String noaaVar) {
@@ -80,8 +82,7 @@ public class NamParametersFactory implements ParameterFactory {
     return unit;
   }
 
-  
-    /**
+  /**
    *
    * @param clazzes
    * @return
@@ -95,12 +96,11 @@ public class NamParametersFactory implements ParameterFactory {
     String result = varClazz.getVarName();
     return result;
   }
-  
-    
+
   /**
-   * 
+   *
    * @param classtype
-   * @return 
+   * @return
    */
   @Override
   public List<Clazz> getClasses(ClassType classtype) {
@@ -128,8 +128,11 @@ public class NamParametersFactory implements ParameterFactory {
     if (obj.has("key")) {
       try {
         String key = obj.getString("key");
+        String var = obj.getString("noaaVar");
+        Unit<?> unit = UnitsUtils.valueOf(obj.getString("unit"));
         param = this.parameters.stream()
           .filter(e -> e.getKey().equals(key))
+          .map(e -> e.setVar(var, unit))
           .findFirst()
           .orElseGet(() -> NoaaParameter.create(obj));
       } catch (Exception ex) {
@@ -191,7 +194,7 @@ public class NamParametersFactory implements ParameterFactory {
         };
         break;
       case "FCST_STEP":
-        result = (JSONObject o) -> {  
+        result = (JSONObject o) -> {
           try {
             int step = o.getInt("step");
             return new ForecastStepClazz(step);

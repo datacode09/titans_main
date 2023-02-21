@@ -84,7 +84,8 @@ public class RastersValueService {
    * @param key
    * @return
    */
-  private RasterObj getRasterObj(RasterEntity rasterEntity, String key, int projectId, Parameter p, Bounds bounds) {
+  private RasterObj getRasterObj(RasterEntity rasterEntity, String key, int projectId, // 
+    Parameter p, Bounds bounds) {
     Dimensions dims = rasterEntity.getDimensions();
     long typeId = rasterEntity.rasterTypeId;
     Raster raster = this.supplier.builder()

@@ -30,9 +30,10 @@ public class DownloadGribsIT extends BaseSpringITest {
   @Test
   public void test() {
     HrrrGribSource source = new HrrrGribSource();
-    HrrrImporter importer = new HrrrImporter(gribRootFolder, netCdfRootFolder, degribExe);
-    String parentKey = "HRRR";
     int minusDays = 0;
+    int projectId = 0;
+    HrrrImporter importer = new HrrrImporter(gribRootFolder, netCdfRootFolder, projectId, degribExe);
+    String parentKey = "HRRR";
     List<NoaaParameter> params = source.getCurrentParameters(parentKey, minusDays);
     params.stream().forEach(p -> {
       System.out.println("p = " + p);

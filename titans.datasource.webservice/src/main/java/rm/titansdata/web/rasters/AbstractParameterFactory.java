@@ -118,7 +118,7 @@ public class AbstractParameterFactory {
     if (!this.factories.containsKey(key)) {
       throw new RuntimeException(String.format("Invalid key '%s'", key));
     }
-    ParameterFactory factory = this.factories.get(key);
+    ParameterFactory factory = this.factories.get(key);  
     List<Parameter> result = factory.getParameters(classes.toArray(new Clazz[0]));
     return result;
   }

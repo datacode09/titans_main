@@ -1,0 +1,234 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main_titans</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-02-21"><meta name="DC.source" content="main_titans.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">configuration.</a></li><li><a href="#2">login</a></li><li><a href="#3">set postoptions</a></li><li><a href="#4">set getoptions</a></li><li><a href="#5">verify is logged in.</a></li><li><a href="#6">set project</a></li><li><a href="#7">get raster classes</a></li><li><a href="#8">get raster parameters</a></li><li><a href="#9">get point value time-series</a></li><li><a href="#10">display results</a></li></ul></div><h2 id="1">configuration.</h2><pre class="codeinput">baseUrl = <span class="string">'http://localhost:8081/titansdata.web.dev/'</span>;
+email = <span class="string">'ricardo.marquez@epstechnologies.com'</span>;
+password = <span class="string">'password'</span>;
+projectId = 790;
+rasterId = 1;
+point = struct(<span class="string">'x'</span>, -121.42, <span class="string">'y'</span>, 37.36);
+srid = 4326;
+</pre><h2 id="2">login</h2><pre class="codeinput">url = [baseUrl, <span class="string">'login'</span>];
+options = weboptions();
+options.HeaderFields = matlab.net.http.HeaderField(<span class="string">'KEY'</span>, password);
+options.RequestMethod = <span class="string">'post'</span>;
+options.ContentType = <span class="string">'json'</span>;
+params = {<span class="string">'email'</span>, email};
+response = webread(url, params{:}, options);
+authtoken = response.token;
+clear <span class="string">url</span> <span class="string">options</span> <span class="string">params</span> <span class="string">response</span>;
+</pre><h2 id="3">set postoptions</h2><pre class="codeinput">postoptions = weboptions();
+postoptions.HeaderFields = matlab.net.http.HeaderField(<span class="string">'AUTH-TOKEN'</span>, authtoken);
+postoptions.RequestMethod = <span class="string">'post'</span>;
+postoptions.ContentType = <span class="string">'json'</span>;
+</pre><h2 id="4">set getoptions</h2><pre class="codeinput">getoptions = weboptions();
+getoptions.HeaderFields = matlab.net.http.HeaderField(<span class="string">'AUTH-TOKEN'</span>, authtoken);
+getoptions.RequestMethod = <span class="string">'get'</span>;
+getoptions.ContentType = <span class="string">'json'</span>;
+getoptions.Timeout = inf;
+</pre><h2 id="5">verify is logged in.</h2><pre class="codeinput">url = [baseUrl, <span class="string">'isLoggedIn'</span>];
+response = webread(url, getoptions);
+isloggedin = response.result;
+clear <span class="string">url</span> <span class="string">response</span> ;
+</pre><h2 id="6">set project</h2><pre class="codeinput">url = [baseUrl, <span class="string">'setProject'</span>];
+params = {<span class="string">'project_id'</span>, num2str(projectId)};
+webread(url, params{:}, postoptions);
+clear <span class="string">url</span> <span class="string">params</span> <span class="string">response</span>;
+</pre><h2 id="7">get raster classes</h2><pre class="codeinput">url = [baseUrl, <span class="string">'getRasterClasses'</span>];
+params = {<span class="string">'rasterId'</span>, rasterId};
+response = webread(url, params{:}, getoptions);
+clazzes = response.clazzes.map;
+clear <span class="string">url</span> <span class="string">options</span> <span class="string">params</span> <span class="string">response</span>;
+</pre><h2 id="8">get raster parameters</h2><pre class="codeinput">url = [baseUrl, <span class="string">'getRasterParameters'</span>];
+noaaVar = jsondecode(clazzes.NOAA_VAR.myArrayList{4});
+clazzestext = [<span class="string">'['</span>,  jsonencode(noaaVar),<span class="string">']'</span>];
+clazzestext = strrep(strrep(clazzestext, <span class="string">'["'</span>, <span class="string">'"'</span>), <span class="string">'"]'</span>, <span class="string">'"'</span>);
+params = {<span class="string">'rasterId'</span>, rasterId, <span class="keyword">...</span>
+    <span class="string">'clazzes'</span>, clazzestext};
+response = webread(url, params{:}, getoptions);
+allparameters = [response.values.map];
+clear <span class="string">url</span> <span class="string">params</span> <span class="string">response</span>;
+</pre><h2 id="9">get point value time-series</h2><pre class="codeinput">parameters = allparameters(1:3);
+url = [baseUrl, <span class="string">'getRasterPointValues'</span>];
+p = jsonencode(parameters);
+params = {<span class="string">'rasterId'</span>, rasterId, <span class="keyword">...</span>
+    <span class="string">'point'</span>, sprintf(<span class="string">'Point(%f %f)'</span>, point.x, point.y), <span class="string">'srid'</span>, srid, <span class="keyword">...</span>
+    <span class="string">'parameters'</span>, p};
+response = webread(url, params{:}, getoptions);
+pointvalues = response.values;
+clear <span class="string">response</span> <span class="string">url</span> <span class="string">params</span>;
+</pre><h2 id="10">display results</h2><pre class="codeinput">keys = fieldnames(pointvalues);
+datetimes = [];
+values = [];
+<span class="keyword">for</span> i = 1:length(keys)
+    values(i) = getfield(pointvalues, keys{i});
+    datetimes(i) = datenum(parameters(i).validtime, <span class="string">'yyyymmddHH'</span>);
+<span class="keyword">end</span>
+plot(datetimes, values);
+ylabel([strrep(noaaVar.varName{:}, <span class="string">'_'</span>, <span class="string">'-'</span>), <span class="string">'('</span>, noaaVar.unit{:}, <span class="string">')'</span>]);
+datetick(<span class="string">'x'</span>, <span class="string">'yyyy/mm/dd HH'</span>);
+</pre><img vspace="5" hspace="5" src="main_titans_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%  configuration. 
+baseUrl = 'http://localhost:8081/titansdata.web.dev/';
+email = 'ricardo.marquez@epstechnologies.com'; 
+password = 'password'; 
+projectId = 790;
+rasterId = 1;
+point = struct('x', -121.42, 'y', 37.36);
+srid = 4326; 
+
+%%  login
+url = [baseUrl, 'login']; 
+options = weboptions(); 
+options.HeaderFields = matlab.net.http.HeaderField('KEY', password); 
+options.RequestMethod = 'post'; 
+options.ContentType = 'json';
+params = {'email', email}; 
+response = webread(url, params{:}, options); 
+authtoken = response.token;
+clear url options params response;
+
+
+%%  set postoptions
+postoptions = weboptions(); 
+postoptions.HeaderFields = matlab.net.http.HeaderField('AUTH-TOKEN', authtoken); 
+postoptions.RequestMethod = 'post';
+postoptions.ContentType = 'json';
+
+
+%%  set getoptions 
+getoptions = weboptions(); 
+getoptions.HeaderFields = matlab.net.http.HeaderField('AUTH-TOKEN', authtoken); 
+getoptions.RequestMethod = 'get';
+getoptions.ContentType = 'json';
+getoptions.Timeout = inf; 
+
+
+%%  verify is logged in. 
+url = [baseUrl, 'isLoggedIn'];
+response = webread(url, getoptions); 
+isloggedin = response.result;
+clear url response ; 
+
+
+%%  set project
+url = [baseUrl, 'setProject']; 
+params = {'project_id', num2str(projectId)}; 
+webread(url, params{:}, postoptions); 
+clear url params response; 
+
+
+%%  get raster classes
+url = [baseUrl, 'getRasterClasses']; 
+params = {'rasterId', rasterId}; 
+response = webread(url, params{:}, getoptions); 
+clazzes = response.clazzes.map;
+clear url options params response; 
+
+
+%%  get raster parameters
+url = [baseUrl, 'getRasterParameters'];
+noaaVar = jsondecode(clazzes.NOAA_VAR.myArrayList{4});
+clazzestext = ['[',  jsonencode(noaaVar),']'];
+clazzestext = strrep(strrep(clazzestext, '["', '"'), '"]', '"'); 
+params = {'rasterId', rasterId, ...
+    'clazzes', clazzestext}; 
+response = webread(url, params{:}, getoptions); 
+allparameters = [response.values.map];
+clear url params response; 
+
+%%  get point value time-series
+parameters = allparameters(1:3); 
+url = [baseUrl, 'getRasterPointValues'];
+p = jsonencode(parameters);
+params = {'rasterId', rasterId, ...
+    'point', sprintf('Point(%f %f)', point.x, point.y), 'srid', srid, ...
+    'parameters', p}; 
+response = webread(url, params{:}, getoptions); 
+pointvalues = response.values; 
+clear response url params; 
+
+%%  display results
+keys = fieldnames(pointvalues); 
+datetimes = [];
+values = []; 
+for i = 1:length(keys)
+    values(i) = getfield(pointvalues, keys{i}); 
+    datetimes(i) = datenum(parameters(i).validtime, 'yyyymmddHH'); 
+end
+plot(datetimes, values);
+ylabel([strrep(noaaVar.varName{:}, '_', '-'), '(', noaaVar.unit{:}, ')']); 
+datetick('x', 'yyyy/mm/dd HH'); 
+
+%%
+
+
+
+##### SOURCE END #####
+--></body></html>

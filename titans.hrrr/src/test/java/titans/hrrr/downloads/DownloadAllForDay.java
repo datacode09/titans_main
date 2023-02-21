@@ -35,18 +35,18 @@ public class DownloadAllForDay extends BaseSpringITest {
   @Test
   public void test() {
     HrrrGribSource source = new HrrrGribSource();
-    HrrrImporter importer = new HrrrImporter(gribRootFolder, netCdfRootFolder, degribExe);  
+    int projectId = 0;      
+    HrrrImporter importer = new HrrrImporter(gribRootFolder, netCdfRootFolder,projectId,degribExe);  
     String parentKey = "HRRR";
     int minusDays = 0; 
     List<NoaaParameter> params = source.getCurrentParameters(parentKey, minusDays); 
     String varName = "TMP_2-HTGL";
     Unit<?> unit = new HrrrInventoryReader().getUnit(varName);
     NoaaVariable namVariable = new NoaaVariable(varName, unit);
-    int projectId = 0;      
     params.stream().forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();
-      importer.getRaster(projectId, namVariable, p.datetime, p.fcststep);      
+      importer.getRaster(namVariable, p.datetime, p.fcststep);      
       System.out.println("elapsed time = " + (System.currentTimeMillis() - tic));
     });
   }

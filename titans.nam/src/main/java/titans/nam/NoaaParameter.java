@@ -41,11 +41,15 @@ public class NoaaParameter implements Parameter {
    * @param fcststep
    * @param namVar 
    */
-  public NoaaParameter(String parentKey, ZonedDateTime datetime, int fcststep, String namVar, Unit<?> unit) {
+  public NoaaParameter(String parentKey, 
+    ZonedDateTime datetime, 
+    int fcststep, 
+    String namVar, Unit<?> unit) {
     this.parentKey = parentKey;
     this.datetime = datetime;
     this.fcststep = fcststep;
     this.noaaVar = namVar;
+    this.unit = unit;
   }
   
   
@@ -87,6 +91,7 @@ public class NoaaParameter implements Parameter {
       result.put("parentKey", this.parentKey);
       result.put("fcststep", this.fcststep);
       result.put("noaaVar", this.noaaVar);
+      result.put("unit", this.unit.toString());
       result.put("datetime", this.datetime.format(getDateTimeFormatter()));
       result.put("zoneid", this.datetime.getZone().getId());
       result.put("validtime", this.getValidTime());
@@ -141,13 +146,12 @@ public class NoaaParameter implements Parameter {
       int fcststep = obj.getInt("fcststep");
       String datetimetext = obj.getString("datetime");
       ZoneId zoneId = ZoneId.of(obj.getString("zoneid"));
-      String var = obj.getString("var");
+      String var = obj.getString("noaaVar");
       Unit<?> unit = UnitsUtils.valueOf(obj.getString("unit"));
       LocalDateTime localdatetime = getDateTimeFormatter()
         .parse(datetimetext, LocalDateTime::from);
       ZonedDateTime datetime = ZonedDateTime.of(localdatetime, zoneId);
       ForecastTimeReference d = new ForecastTimeReference(0, fcststep);
-      
       NoaaParameter result = new NoaaParameter(parentKey, datetime, d, var, unit);
       return result;
     } catch (Exception ex) {

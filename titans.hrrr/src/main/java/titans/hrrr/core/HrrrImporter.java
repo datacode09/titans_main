@@ -25,6 +25,7 @@ public class HrrrImporter implements Closeable {
   private final HrrrGribSource source = new HrrrGribSource();
   private final File gribRootFolder;
   private final File netCdfRootFolder;
+  private final int subfolderId;
   private final File degribExe;
   
 
@@ -32,9 +33,10 @@ public class HrrrImporter implements Closeable {
    *
    * @param gribRootFolder
    */
-  public HrrrImporter(File gribRootFolder, File netCdfRootFolder, File degribExe) {
+  public HrrrImporter(File gribRootFolder, File netCdfRootFolder, int subfolderId, File degribExe) {
     this.gribRootFolder = gribRootFolder;
     this.netCdfRootFolder = netCdfRootFolder;
+    this.subfolderId = subfolderId;
     this.degribExe = degribExe;
   }
 
@@ -44,9 +46,10 @@ public class HrrrImporter implements Closeable {
    * @param datetimeref
    * @return
    */
-  public RasterObj getRaster(int projectId, NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
+  public RasterObj getRaster(NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
     NetCdfFile netCdfFile;
-    NetCdfExtractor extractor = new NetCdfExtractor(this.degribExe, this.netCdfRootFolder, projectId, var);
+    NetCdfExtractor extractor = new NetCdfExtractor(this.degribExe, this.netCdfRootFolder,
+      this.subfolderId, var);
     if (!extractor.netCdfFileExists(datetimeref, forecaststep)) {
       netCdfFile = this.downloadAndExtract(extractor, datetimeref, forecaststep);
     } else {
@@ -142,4 +145,44 @@ public class HrrrImporter implements Closeable {
   public void close() throws IOException {
     this.rasterLoader.close();
   }
+  
+  
+    public static class Builder {
+    private File gribRootFolder;
+    private File netCdfRootFolder;
+    private int subfolderId;
+    private File degribExe;
+  
+    public Builder() {
+    }
+
+    public Builder setGribRootFolder(File gribRootFolder) {
+      this.gribRootFolder = gribRootFolder;
+      return this;
+    }
+
+    public Builder setNetCdfRootFolder(File netCdfRootFolder) {
+      this.netCdfRootFolder = netCdfRootFolder;
+      return this;
+    }
+
+    public Builder setSubfolderId(int subfolderId) {
+      this.subfolderId = subfolderId;
+      return this;
+    }
+
+    public Builder setDegribExe(File degribExe) {
+      this.degribExe = degribExe;
+      return this;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public HrrrImporter build() {
+      return new HrrrImporter(gribRootFolder, netCdfRootFolder, subfolderId, degribExe); 
+    }
+  }
+  
 }

@@ -3,6 +3,7 @@ package rm.titansdata.web.rasters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
+import rm.titansdata.plugin.RasterFactory;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
@@ -16,10 +17,10 @@ public class RasterFactorySupplier {
 
   @Autowired
   private RasterModelsRegistry rasterModelsRegistry;
-  
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   public Builder builder() {
     Builder result = new Builder(this.rasterModelsRegistry);
@@ -27,7 +28,8 @@ public class RasterFactorySupplier {
   }
 
   public static class Builder {
-    private final RasterModelsRegistry rasterModelsRegistry; 
+
+    private final RasterModelsRegistry rasterModelsRegistry;
     private Bounds bounds;
     private Dimensions dims;
     private long typeId;
@@ -36,7 +38,7 @@ public class RasterFactorySupplier {
     private Builder(RasterModelsRegistry rasterModelsRegistry) {
       this.rasterModelsRegistry = rasterModelsRegistry;
     }
-    
+
     public Builder setBounds(Bounds bounds) {
       this.bounds = bounds;
       return this;
@@ -66,8 +68,8 @@ public class RasterFactorySupplier {
       int intValue = Long.valueOf(this.typeId).intValue();
       switch (intValue) {
         case 0:
-          result = this.rasterModelsRegistry.get(this.sourceTitle)
-            .create(projectId, p, bounds, dims);
+          RasterFactory rasterFactory = this.rasterModelsRegistry.get(this.sourceTitle);
+          result = rasterFactory.create(projectId, p, bounds, dims);
           break;
         default:
           throw new RuntimeException();

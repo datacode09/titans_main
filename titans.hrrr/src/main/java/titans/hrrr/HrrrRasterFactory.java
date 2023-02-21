@@ -13,7 +13,6 @@ import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
 import rm.titansdata.raster.RasterObj;
 import titans.hrrr.core.HrrrImporter;
-import titans.hrrr.core.grib.HrrrInventoryReader;
 import titans.nam.NoaaParameter;
 import titans.nam.core.NoaaVariable;
 import titans.nam.utils.InvalidArgumentTypeException;
@@ -26,32 +25,34 @@ import titans.nam.utils.InvalidArgumentTypeException;
 @DependsOn({"hrrr.gribRootFolder", "hrrr.degribExe"})
 public class HrrrRasterFactory implements RasterFactory {
 
-  private final HrrrImporter importer;
+  private final HrrrImporter.Builder hrrrImporterBuilder;
 
   public HrrrRasterFactory(
     @Qualifier("hrrr.gribRootFolder") File gribRootFolder,
     @Qualifier("hrrr.netCdfRootFolder") File netCdfRootFolder,
     @Qualifier("hrrr.degribExe") File degribExe
   ) {
-    this.importer = new HrrrImporter(gribRootFolder, netCdfRootFolder, degribExe);
+    this.hrrrImporterBuilder = new HrrrImporter.Builder()
+      .setDegribExe(degribExe).setGribRootFolder(gribRootFolder).setNetCdfRootFolder(netCdfRootFolder)
+      ;
   }
-  
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   @Override
   public String key() {
     String key = "High Resolution Rapid Refresh";
     return key;
   }
-  
+
   /**
-   * 
+   *
    * @param p
    * @param bounds
    * @param dims
-   * @return 
+   * @return
    */
   @Override
   public Raster create(int projectId, Parameter p, Bounds bounds, Dimensions dims) {
@@ -59,10 +60,12 @@ public class HrrrRasterFactory implements RasterFactory {
       NoaaParameter namparam = (NoaaParameter) p;
       int fcststep = namparam.fcststep;
       ZonedDateTime datetime = namparam.datetime;
-      String name = "TMP_2-HTGL";
-      Unit<?> unit = new HrrrInventoryReader().getUnit(name);
-      NoaaVariable var = new NoaaVariable(name, unit);
-      RasterObj rasterObj = this.importer.getRaster(projectId, var, datetime, fcststep);
+      String varName = namparam.noaaVar;
+      Unit<?> unit = namparam.getUnit();
+      NoaaVariable var = new NoaaVariable(varName, unit);
+      HrrrImporter importer = this.hrrrImporterBuilder
+        .setSubfolderId(projectId).build();
+      RasterObj rasterObj = importer.getRaster(var, datetime, fcststep);
       Raster result = rasterObj.getRaster();
       return result;
     } else {

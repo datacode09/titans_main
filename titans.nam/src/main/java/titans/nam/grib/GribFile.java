@@ -87,6 +87,9 @@ public class GribFile {
    */
   public boolean isLocked() {
     try {
+      if (this.notExists()) {
+        return false;
+      }
       FileOutputStream outputStream = new FileOutputStream(this.grib);
       FileChannel channel = outputStream.getChannel();
       FileLock lock;

@@ -26,7 +26,7 @@ public class SessionScopedBean<T> {
     Objects.requireNonNull(auth, "Auth token is undefined");
     T result;
     if (this.m.existsByToken(auth)) {
-      result = this.supplier.get();
+      result = this.supplier.get();  
     } else {
       throw new RuntimeException("Invalid auth token");
     }

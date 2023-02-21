@@ -17,7 +17,6 @@ public class UserScopeConfiguration {
 
   @Autowired
   private SessionManager sessionManager;
-  
   private final Map<String, SessionScopedBean<UserToken>> tokens = new HashMap<>();
   private final Map<String, SessionScopedBean<ProjectEntity>> projects = new HashMap<>();
 
@@ -45,7 +44,7 @@ public class UserScopeConfiguration {
   @SessionScope
   @Bean("user.project")
   public SessionScopedBean<ProjectEntity> userProject() {
-    String key = this.getKey();   
+    String key = this.getKey();
     if (!this.projects.containsKey(key)) {
       SessionScopedBean<ProjectEntity> result = new SessionScopedBean<>(this.sessionManager, () -> null);
       this.projects.put(key, result);

@@ -2,6 +2,7 @@ package titans.nam;
 
 import java.io.File;
 import java.time.ZonedDateTime;
+import javax.measure.unit.Unit;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,6 @@ import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
 import rm.titansdata.raster.RasterObj;
 import titans.nam.core.NamImporter;
-import titans.nam.core.NamInventoryReader;
 import titans.nam.core.NoaaVariable;
 import titans.nam.utils.InvalidArgumentTypeException;
 
@@ -59,8 +59,9 @@ public class NamRasterFactory implements RasterFactory {
       NoaaParameter namparam = (NoaaParameter) p;
       int fcststep = namparam.fcststep;
       ZonedDateTime datetime = namparam.datetime;
-      String varName = "TMP_2-HTGL";
-      NoaaVariable var = new NoaaVariable(varName, new NamInventoryReader().getUnit(varName));
+      String varName = namparam.noaaVar;
+      Unit<?> unit = namparam.getUnit();
+      NoaaVariable var = new NoaaVariable(varName, unit);
       NamImporter importer = this.namImporterBuilder.setSubfolderId(projectId).build();
       RasterObj rasterObj = importer.getRaster(var, datetime, fcststep);
       Raster result = rasterObj.getRaster();

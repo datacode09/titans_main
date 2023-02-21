@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import rm.titansdata.Parameter;
+import rm.titansdata.SridUtils;
 import rm.titansdata.plugin.ClassType;
 import rm.titansdata.plugin.Clazz;
 import rm.titansdata.properties.Bounds;
@@ -254,7 +255,10 @@ public class RastersServlet {
     long rasterId = parser.getLong("rasterId");
     int srid = parser.getInteger("srid");
     Point point = (Point) parser.parseGeometry("point", srid);
-    JSONArray jsonObject = this.getParametersJsonArray(parser);
+    if (srid == 4326) {
+      point = SridUtils.transform(point, 3857); 
+    }  
+    JSONArray jsonObject = this.getParametersJsonArray(parser);  
     List<Parameter> param = this.parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
     int projectId = this.getProjectId();

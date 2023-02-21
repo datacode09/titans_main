@@ -44,12 +44,12 @@ public class ProjectServlet extends HttpServlet {
     method = RequestMethod.POST
   )
   public void setProject(HttpServletRequest req, HttpServletResponse response) {
-    String authToken = req.getHeader("AUTH-TOKEN");
+    String authToken = req.getHeader("AUTH-TOKEN");  
     if (!req.getParameter("project_id").isEmpty()) {
       int projectId = new RequestParser(req).getInteger("project_id");
       ProjectEntity p = this.service.getProjects().stream() //
-        .filter(a -> Objects.equals(a.projectId, projectId))
-        .findFirst().orElse(null);
+        .filter(a -> Objects.equals(a.projectId, projectId))  
+        .findFirst().orElseThrow(()->new RuntimeException("invalid project id"));
       this.project.setValue(authToken, p);
     } else {
       this.project.setValue(authToken, null);

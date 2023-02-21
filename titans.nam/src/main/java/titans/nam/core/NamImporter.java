@@ -170,8 +170,6 @@ public class NamImporter implements Closeable {
     public NamImporter build() {
       return new NamImporter(gribRootFolder, netCdfRootFolder, subfolderId, degribExe); 
     }
-    
-    
   }
 
 }
