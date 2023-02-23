@@ -1,21 +1,12 @@
 package titans.hrrr;
 
 import java.io.File;
-import java.time.ZonedDateTime;
-import javax.measure.unit.Unit;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
-import rm.titansdata.Parameter;
-import rm.titansdata.plugin.RasterFactory;
-import rm.titansdata.properties.Bounds;
-import rm.titansdata.properties.Dimensions;
-import rm.titansdata.raster.Raster;
-import rm.titansdata.raster.RasterObj;
 import titans.hrrr.core.HrrrImporter;
-import titans.nam.NoaaParameter;
-import titans.nam.core.NoaaVariable;
-import titans.nam.utils.InvalidArgumentTypeException;
+import titans.nam.core.NoaaImporter;
+import titans.nam.core.NoaaRasterFactory;
 
 /**
  *
@@ -23,10 +14,16 @@ import titans.nam.utils.InvalidArgumentTypeException;
  */
 @Component
 @DependsOn({"hrrr.gribRootFolder", "hrrr.degribExe"})
-public class HrrrRasterFactory implements RasterFactory {
-
+public class HrrrRasterFactory extends NoaaRasterFactory {
+  
   private final HrrrImporter.Builder hrrrImporterBuilder;
-
+  
+  /**
+   * 
+   * @param gribRootFolder
+   * @param netCdfRootFolder
+   * @param degribExe 
+   */
   public HrrrRasterFactory(
     @Qualifier("hrrr.gribRootFolder") File gribRootFolder,
     @Qualifier("hrrr.netCdfRootFolder") File netCdfRootFolder,
@@ -46,31 +43,17 @@ public class HrrrRasterFactory implements RasterFactory {
     String key = "High Resolution Rapid Refresh";
     return key;
   }
-
+  
+  
   /**
-   *
-   * @param p
-   * @param bounds
-   * @param dims
-   * @return
+   * 
+   * @param projectId
+   * @return 
    */
   @Override
-  public Raster create(int projectId, Parameter p, Bounds bounds, Dimensions dims) {
-    if (p instanceof NoaaParameter) {
-      NoaaParameter namparam = (NoaaParameter) p;
-      int fcststep = namparam.fcststep;
-      ZonedDateTime datetime = namparam.datetime;
-      String varName = namparam.noaaVar;
-      Unit<?> unit = namparam.getUnit();
-      NoaaVariable var = new NoaaVariable(varName, unit);
-      HrrrImporter importer = this.hrrrImporterBuilder
-        .setSubfolderId(projectId).build();
-      RasterObj rasterObj = importer.getRaster(var, datetime, fcststep);
-      Raster result = rasterObj.getRaster();
-      return result;
-    } else {
-      throw new InvalidArgumentTypeException(p, NoaaParameter.class);
-    }
+  protected NoaaImporter getImporter(int projectId) {
+    return this.hrrrImporterBuilder
+      .setSubfolderId(projectId).build();
   }
 
 }

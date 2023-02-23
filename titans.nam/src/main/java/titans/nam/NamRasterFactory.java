@@ -1,20 +1,12 @@
 package titans.nam;
 
 import java.io.File;
-import java.time.ZonedDateTime;
-import javax.measure.unit.Unit;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
-import rm.titansdata.Parameter;
-import rm.titansdata.plugin.RasterFactory;
-import rm.titansdata.properties.Bounds;
-import rm.titansdata.properties.Dimensions;
-import rm.titansdata.raster.Raster;
-import rm.titansdata.raster.RasterObj;
 import titans.nam.core.NamImporter;
-import titans.nam.core.NoaaVariable;
-import titans.nam.utils.InvalidArgumentTypeException;
+import titans.nam.core.NoaaImporter;
+import titans.nam.core.NoaaRasterFactory;
 
 /**
  *
@@ -22,7 +14,7 @@ import titans.nam.utils.InvalidArgumentTypeException;
  */
 @Component
 @DependsOn({"nam.gribRootFolder", "nam.degribExe"}) 
-public class NamRasterFactory implements RasterFactory {
+public class NamRasterFactory extends NoaaRasterFactory {
   private final NamImporter.Builder namImporterBuilder;
   
   /**
@@ -46,28 +38,19 @@ public class NamRasterFactory implements RasterFactory {
     String key = "North American Model Forecasts";
     return key;
   }
-
+  
   /**
-   *
-   * @param bounds
-   * @param dims
-   * @return
+   * 
+   * @param projectId
+   * @return 
    */
   @Override
-  public Raster create(int projectId, Parameter p, Bounds bounds, Dimensions dims) {
-    if (p instanceof NoaaParameter) {
-      NoaaParameter namparam = (NoaaParameter) p;
-      int fcststep = namparam.fcststep;
-      ZonedDateTime datetime = namparam.datetime;
-      String varName = namparam.noaaVar;
-      Unit<?> unit = namparam.getUnit();
-      NoaaVariable var = new NoaaVariable(varName, unit);
-      NamImporter importer = this.namImporterBuilder.setSubfolderId(projectId).build();
-      RasterObj rasterObj = importer.getRaster(var, datetime, fcststep);
-      Raster result = rasterObj.getRaster();
-      return result;
-    } else {
-      throw new InvalidArgumentTypeException(p, NoaaParameter.class); 
-    }
+  protected NoaaImporter getImporter(int projectId) {
+    NamImporter result = this.namImporterBuilder //
+      .setSubfolderId(projectId)//
+      .build(); //
+    return result; 
   }
+
+  
 }

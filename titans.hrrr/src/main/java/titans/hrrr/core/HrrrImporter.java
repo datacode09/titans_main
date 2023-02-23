@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatterBuilder;
 import titans.hrrr.core.grib.HrrrGribSource;
 import titans.nam.core.NoaaGribSource;
 import titans.nam.core.NoaaImporter;
-import titans.nam.netcdf.NetCdfRaster;
 
 /**
  *
@@ -16,8 +15,7 @@ import titans.nam.netcdf.NetCdfRaster;
  */
 public class HrrrImporter extends NoaaImporter {
 
-  private final NetCdfRaster rasterLoader = new NetCdfRaster();
-  private final HrrrGribSource source = new HrrrGribSource();
+
 
   /**
    *
