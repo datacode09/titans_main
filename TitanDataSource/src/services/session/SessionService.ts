@@ -7,7 +7,7 @@ import {Objects} from 'src/core/types/Objects';
   providedIn: 'root'
 })
 export class SessionService {
-  private baseUrl: string = "http://localhost:8081/titansdata.web/";
+  private baseUrl: string = "http://localhost:8081/titansdata.web.dev/";
 
   public loggedin: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public token: BehaviorSubject<string> = new BehaviorSubject(null);

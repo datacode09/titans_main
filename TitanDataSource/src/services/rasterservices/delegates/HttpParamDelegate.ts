@@ -7,7 +7,7 @@ import {RasterParameter} from 'src/core/rasters/RasterParameter';
 
 export class HttpParamDelegate implements ParamDelegate {
 
-  private baseUrl: string = "http://localhost:8081/titansdata.web";
+  private baseUrl: string = "http://localhost:8081/titansdata.web.dev";
 
   public constructor(private http: HttpClient) {
   }

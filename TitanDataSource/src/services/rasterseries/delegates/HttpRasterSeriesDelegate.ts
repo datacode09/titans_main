@@ -9,7 +9,7 @@ import {Objects} from 'src/core/types/Objects';
  * 
  */
 export class HttpRasterSeriesDelegate implements SeriesDelegate {
-  private baseUrl: string = "http://localhost:8081/titansdata.web"
+  private baseUrl: string = "http://localhost:8081/titansdata.web.dev"
   /**
    * 
    */

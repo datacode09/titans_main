@@ -1,10 +1,12 @@
-package titans.nam;
+package titans.nam.downloads;
 
 import java.io.File;
 import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import titans.nam.BaseSpringTest;
+import titans.nam.NoaaParameter;
 import titans.nam.core.NamImporter;
 import titans.nam.grib.GribFile;
 import titans.nam.grib.NamGribSource;

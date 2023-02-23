@@ -16,12 +16,13 @@ import javax.measure.unit.Unit;
 import org.apache.commons.io.IOUtils;
 import titans.nam.NoaaParameter;
 import titans.nam.core.NamInventoryReader;
+import titans.nam.core.NoaaGribSource;
 
 /**
  *
  * @author Ricardo Marquez
  */
-public class NamGribSource {
+public class NamGribSource extends NoaaGribSource{
 
   private final String url = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/nam/prod/";
 

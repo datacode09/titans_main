@@ -95,9 +95,10 @@ public class GribFileVarsReader {
    * @return
    */
   private Set<String> mapProcessOutputToVarNames(List<String> processOutput) {
-    return processOutput.stream()
+    Set<String> resutl = processOutput.stream()
       .map(this::toVarName)
       .collect(Collectors.toSet());
+    return resutl;
   }
 
   /**
@@ -106,14 +107,14 @@ public class GribFileVarsReader {
    * @return
    */
   private String toVarName(String line) {
-    String result = "";
+    String result = null;
     try {
       String[] parts = line.split(",");
       String elementPrefix = parts[3].split("=")[0].trim();
       String level = parts[4].trim();
       result = elementPrefix + "_" + level;
     } catch (Exception ex) {
-      RmExceptions.throwException(ex, "An error occured on parsing line: '%s'", line);
+      throw RmExceptions.create(ex, "An error occured on parsing line: '%s'", line);
     }
     return result;
   }
@@ -150,6 +151,9 @@ public class GribFileVarsReader {
       }
       InputStream in = p.getInputStream();
       lines = IOUtils.readLines(in, Charset.forName("utf8"));
+      lines.stream().filter(l->l.contains("Error")).findFirst().ifPresent((l)->{
+        throw new RuntimeException(l); 
+      });
       lines.remove(0);
     } catch (Exception ex) {
       throw new RuntimeException(ex);

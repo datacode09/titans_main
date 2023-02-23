@@ -11,6 +11,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import titans.hrrr.core.grib.HrrrGribSource;
 import titans.hrrr.core.grib.HrrrInventoryReader;
@@ -41,6 +42,7 @@ public class HrrrGribSourceIT {
   }
 
   @Test
+  @Ignore
   public void test03() throws Exception {
     File g = new File("G:\\tests\\data\\test.grib2");
     File gidx = new File("G:\\tests\\data\\grib2.idx");

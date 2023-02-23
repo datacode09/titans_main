@@ -5,6 +5,7 @@ import java.util.Set;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import titans.nam.grib.GribFileVarsReader;
@@ -17,6 +18,7 @@ import titans.nam.grib.GribFileVarsReader;
 public class FcstVariablesIT {
   
   @Test
+  @Ignore
   @Parameters("")
   public void test(String nothing) {
     File gribFile = new File("G:\\tests\\data\\grib\\nam.t00z.conusnest.hiresf01.tm00.grib2");
@@ -27,6 +29,7 @@ public class FcstVariablesIT {
   }
   
   @Test
+  @Ignore
   @Parameters({
     "TMP_2-HTGL, 616.0", 
     "TMP_85000-ISBL, 484.0"

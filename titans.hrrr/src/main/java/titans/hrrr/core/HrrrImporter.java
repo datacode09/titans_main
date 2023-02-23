@@ -1,123 +1,40 @@
 package titans.hrrr.core;
 
-import java.io.Closeable;
 import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatterBuilder;
-import rm.titansdata.raster.RasterObj;
 import titans.hrrr.core.grib.HrrrGribSource;
-import titans.nam.core.NoaaVariable;
-import titans.nam.grib.GribFile;
-import titans.nam.grib.NetCdfExtractor;
-import titans.nam.netcdf.NetCdfFile;
+import titans.nam.core.NoaaGribSource;
+import titans.nam.core.NoaaImporter;
 import titans.nam.netcdf.NetCdfRaster;
 
 /**
  *
  * @author Ricardo Marquez
  */
-public class HrrrImporter implements Closeable {
-  
+public class HrrrImporter extends NoaaImporter {
+
   private final NetCdfRaster rasterLoader = new NetCdfRaster();
   private final HrrrGribSource source = new HrrrGribSource();
-  private final File gribRootFolder;
-  private final File netCdfRootFolder;
-  private final int subfolderId;
-  private final File degribExe;
-  
 
   /**
    *
    * @param gribRootFolder
    */
   public HrrrImporter(File gribRootFolder, File netCdfRootFolder, int subfolderId, File degribExe) {
-    this.gribRootFolder = gribRootFolder;
-    this.netCdfRootFolder = netCdfRootFolder;
-    this.subfolderId = subfolderId;
-    this.degribExe = degribExe;
-  }
-
+    super(gribRootFolder, netCdfRootFolder, subfolderId, degribExe);
+  } 
+  
   /**
-   *
-   * @param forecaststep
+   * 
    * @param datetimeref
-   * @return
+   * @param fcstHour
+   * @return 
    */
-  public RasterObj getRaster(NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
-    NetCdfFile netCdfFile;
-    NetCdfExtractor extractor = new NetCdfExtractor(this.degribExe, this.netCdfRootFolder,
-      this.subfolderId, var);
-    if (!extractor.netCdfFileExists(datetimeref, forecaststep)) {
-      netCdfFile = this.downloadAndExtract(extractor, datetimeref, forecaststep);
-    } else {
-      netCdfFile = extractor.getNetCdfFile(datetimeref, forecaststep);
-    }
-    RasterObj result = this.rasterLoader.getRaster(netCdfFile);
-    return result;
-  }
-
-  /**
-   *
-   * @param extractor
-   * @param datetimeref
-   * @param forecaststep
-   * @return
-   */
-  private NetCdfFile downloadAndExtract(NetCdfExtractor extractor, ZonedDateTime datetimeref, int forecaststep) {
-    NetCdfFile netCdfFile;
-    GribFile gribFile = this.downloadGribFile(datetimeref, forecaststep);
-    netCdfFile = extractor.extract(gribFile);
-    return netCdfFile;
-  }
-
-  /**
-   *
-   * @param forecaststep
-   * @param datetimeref
-   * @return
-   */
-  private GribFile downloadGribFile(ZonedDateTime datetimeref, int forecaststep) {
-    GribFile gribFile = this.getGribFile(datetimeref, forecaststep);
-    if (gribFile.notExists()) {
-      if (gribFile.isNotLocked()) {
-        this.source.download(gribFile);
-      } else {
-        while(gribFile.isLocked()) {
-          try {
-            Thread.sleep(2000);
-          } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-          }
-        }
-      }
-    }
-    return gribFile;
-  }
-
-  /**
-   *
-   * @param forecaststep
-   * @param datetimeref
-   * @return
-   */
-  public GribFile getGribFile(ZonedDateTime datetimeref, int forecaststep) {
-    String filename = this.getGribFileName(forecaststep, datetimeref);
-    File grib = new File(this.gribRootFolder, filename);
-    File gribIdx = new File(this.gribRootFolder, filename + ".idx");
-    GribFile result = new GribFile(datetimeref, forecaststep, grib, gribIdx);
-    return result;
-  }
-
-  /**
-   *
-   * @param forecaststep
-   * @param datetimeref
-   * @return
-   */
-  private String getGribFileName(int fcstHour, ZonedDateTime datetimeref) {
+  @Override
+  protected String onGetGribFileName(ZonedDateTime datetimeref, int fcstHour) {
     String hourtext = datetimeref //
       .toOffsetDateTime() //
       .atZoneSameInstant(ZoneId.of("UTC")) //
@@ -136,23 +53,25 @@ public class HrrrImporter implements Closeable {
       datetext, hourtext, fcstHourTxt});
     return filename;
   }
-
+  
   /**
-   *
-   * @throws IOException
+   * 
+   * @return 
    */
   @Override
-  public void close() throws IOException {
-    this.rasterLoader.close();
+  protected NoaaGribSource getGribSource() {
+    return new HrrrGribSource();
   }
   
   
-    public static class Builder {
+  
+  public static class Builder {
+
     private File gribRootFolder;
     private File netCdfRootFolder;
     private int subfolderId;
     private File degribExe;
-  
+
     public Builder() {
     }
 
@@ -175,14 +94,14 @@ public class HrrrImporter implements Closeable {
       this.degribExe = degribExe;
       return this;
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public HrrrImporter build() {
-      return new HrrrImporter(gribRootFolder, netCdfRootFolder, subfolderId, degribExe); 
+      return new HrrrImporter(gribRootFolder, netCdfRootFolder, subfolderId, degribExe);
     }
   }
-  
+
 }

@@ -35,7 +35,7 @@ public class RastersValueServiceIT {
 
   @Autowired
   private RastersValueService service;
-
+  
   @Before
   public void setup() throws Exception {
     TestContextManager testContextManager = new TestContextManager(getClass());

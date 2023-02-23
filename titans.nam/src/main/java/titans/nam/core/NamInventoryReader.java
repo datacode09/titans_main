@@ -14,7 +14,7 @@ import titans.nam.classes.NoaaVarClazz;
  *
  * @author Ricardo Marquez
  */
-public class NamInventoryReader {
+public class NamInventoryReader implements InventoryReader{
 
   public NamInventoryReader() {
   }
@@ -23,6 +23,7 @@ public class NamInventoryReader {
    * 
    * @return 
    */
+  @Override
   public List<NoaaVarClazz> read() {
     InputStream a = this.getInputStream();
     try {
@@ -41,6 +42,7 @@ public class NamInventoryReader {
    * @param var
    * @return 
    */
+  @Override
   public Unit<?> getUnit(String var) {
     InputStream a = this.getInputStream();
     try {
@@ -97,5 +99,4 @@ public class NamInventoryReader {
     NoaaVarClazz result = new NoaaVarClazz(varname, unit);
     return result;
   }
-
 }

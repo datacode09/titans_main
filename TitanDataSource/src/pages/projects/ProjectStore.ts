@@ -8,7 +8,7 @@ import {Geography} from './components/Geography';
   providedIn: 'root'
 })
 export class ProjectStore {
-  private baseUrl: string = "http://localhost:8081/titansdata.web";
+  private baseUrl: string = "http://localhost:8081/titansdata.web.dev";
 
   public constructor(private http: HttpClient) {
   }

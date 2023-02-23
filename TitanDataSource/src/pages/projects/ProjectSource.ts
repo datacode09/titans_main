@@ -12,7 +12,7 @@ import {ProjectEntity} from './ProjectEntity';
   providedIn: 'root'
 })
 export class ProjectSource {
-  private baseUrl: string = "http://localhost:8081/titansdata.web";
+  private baseUrl: string = "http://localhost:8081/titansdata.web.dev";
   /**
    * 
    */

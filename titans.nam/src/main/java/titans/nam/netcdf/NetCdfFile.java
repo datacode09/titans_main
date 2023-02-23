@@ -2,6 +2,7 @@ package titans.nam.netcdf;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;
@@ -47,8 +48,9 @@ public class NetCdfFile {
   public Dimensions getDimensions() {
     try (GridDataset gds = GridDataset.open(file.getAbsolutePath())) {
       Gridset gridSet = gds.getGridsets().get(0);
-      ucar.nc2.Dimension x = gridSet.getGeoCoordSystem().getDomain().get(0);
-      ucar.nc2.Dimension y = gridSet.getGeoCoordSystem().getDomain().get(1);
+      List<ucar.nc2.Dimension> domain = gridSet.getGeoCoordSystem().getDomain();
+      ucar.nc2.Dimension x = domain.get(0);
+      ucar.nc2.Dimension y = domain.get(1);
       int pixelsX = x.getLength();
       int pixelsY = y.getLength();
       double width = this.getBounds().getLengthX() / pixelsX;
@@ -174,6 +176,9 @@ public class NetCdfFile {
   private VariableDS getDataVariable(final GridDataset gds) {
     String replace = varName.replace("-", "_");
     VariableDS result = (VariableDS) gds.getDataVariable(replace);
+    if (result == null) {
+      result = (VariableDS) gds.getDataVariables().get(0); 
+    }
     return result;
   }
 

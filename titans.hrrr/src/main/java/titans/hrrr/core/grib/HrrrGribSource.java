@@ -8,14 +8,15 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
 import titans.nam.NoaaParameter;
+import titans.nam.core.NoaaGribSource;
 import titans.nam.grib.GribFile;
 
 /**
  *
  * @author Ricardo Marquez
  */
-public class HrrrGribSource {
-  
+public class HrrrGribSource extends NoaaGribSource {
+
   private final String url = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/";
 
   /**
@@ -73,9 +74,9 @@ public class HrrrGribSource {
   }
 
   /**
-   * 
+   *
    * @param parentKey
-   * @return 
+   * @return
    */
   public List<NoaaParameter> getCurrentParameters(String parentKey, int minusDays) {
     HrrrGribNameScraper scraper = new HrrrGribNameScraper();

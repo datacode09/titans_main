@@ -13,7 +13,7 @@ import {Envelope} from 'src/core/types/Envelope';
 export class HttpRastersDelegate implements RastersDelegate {
 
 
-  private baseUrl: string = "http://localhost:8081/titansdata.web"
+  private baseUrl: string = "http://localhost:8081/titansdata.web.dev"
   private patterns: Map<number, BehaviorSubject<RasterParameter[]>> = new Map();
   private host: RastersService;
 

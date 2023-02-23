@@ -9,17 +9,19 @@ import javax.measure.unit.Unit;
 import org.apache.commons.io.IOUtils;
 import rm.titansdata.units.UnitsUtils;
 import titans.nam.classes.NoaaVarClazz;
+import titans.nam.core.InventoryReader;
 
 
 /**
  *
  * @author Ricardo Marquez
  */
-public class HrrrInventoryReader {
+public class HrrrInventoryReader implements InventoryReader{
 
   public HrrrInventoryReader() {
   }
 
+  @Override
   public List<NoaaVarClazz> read() {
     InputStream a = this.getInputStream();
     try {
@@ -79,6 +81,7 @@ public class HrrrInventoryReader {
    * @param noaaVar
    * @return 
    */
+  @Override
   public Unit<?> getUnit(String var) {
     InputStream a = this.getInputStream();
     try {

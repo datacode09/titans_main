@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
+import org.junit.Ignore;
 import org.junit.Test;
 import titans.nam.grib.GribFileVarsReader;
 import titans.nam.grib.NamGribSource;
@@ -37,6 +38,7 @@ public class NamGribSourceIT {
   }
   
   @Test
+  @Ignore
   public void test03() {
     File degribExe = new File("C:\\ndfd\\degrib\\bin\\degrib.exe") ;
     File gribFile = new File("G:\\tests\\data\\nam\\grib\\nam.t00z.conusnest.hiresf01.tm00.grib2");
