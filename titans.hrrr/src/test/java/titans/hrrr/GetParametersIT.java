@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import rm.titansdata.Parameter;
 import rm.titansdata.plugin.ClassType;
 import rm.titansdata.plugin.Clazz;
-import titans.hrrr.classes.HrrrDateClazz;
+import titans.noaa.core.NoaaDateClazz;
 import titans.hrrr.core.grib.HrrrInventoryReader;
 import titans.noaa.core.NoaaVarClazz;
 /**
@@ -27,7 +27,7 @@ public class GetParametersIT extends BaseSpringITest{
     String varName = "TMP_2-HTGL"; 
     Unit<?> unit = new HrrrInventoryReader().getUnit(varName);
     NoaaVarClazz defaultClazz = new NoaaVarClazz(varName, unit); 
-    List<Parameter> parameters = this.factory.getParameters(defaultClazz, HrrrDateClazz.TODAY); 
+    List<Parameter> parameters = this.factory.getParameters(defaultClazz, NoaaDateClazz.TODAY); 
     int expected = 49;
     Assert.assertEquals(expected, parameters.size());
   }

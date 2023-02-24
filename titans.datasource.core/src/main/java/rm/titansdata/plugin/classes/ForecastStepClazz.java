@@ -10,6 +10,7 @@ import rm.titansdata.plugin.Clazz;
  */
 public final class ForecastStepClazz implements Clazz {
 
+
   public final int step;
 
   public ForecastStepClazz(int step) {
@@ -33,6 +34,8 @@ public final class ForecastStepClazz implements Clazz {
   public String toString() {
     return "{key = " + this.getKey() +  ", step=" + step + '}';
   }
+  
+ 
   
   /**
    * 
@@ -59,4 +62,23 @@ public final class ForecastStepClazz implements Clazz {
     }
   }
   
+  
+   /**
+   * 
+   * @param obj
+   * @return 
+   */
+  public static ForecastStepClazz parse(JSONObject obj) {
+    try {
+      String key = obj.getString("key");
+      if (!key.equals("FCST_STEP")) {
+        throw new RuntimeException();
+      }
+      int step = obj.getInt("step");
+      ForecastStepClazz result = new ForecastStepClazz(step); 
+      return result;
+    } catch (JSONException ex) {
+      throw new RuntimeException(ex); 
+    }
+  }
 }

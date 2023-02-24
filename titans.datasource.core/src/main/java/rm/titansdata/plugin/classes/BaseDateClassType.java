@@ -8,7 +8,7 @@ public class BaseDateClassType extends BaseClassType {
 
   
   public BaseDateClassType() {
-    super("BaseDate");
+    super("BASE_DATE");
   }
      
 }

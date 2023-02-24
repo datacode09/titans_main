@@ -101,7 +101,7 @@ public abstract class NoaaImporter implements Closeable {
    * @return
    */
   private String getGribFileName(ZonedDateTime datetimeref, int fcstHour) {
-    String filename = onGetGribFileName(datetimeref, fcstHour);
+    String filename = this.onGetGribFileName(datetimeref, fcstHour);
     return filename;
   }
   

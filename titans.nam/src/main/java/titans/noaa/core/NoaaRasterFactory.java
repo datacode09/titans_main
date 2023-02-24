@@ -9,7 +9,6 @@ import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
 import rm.titansdata.raster.RasterObj;
 import titans.nam.NoaaParameter;
-import titans.nam.utils.InvalidArgumentTypeException;
 
 /**
  *

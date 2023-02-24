@@ -91,5 +91,11 @@ public abstract class NoaaGribSource {
   public abstract String createUrl(GribFile gribFile);
   
   
+  /**
+   * 
+   * @param parentKey
+   * @param minusDays
+   * @return 
+   */
   public abstract List<NoaaParameter> getParameters(String parentKey, int minusDays); 
 }

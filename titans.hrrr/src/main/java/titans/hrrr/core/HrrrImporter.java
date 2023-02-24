@@ -14,9 +14,7 @@ import titans.noaa.core.NoaaImporter;
  * @author Ricardo Marquez
  */
 public class HrrrImporter extends NoaaImporter {
-
-
-
+  
   /**
    *
    * @param gribRootFolder
@@ -60,8 +58,6 @@ public class HrrrImporter extends NoaaImporter {
   protected NoaaGribSource getGribSource() {
     return new HrrrGribSource();
   }
-  
-  
   
   public static class Builder {
 

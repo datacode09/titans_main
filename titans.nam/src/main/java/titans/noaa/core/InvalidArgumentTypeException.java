@@ -1,4 +1,4 @@
-package titans.nam.utils;
+package titans.noaa.core;
 
 import titans.nam.NoaaParameter;
 
