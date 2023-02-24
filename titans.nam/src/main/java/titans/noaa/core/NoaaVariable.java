@@ -1,4 +1,4 @@
-package titans.nam.core;
+package titans.noaa.core;
 
 import javax.measure.unit.Unit;
 

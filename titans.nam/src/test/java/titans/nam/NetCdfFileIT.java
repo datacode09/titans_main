@@ -5,7 +5,7 @@ import java.io.File;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
 import org.junit.Test;
-import titans.nam.netcdf.NetCdfFile;
+import titans.noaa.netcdf.NetCdfFile;
 
 /**
  *

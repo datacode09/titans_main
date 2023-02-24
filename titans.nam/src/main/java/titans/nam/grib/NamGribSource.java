@@ -1,10 +1,11 @@
 package titans.nam.grib;
 
+import titans.noaa.grib.GribFile;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import titans.nam.NoaaParameter;
-import titans.nam.core.NoaaGribSource;
+import titans.noaa.core.NoaaGribSource;
 
 /**
  *

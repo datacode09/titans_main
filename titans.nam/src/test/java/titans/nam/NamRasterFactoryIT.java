@@ -21,7 +21,7 @@ import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
 import titans.nam.core.NamInventoryReader;
-import titans.nam.grib.ForecastTimeReference;
+import titans.noaa.grib.ForecastTimeReference;
 
 /**
  *

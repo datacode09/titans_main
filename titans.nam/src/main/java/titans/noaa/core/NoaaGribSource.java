@@ -1,4 +1,4 @@
-package titans.nam.core;
+package titans.noaa.core;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
 import titans.nam.NoaaParameter;
-import titans.nam.grib.GribFile;
+import titans.noaa.grib.GribFile;
 
 /**
  *

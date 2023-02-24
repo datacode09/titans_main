@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import titans.nam.grib.GribFileVarsReader;
+import titans.noaa.grib.GribFileVarsReader;
 
 /**
  *

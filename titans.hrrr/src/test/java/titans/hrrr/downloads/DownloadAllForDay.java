@@ -11,7 +11,7 @@ import titans.hrrr.core.HrrrImporter;
 import titans.hrrr.core.grib.HrrrGribSource;
 import titans.hrrr.core.grib.HrrrInventoryReader;
 import titans.nam.NoaaParameter;
-import titans.nam.core.NoaaVariable;
+import titans.noaa.core.NoaaVariable;
 
 /**
  *

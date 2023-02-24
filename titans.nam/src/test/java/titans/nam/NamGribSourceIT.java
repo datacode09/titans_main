@@ -7,7 +7,7 @@ import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
 import org.junit.Ignore;
 import org.junit.Test;
-import titans.nam.grib.GribFileVarsReader;
+import titans.noaa.grib.GribFileVarsReader;
 import titans.nam.grib.NamGribSource;
 
 /**

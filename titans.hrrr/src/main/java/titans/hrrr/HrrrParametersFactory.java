@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import titans.hrrr.core.grib.HrrrInventoryReader;
 import titans.nam.NoaaParameter;
 import titans.nam.NoaaFcstParameterFactory;
-import titans.nam.core.InventoryReader;
+import titans.noaa.core.InventoryReader;
 
 /**
  *

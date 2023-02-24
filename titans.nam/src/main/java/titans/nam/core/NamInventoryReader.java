@@ -1,5 +1,6 @@
 package titans.nam.core;
 
+import titans.noaa.core.InventoryReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -8,7 +9,7 @@ import java.util.stream.Collectors;
 import javax.measure.unit.Unit;
 import org.apache.commons.io.IOUtils;
 import rm.titansdata.units.UnitsUtils;
-import titans.nam.classes.NoaaVarClazz;
+import titans.noaa.core.NoaaVarClazz;
 
 /**
  *

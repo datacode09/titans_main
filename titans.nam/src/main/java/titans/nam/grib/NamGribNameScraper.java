@@ -1,5 +1,6 @@
 package titans.nam.grib;
 
+import titans.noaa.grib.ForecastTimeReference;
 import com.google.common.base.Objects;
 import common.http.RmHttpReader;
 import java.time.ZoneId;

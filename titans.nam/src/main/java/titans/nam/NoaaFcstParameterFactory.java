@@ -18,8 +18,8 @@ import rm.titansdata.plugin.classes.ForecastStepClassType;
 import rm.titansdata.plugin.classes.ForecastStepClazz;
 import rm.titansdata.plugin.classes.ValueClassType;
 import rm.titansdata.units.UnitsUtils;
-import titans.nam.classes.NoaaVarClazz;
-import titans.nam.core.InventoryReader;
+import titans.noaa.core.NoaaVarClazz;
+import titans.noaa.core.InventoryReader;
 
 /**
  *

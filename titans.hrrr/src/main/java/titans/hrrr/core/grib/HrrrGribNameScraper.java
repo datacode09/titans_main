@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.measure.unit.Unit;
 import titans.nam.NoaaParameter;
-import titans.nam.grib.ForecastTimeReference;
+import titans.noaa.grib.ForecastTimeReference;
 
 /**
  *

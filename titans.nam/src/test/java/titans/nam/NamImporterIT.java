@@ -15,8 +15,8 @@ import rm.titansdata.plugin.ColorMapProvider;
 import rm.titansdata.raster.RasterObj;
 import titans.nam.core.NamImporter;
 import titans.nam.core.NamInventoryReader;
-import titans.nam.core.NoaaVariable;
-import titans.nam.grib.ForecastTimeReference;
+import titans.noaa.core.NoaaVariable;
+import titans.noaa.grib.ForecastTimeReference;
 
 /**
  *

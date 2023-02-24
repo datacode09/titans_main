@@ -1,4 +1,4 @@
-package titans.nam.netcdf;
+package titans.noaa.netcdf;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import rm.titansdata.properties.Dimension;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.units.UnitsUtils;
 import titans.nam.NoaaParameter;
-import titans.nam.core.NoaaVariable;
+import titans.noaa.core.NoaaVariable;
 import ucar.nc2.dataset.VariableDS;
 import ucar.nc2.dt.GridDataset.Gridset;
 import ucar.nc2.dt.grid.GridDataset;

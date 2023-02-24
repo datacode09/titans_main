@@ -1,6 +1,6 @@
 package titans.nam;
 
-import titans.nam.core.InventoryReader;
+import titans.noaa.core.InventoryReader;
 import javafx.beans.property.ListProperty;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

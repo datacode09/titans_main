@@ -1,4 +1,4 @@
-package titans.nam.classes;
+package titans.noaa.core;
 
 import java.util.Objects;
 import javax.measure.unit.Unit;

@@ -1,5 +1,7 @@
 package titans.nam.core;
 
+import titans.noaa.core.NoaaGribSource;
+import titans.noaa.core.NoaaImporter;
 import java.io.Closeable;
 import java.io.File;
 import java.text.DecimalFormat;

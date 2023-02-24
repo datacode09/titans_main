@@ -1,4 +1,4 @@
-package titans.nam.grib;
+package titans.noaa.grib;
 
 import java.io.File;
 import java.io.FileOutputStream;

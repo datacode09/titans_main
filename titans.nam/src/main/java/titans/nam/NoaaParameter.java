@@ -10,7 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import rm.titansdata.Parameter;
 import rm.titansdata.units.UnitsUtils;
-import titans.nam.grib.ForecastTimeReference;
+import titans.noaa.grib.ForecastTimeReference;
 
 /**
  *

@@ -1,8 +1,7 @@
-package titans.nam.core;
+package titans.noaa.core;
 
 import java.util.List;
 import javax.measure.unit.Unit;
-import titans.nam.classes.NoaaVarClazz;
 
 /**
  *

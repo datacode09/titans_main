@@ -1,4 +1,4 @@
-package titans.nam.netcdf;
+package titans.noaa.netcdf;
 
 import java.io.File;
 import java.time.ZonedDateTime;
@@ -6,8 +6,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import javax.measure.unit.Unit;
 import titans.nam.NoaaParameter;
-import titans.nam.core.NoaaVariable;
-import titans.nam.grib.ForecastTimeReference;
+import titans.noaa.core.NoaaVariable;
+import titans.noaa.grib.ForecastTimeReference;
 
 /**
  *

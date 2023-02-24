@@ -9,7 +9,7 @@ import titans.hrrr.BaseSpringITest;
 import titans.hrrr.core.HrrrImporter;
 import titans.hrrr.core.grib.HrrrGribSource;
 import titans.nam.NoaaParameter;
-import titans.nam.grib.GribFile;
+import titans.noaa.grib.GribFile;
 
 /**
  *

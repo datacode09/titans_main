@@ -9,7 +9,7 @@ import rm.titansdata.Parameter;
 import rm.titansdata.colormap.ColorMap;
 import rm.titansdata.plugin.ColorMapProvider;
 import titans.nam.NoaaParameter;
-import titans.nam.netcdf.NetCdfFile;
+import titans.noaa.netcdf.NetCdfFile;
 
 /**
  *

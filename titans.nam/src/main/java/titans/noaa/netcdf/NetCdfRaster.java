@@ -1,4 +1,4 @@
-package titans.nam.netcdf;
+package titans.noaa.netcdf;
 
 import java.io.Closeable;
 import java.io.IOException;

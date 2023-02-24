@@ -19,7 +19,7 @@ import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
 import titans.hrrr.core.grib.HrrrInventoryReader;
 import titans.nam.NoaaParameter;
-import titans.nam.grib.ForecastTimeReference;
+import titans.noaa.grib.ForecastTimeReference;
 
 /**
  *

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import titans.nam.BaseSpringTest;
 import titans.nam.NoaaParameter;
 import titans.nam.core.NamImporter;
-import titans.nam.grib.GribFile;
+import titans.noaa.grib.GribFile;
 import titans.nam.grib.NamGribSource;
 
 /**

@@ -1,4 +1,4 @@
-package titans.nam.grib;
+package titans.noaa.grib;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,9 +7,9 @@ import java.nio.charset.Charset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
-import titans.nam.core.NoaaVariable;
-import titans.nam.netcdf.NetCdfFile;
-import titans.nam.netcdf.NetCdfFileOrganization;
+import titans.noaa.core.NoaaVariable;
+import titans.noaa.netcdf.NetCdfFile;
+import titans.noaa.netcdf.NetCdfFileOrganization;
 
 /**
  *

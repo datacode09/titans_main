@@ -15,7 +15,7 @@ import rm.titansdata.properties.Bounds;
 import rm.titansdata.test.help.BaseSpringTest;
 import titans.nam.NoaaParameter;
 import titans.nam.core.NamInventoryReader;
-import titans.nam.grib.ForecastTimeReference;
+import titans.noaa.grib.ForecastTimeReference;
 
 /**
  *

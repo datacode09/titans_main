@@ -10,7 +10,7 @@ import rm.titansdata.plugin.ClassType;
 import rm.titansdata.plugin.Clazz;
 import titans.hrrr.classes.HrrrDateClazz;
 import titans.hrrr.core.grib.HrrrInventoryReader;
-import titans.nam.classes.NoaaVarClazz;
+import titans.noaa.core.NoaaVarClazz;
 /**
  *
  * @author Ricardo Marquez

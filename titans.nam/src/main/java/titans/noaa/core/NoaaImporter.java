@@ -1,14 +1,14 @@
-package titans.nam.core;
+package titans.noaa.core;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import rm.titansdata.raster.RasterObj;
-import titans.nam.grib.GribFile;
-import titans.nam.grib.NetCdfExtractor;
-import titans.nam.netcdf.NetCdfFile;
-import titans.nam.netcdf.NetCdfRaster;
+import titans.noaa.grib.GribFile;
+import titans.noaa.grib.NetCdfExtractor;
+import titans.noaa.netcdf.NetCdfFile;
+import titans.noaa.netcdf.NetCdfRaster;
 
 /**
  *

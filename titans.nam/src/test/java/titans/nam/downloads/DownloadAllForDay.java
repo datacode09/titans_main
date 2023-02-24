@@ -9,7 +9,7 @@ import titans.nam.BaseSpringTest;
 import titans.nam.NoaaParameter;
 import titans.nam.core.NamImporter;
 import titans.nam.core.NamInventoryReader;
-import titans.nam.core.NoaaVariable;
+import titans.noaa.core.NoaaVariable;
 import titans.nam.grib.NamGribSource;
 
 /**

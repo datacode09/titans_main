@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import titans.hrrr.core.HrrrImporter;
-import titans.nam.core.NoaaImporter;
-import titans.nam.core.NoaaRasterFactory;
+import titans.noaa.core.NoaaImporter;
+import titans.noaa.core.NoaaRasterFactory;
 
 /**
  *

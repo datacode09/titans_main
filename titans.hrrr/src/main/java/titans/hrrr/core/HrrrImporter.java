@@ -6,8 +6,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatterBuilder;
 import titans.hrrr.core.grib.HrrrGribSource;
-import titans.nam.core.NoaaGribSource;
-import titans.nam.core.NoaaImporter;
+import titans.noaa.core.NoaaGribSource;
+import titans.noaa.core.NoaaImporter;
 
 /**
  *

@@ -1,4 +1,4 @@
-package titans.nam.grib;
+package titans.noaa.grib;
 
 import common.RmExceptions;
 import java.io.File;
