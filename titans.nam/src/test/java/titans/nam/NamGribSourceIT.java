@@ -19,7 +19,8 @@ public class NamGribSourceIT {
   @Test
   public void test01() {
     NamGribSource source = new NamGribSource();
-    List<NoaaParameter> list = source.getCurrentNamParameters("NAM");
+    int minusDays = 1;
+    List<NoaaParameter> list = source.getParameters("NAM", minusDays);
     list.forEach(System.out::println);
   }
   

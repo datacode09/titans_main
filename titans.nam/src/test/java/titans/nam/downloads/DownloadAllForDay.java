@@ -32,8 +32,8 @@ public class DownloadAllForDay extends BaseSpringTest {
   public void test() {
     NamGribSource source = new NamGribSource();
     String parentKey = "NAM";
-    long minusDays = 0L; 
-    List<NoaaParameter> params = source.getCurrentNamParameters(minusDays, parentKey); 
+    int minusDays = 0; 
+    List<NoaaParameter> params = source.getParameters(parentKey, minusDays); 
     String varName = "TMP_2-HTGL";
     NoaaVariable namVariable = new NoaaVariable(varName, new NamInventoryReader().getUnit(varName));
     params.stream().forEach(p -> {

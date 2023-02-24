@@ -41,8 +41,8 @@ public class NamPropertyUpdates implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     NamGribSource source = new NamGribSource();
     String parentKey = this.factory.key();
-    long minusDays = 0;
-    List<NoaaParameter> params = source.getCurrentNamParameters(minusDays, parentKey);
+    int minusDays = 0;
+    List<NoaaParameter> params = source.getParameters(parentKey, minusDays);
     ObservableList<NoaaParameter> obsList = FXCollections.observableArrayList(params);
     this.parameters.setValue(obsList);
   }

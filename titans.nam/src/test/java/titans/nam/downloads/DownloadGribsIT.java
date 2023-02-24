@@ -31,8 +31,8 @@ public class DownloadGribsIT extends BaseSpringTest {
   public void test() {
     NamGribSource source = new NamGribSource();
     String parentKey = "NAM";
-    long minusDays = 0L;
-    List<NoaaParameter> params = source.getCurrentNamParameters(minusDays, parentKey);
+    int minusDays = 0;
+    List<NoaaParameter> params = source.getParameters(parentKey, minusDays);
     NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, 0, degribExe);
     params.forEach(p -> {
       System.out.println("p = " + p);
@@ -49,8 +49,8 @@ public class DownloadGribsIT extends BaseSpringTest {
   public void test2() {
     NamGribSource source = new NamGribSource();
     String parentKey = "NAM";
-    long minusDays = 0L;
-    List<NoaaParameter> params = source.getCurrentNamParameters(minusDays, parentKey);
+    int minusDays = 0;
+    List<NoaaParameter> params = source.getParameters(parentKey, minusDays);
     System.out.println("params = " + params.size());
   }
 }

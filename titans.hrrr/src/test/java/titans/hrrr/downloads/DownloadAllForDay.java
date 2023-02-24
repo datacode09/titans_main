@@ -39,7 +39,7 @@ public class DownloadAllForDay extends BaseSpringITest {
     HrrrImporter importer = new HrrrImporter(gribRootFolder, netCdfRootFolder,projectId,degribExe);  
     String parentKey = "HRRR";
     int minusDays = 0; 
-    List<NoaaParameter> params = source.getCurrentParameters(parentKey, minusDays); 
+    List<NoaaParameter> params = source.getParameters(parentKey, minusDays); 
     String varName = "TMP_2-HTGL";
     Unit<?> unit = new HrrrInventoryReader().getUnit(varName);
     NoaaVariable namVariable = new NoaaVariable(varName, unit);

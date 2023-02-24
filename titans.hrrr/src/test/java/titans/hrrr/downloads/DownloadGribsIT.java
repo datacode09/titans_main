@@ -34,7 +34,7 @@ public class DownloadGribsIT extends BaseSpringITest {
     int projectId = 0;
     HrrrImporter importer = new HrrrImporter(gribRootFolder, netCdfRootFolder, projectId, degribExe);
     String parentKey = "HRRR";
-    List<NoaaParameter> params = source.getCurrentParameters(parentKey, minusDays);
+    List<NoaaParameter> params = source.getParameters(parentKey, minusDays);
     params.stream().forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();
