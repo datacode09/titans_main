@@ -1,5 +1,7 @@
 package titans.nam;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,10 +58,11 @@ public abstract class NoaaFcstParameterFactory implements ParameterFactory {
   public List<Parameter> getParameters(Clazz... clazzes) {
     String noaaVar = this.getNoaaVar(clazzes);
     Unit<?> unit = this.getUnit(noaaVar);
-    ForecastStepClazz fcstclazz = this.getForecastStepClazz(clazzes);
+
     NoaaDateClazz dateclazz = this.getDateClazz(clazzes);
     ZonedDateTime zonedDateTime = dateclazz.getZoneDateTime();
-    int fcststep = fcstclazz.step;
+    ForecastStepClazz fcstclazz = this.getForecastStepClazz(clazzes);
+    int fcststep = fcstclazz == null ? -1 : fcstclazz.step;
     List<Parameter> arrayList = this.getParameters(zonedDateTime, fcststep);
     List<Parameter> result = arrayList.stream()
       .map(p -> (NoaaParameter) p)
@@ -134,10 +137,10 @@ public abstract class NoaaFcstParameterFactory implements ParameterFactory {
         String key = obj.getString("key");
         String var = obj.getString("noaaVar");
         Unit<?> unit = UnitsUtils.valueOf(obj.getString("unit"));
-        NoaaDateClazz noaaDateClazz = NoaaDateClazz.parse(obj);
-        ZonedDateTime datetime = noaaDateClazz.getZoneDateTime();
-        ForecastStepClazz fcst = ForecastStepClazz.parse(obj);
-        int step = fcst.step;
+        ZonedDateTime datetime = ZonedDateTime.of( //
+          LocalDateTime.parse(obj.getString("datetime"), NoaaDateClazz.getFormatter()), // 
+          ZoneId.of("UTC"));
+        int step = obj.getInt("fcststep");
         param = new NoaaParameter(key, datetime, step, var, unit);
       } catch (Exception ex) {
         throw new RuntimeException(ex);
@@ -200,8 +203,16 @@ public abstract class NoaaFcstParameterFactory implements ParameterFactory {
       case "FCST_STEP":
         result = (JSONObject o) -> {
           try {
-            int step = o.getInt("step");
-            return new ForecastStepClazz(step);
+            return ForecastStepClazz.parse(o);
+          } catch (Exception ex) {
+            throw new RuntimeException(ex);
+          }
+        };
+        break;
+      case "NoaaDateClazz":
+        result = (JSONObject o) -> {
+          try {
+            return NoaaDateClazz.parse(o);
           } catch (Exception ex) {
             throw new RuntimeException(ex);
           }
@@ -213,38 +224,38 @@ public abstract class NoaaFcstParameterFactory implements ParameterFactory {
     }
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param clazzes
-   * @return 
+   * @return
    */
   private ForecastStepClazz getForecastStepClazz(Clazz[] clazzes) {
     ForecastStepClazz result = Stream.of(clazzes)
-      .filter(c->c instanceof ForecastStepClazz)
-      .map(c-> (ForecastStepClazz) c)
+      .filter(c -> c instanceof ForecastStepClazz)
+      .map(c -> (ForecastStepClazz) c)
       .findFirst()
-      .orElse(null); 
+      .orElse(null);
     return result;
   }
-  
+
   /**
-   * 
+   *
    * @param clazzes
-   * @return 
+   * @return
    */
   private NoaaDateClazz getDateClazz(Clazz[] clazzes) {
     NoaaDateClazz result = Stream.of(clazzes)
-      .filter(c->c instanceof NoaaDateClazz)
-      .map(c-> (NoaaDateClazz) c)
+      .filter(c -> c instanceof NoaaDateClazz)
+      .map(c -> (NoaaDateClazz) c)
       .findFirst()
-      .orElse(null); 
+      .orElse(null);
     return result;
   }
 
   protected abstract List<Parameter> getParameters(ZonedDateTime zonedDateTime, int fcststep);
-  
-    /**
+
+  /**
    *
    */
   private static interface Parser {

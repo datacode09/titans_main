@@ -226,10 +226,13 @@ public class CustomClassLoader {
       try {
         Bclass = Class.forName(className);
       } catch(Exception ex) {
-        throw new RuntimeException(ex);
-      }
-      URL url = Bclass.getResource("/" + beansXml);
-      InputStream stream = url.openStream();
+        throw new RuntimeException(ex);  
+      } 
+      URL url = Bclass.getResource("/" + beansXml.trim());
+      if (url == null) {
+        throw RmExceptions.create("Resource '%s' not found.", beansXml); 
+      }  
+      InputStream stream = url.openStream();  
       InputSource inputSource = new InputSource(new InputStreamReader(stream));
       return inputSource;
     } catch (Exception ex) {

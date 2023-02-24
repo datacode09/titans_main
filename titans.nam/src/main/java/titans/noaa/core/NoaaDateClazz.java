@@ -45,7 +45,7 @@ public class NoaaDateClazz implements Clazz {
    * 
    * @return 
    */
-  private static DateTimeFormatter getFormatter() {
+  public static DateTimeFormatter getFormatter() {
     DateTimeFormatter formatter = new DateTimeFormatterBuilder()
       .appendPattern("yyyyMMddHHmm")
       .toFormatter();
@@ -68,7 +68,13 @@ public class NoaaDateClazz implements Clazz {
   public static NoaaDateClazz parse(JSONObject obj) {
     try {
       String text = obj.getString("datetime");
-      ZonedDateTime datetime = ZonedDateTime.of(LocalDateTime.parse(text, getFormatter()), ZoneId.of("UTC"));
+      ZonedDateTime datetime;
+      if (text.equals("today")) {
+        datetime = ZonedDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.DAYS);
+      } else {
+        datetime = ZonedDateTime.of(LocalDateTime.parse(text, getFormatter()), ZoneId.of("UTC"));
+      }
+      
       NoaaDateClazz result = new NoaaDateClazz(datetime);
       return result;
     } catch (JSONException ex) {

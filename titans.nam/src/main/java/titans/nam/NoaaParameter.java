@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import javax.measure.unit.Unit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import rm.titansdata.Parameter;
 import rm.titansdata.units.UnitsUtils;
+import titans.noaa.core.NoaaDateClazz;
 import titans.noaa.grib.ForecastTimeReference;
 
 /**
@@ -164,9 +164,7 @@ public class NoaaParameter implements Parameter {
    * @return
    */
   private static DateTimeFormatter getDateTimeFormatter() {
-    DateTimeFormatter result = new DateTimeFormatterBuilder()
-      .appendPattern("yyyyMMddHH")
-      .toFormatter();
+    DateTimeFormatter result = NoaaDateClazz.getFormatter();
     return result;
   }
 
