@@ -207,6 +207,9 @@ public class RastersServlet {
     Long rasterId = parser.getLong("rasterId");
     int srid = parser.getInteger("srid");
     Geometry geometry = parser.parseGeometry("geometry", srid);
+     if (srid == 4326) {
+      geometry = SridUtils.transform(geometry, 3857); 
+    }
     JSONObject jsonObject = this.getParameterJson(parser);
     Parameter param = parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();

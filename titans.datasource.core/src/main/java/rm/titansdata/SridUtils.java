@@ -5,7 +5,9 @@ import org.apache.sis.referencing.CRS;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -27,50 +29,61 @@ public class SridUtils {
    * @return
    */
   public static Geometry transform(Geometry geometry, int targetSrid) {
-    Coordinate[] coords = geometry.getCoordinates();
-    Coordinate[] transormedCoords = new Coordinate[coords.length];
-    int i = -1;
-    for (Coordinate coord : coords) {
-      i++;
-      Point p = geometry.getFactory().createPoint(coord);
-      Point transformedPoint = transform(p, targetSrid);
-      Coordinate transformedCoordinate = transformedPoint.getCoordinate();
-      transormedCoords[i] = transformedCoordinate;
-    }
-    GeometryFactory factory = new GeometryFactory(geometry.getPrecisionModel(), targetSrid);
     Geometry result;
-    String geometryType = geometry.getGeometryType();
-    switch (geometryType) {
-      case "Point":
-        result = factory.createPoint(transormedCoords[0]);
-        break;
-      case "MultiPoint":
-        result = factory.createMultiPoint(transormedCoords);
-        break;
-      case "Polygon":
-        result = factory.createPolygon(transormedCoords);
-        break;
-      case "LineString":
-        result = factory.createLineString(transormedCoords);
-        break;
-      case "LinearRing":
-        result = factory.createLinearRing(transormedCoords);
-        break;
-      default:
-        throw new RuntimeException( //
-          String.format("Unsupported geometry type: '%s'", geometryType));
+    GeometryFactory factory = new GeometryFactory(geometry.getPrecisionModel(), targetSrid);
+    if (geometry.getGeometryType().equals("MultiPolygon")) {
+      MultiPolygon mpolygon = (MultiPolygon) geometry;
+      int numPolygons = mpolygon.getNumGeometries();
+      Polygon[] polygons = new Polygon[numPolygons]; 
+      for (int i = 0; i < numPolygons; i++) {
+        Geometry a = mpolygon.getGeometryN(i); 
+        polygons[i] = (Polygon) transform(a, targetSrid); 
+      }
+      result = factory.createMultiPolygon(polygons); 
+    } else {
+      Coordinate[] coords = geometry.getCoordinates();
+      Coordinate[] transormedCoords = new Coordinate[coords.length];
+      int i = -1;
+      for (Coordinate coord : coords) {
+        i++;
+        Point p = geometry.getFactory().createPoint(coord);
+        Point transformedPoint = transform(p, targetSrid);
+        Coordinate transformedCoordinate = transformedPoint.getCoordinate();
+        transormedCoords[i] = transformedCoordinate;
+      }
+      String geometryType = geometry.getGeometryType();
+      switch (geometryType) {
+        case "Point":
+          result = factory.createPoint(transormedCoords[0]);
+          break;
+        case "MultiPoint":
+          result = factory.createMultiPoint(transormedCoords);
+          break;
+        case "Polygon":
+          result = factory.createPolygon(transormedCoords);
+          break;
+        case "LineString":
+          result = factory.createLineString(transormedCoords);
+          break;
+        case "LinearRing":
+          result = factory.createLinearRing(transormedCoords);
+          break;
+        default:
+          throw new RuntimeException( //
+            String.format("Unsupported geometry type: '%s'", geometryType));
+      }
     }
     return result;
   }
-  
+
   /**
-   * 
+   *
    */
   public static void init() {
     try {
       GeometryFactory f = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326);
       Point p = f.createPoint(new Coordinate(-121.43, 36.37));
-      transform(p, 3857); 
+      transform(p, 3857);
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
@@ -81,7 +94,7 @@ public class SridUtils {
       try {
         int sourceSrid = p.getSRID();
         if (targetSrid == 4326) {
-          
+
           CoordinateReferenceSystem target = CRS.forCode("EPSG:" + targetSrid);
           CoordinateReferenceSystem source = CRS.forCode("EPSG:" + sourceSrid);
           CoordinateOperation op = CRS.findOperation(target, source, null);

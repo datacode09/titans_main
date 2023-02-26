@@ -21,6 +21,7 @@ import rm.titansdata.plugin.classes.ForecastStepClassType;
 import rm.titansdata.plugin.classes.ForecastStepClazz;
 import rm.titansdata.plugin.classes.ValueClassType;
 import rm.titansdata.units.UnitsUtils;
+import titans.noaa.core.FcstDateRange;
 import titans.noaa.core.InventoryReader;
 import titans.noaa.core.NoaaDateClazz;
 import titans.noaa.core.NoaaVarClazz;
@@ -61,9 +62,11 @@ public abstract class NoaaFcstParameterFactory implements ParameterFactory {
 
     NoaaDateClazz dateclazz = this.getDateClazz(clazzes);
     ZonedDateTime zonedDateTime = dateclazz.getZoneDateTime();
+    ZonedDateTime zonedDateTime2 = dateclazz.getZoneDateTime2();
     ForecastStepClazz fcstclazz = this.getForecastStepClazz(clazzes);
     int fcststep = fcstclazz == null ? -1 : fcstclazz.step;
-    List<Parameter> arrayList = this.getParameters(zonedDateTime, fcststep);
+    FcstDateRange range = new FcstDateRange(zonedDateTime, zonedDateTime2, fcststep);
+    List<Parameter> arrayList = this.getParameters(range);
     List<Parameter> result = arrayList.stream()
       .map(p -> (NoaaParameter) p)
       .map(p -> p.setVar(noaaVar, unit))
@@ -253,7 +256,7 @@ public abstract class NoaaFcstParameterFactory implements ParameterFactory {
     return result;
   }
 
-  protected abstract List<Parameter> getParameters(ZonedDateTime zonedDateTime, int fcststep);
+  protected abstract List<Parameter> getParameters(FcstDateRange range);
 
   /**
    *

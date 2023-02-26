@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
 import titans.nam.core.NamInventoryReader;
+import titans.noaa.core.FcstDateRange;
 import titans.noaa.core.InventoryReader;
 
 /**
@@ -51,8 +52,10 @@ public class NamParametersFactory extends NoaaFcstParameterFactory {
    * @return 
    */
   @Override
-  protected List<Parameter> getParameters(ZonedDateTime zonedDateTime, int fcststep) {
+  protected List<Parameter> getParameters(FcstDateRange range) {
     List<Parameter> result;
+    int fcststep = range.fcststep;
+    ZonedDateTime zonedDateTime = range.datetime1;
     if (fcststep == -1) {
       result = this.parameters.get().stream()
         .filter(p->p.datetime.equals(zonedDateTime))

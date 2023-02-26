@@ -13,7 +13,7 @@ import rm.titansdata.properties.Dimensions;
  * @author Ricardo Marquez
  */
 public abstract class BasicRaster implements Raster {
-  private Unit<? extends Quantity> units;
+  private final Unit<? extends Quantity> units;
   private final Bounds bounds;
   private final Dimensions dims;
   
@@ -25,6 +25,7 @@ public abstract class BasicRaster implements Raster {
    * @param dims 
    */
   public BasicRaster(Unit<? extends Quantity> units, Bounds bounds, Dimensions dims) {
+    this.units = units;
     this.bounds = bounds;
     this.dims = dims;
   }

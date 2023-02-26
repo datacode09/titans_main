@@ -60,7 +60,8 @@ public class RasterObj {
     double[] values = new double[helper.size()];
     helper.stream(this::getValue)
       .forEach((pair) -> this.interleaveMapping(values, pair));
-    return new RasterCells(this.getBounds(), getDimensions(), values);
+    RasterCells result = new RasterCells(this.getBounds(), getDimensions(), values);
+    return result;
   }
 
   /**
