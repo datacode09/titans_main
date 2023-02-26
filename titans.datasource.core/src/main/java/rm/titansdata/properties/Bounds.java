@@ -241,4 +241,12 @@ public class Bounds implements Serializable {
     Bounds result = new Bounds(p1, p2); 
     return result; 
   }
+
+  /**
+   * 
+   * @return 
+   */
+  public Point getCenter() {
+    return this.getEnvelope().getCentroid();
+  }
 }

@@ -1,7 +1,6 @@
-package titans.hrrr.archive.core;
+package titans.mrms;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatterBuilder;
@@ -9,64 +8,49 @@ import titans.noaa.core.NoaaGribSource;
 import titans.noaa.core.NoaaImporter;
 import titans.noaa.core.NoaaVariable;
 
-
 /**
  *
  * @author Ricardo Marquez
  */
-public class HrrrArchiveImporter extends NoaaImporter {
-
-  public HrrrArchiveImporter(File gribRootFolder, File netCdfRootFolder, int subfolderId, File degribExe) {
+public class MrmsImporter extends NoaaImporter {
+  
+  public MrmsImporter(File gribRootFolder, File netCdfRootFolder, int subfolderId, File degribExe) {
     super(gribRootFolder, netCdfRootFolder, subfolderId, degribExe);
   }
 
   /**
-   *
+   * 
    * @param datetimeref
    * @param fcstHour
-   * @return
+   * @return 
    */
   @Override
   protected String onGetGribFileName(NoaaVariable var, ZonedDateTime datetimeref, int fcstHour) {
-    String hourtext = datetimeref //
-      .toOffsetDateTime() //
-      .atZoneSameInstant(ZoneId.of("UTC")) //
-      .format(new DateTimeFormatterBuilder()
-        .appendPattern("HH")
-        .toFormatter());
     String datetext = datetimeref //
       .toOffsetDateTime() //
       .atZoneSameInstant(ZoneId.of("UTC")) //
       .format(new DateTimeFormatterBuilder()
-        .appendPattern("yyyy\\MM\\dd")
+        .appendPattern("yyyyMMdd-HHmmss")
         .toFormatter());
-    DecimalFormat decimalFormat = new DecimalFormat("00");
-    String fcstHourTxt = decimalFormat.format(fcstHour);
-    String filename = String.format("%s\\hrrr.t%sz.wrfsfcf%s.grib2", new Object[]{
-      datetext, hourtext, fcstHourTxt});
+    String filename = String.format("MRMS_%s_%s.grib2.gz", new Object[]{
+      var.getGribVarName(), datetext});    
     return filename;
-  }
-
-  /**
-   *
-   * @return
-   */
-  @Override
-  protected NoaaGribSource getGribSource() {
-    HrrrArchiveGribSource result = new HrrrArchiveGribSource();
-    return result;
   }
   
   /**
    * 
+   * @return 
    */
-  public static class Builder {
-
+  @Override
+  protected NoaaGribSource getGribSource() {
+    return new MrmsGribSource();
+  }
+   public static class Builder {
     private File gribRootFolder;
     private File netCdfRootFolder;
     private int subfolderId;
     private File degribExe;
-
+  
     public Builder() {
     }
 
@@ -89,13 +73,14 @@ public class HrrrArchiveImporter extends NoaaImporter {
       this.degribExe = degribExe;
       return this;
     }
-
+    
     /**
-     *
-     * @return
+     * 
+     * @return 
      */
-    public HrrrArchiveImporter build() {
-      return new HrrrArchiveImporter(gribRootFolder, netCdfRootFolder, subfolderId, degribExe);
+    public MrmsImporter build() {
+      return new MrmsImporter(gribRootFolder, netCdfRootFolder, subfolderId, degribExe); 
     }
   }
+  
 }

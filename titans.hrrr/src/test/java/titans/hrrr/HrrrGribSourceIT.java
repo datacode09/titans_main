@@ -9,6 +9,7 @@ import java.net.URL;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import javax.measure.unit.SI;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -16,9 +17,10 @@ import org.junit.Test;
 import titans.hrrr.core.grib.HrrrGribSource;
 import titans.hrrr.core.grib.HrrrInventoryReader;
 import titans.nam.NoaaParameter;
-import titans.noaa.core.NoaaVarClazz;
-import titans.noaa.grib.GribFile;
 import titans.nam.grib.NamGribSource;
+import titans.noaa.core.NoaaVarClazz;
+import titans.noaa.core.NoaaVariable;
+import titans.noaa.grib.GribFile;
 
 /**
  *
@@ -48,7 +50,8 @@ public class HrrrGribSourceIT {
     File gidx = new File("G:\\tests\\data\\grib2.idx");
     NamGribSource source = new NamGribSource();
     ZonedDateTime datetime = ZonedDateTime.now().minusDays(1).truncatedTo(ChronoUnit.DAYS);
-    GribFile file = new GribFile(datetime, 0, g, gidx);
+    NoaaVariable var = new NoaaVariable("TMP_2-HTGL", SI.CELSIUS);
+    GribFile file = new GribFile(datetime, 0, var, g, gidx);
     URL url = new URL(source.createUrl(file)); 
     InputStream input = url.openStream();
     new RmThreadUtils.ThreadBuilder("afadfasf").setRunnable(() -> {
@@ -59,7 +62,7 @@ public class HrrrGribSourceIT {
       }
     }).start();
     Thread.sleep(3000);
-    GribFile file2 = new GribFile(ZonedDateTime.now(), 0, g, gidx);
+    GribFile file2 = new GribFile(ZonedDateTime.now(), 0, var, g, gidx);
     boolean locked = file2.isLocked();
     Assert.assertTrue(locked);
     System.out.println("locked = " + locked);
@@ -69,7 +72,8 @@ public class HrrrGribSourceIT {
   public void test04() throws Exception {
     File g = new File("G:\\tests\\data\\test.grib2");
     File gidx = new File("G:\\tests\\data\\grib2.idx");
-    GribFile file = new GribFile(ZonedDateTime.now(), 0, g, gidx);
+    NoaaVariable var = new NoaaVariable("TMP_2-HTGL", SI.CELSIUS);
+    GribFile file = new GribFile(ZonedDateTime.now(), 0, var, g, gidx);
     boolean locked = file.isLocked();
     Assert.assertFalse(locked);
   }

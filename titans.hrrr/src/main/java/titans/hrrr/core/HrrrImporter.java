@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import titans.hrrr.core.grib.HrrrGribSource;
 import titans.noaa.core.NoaaGribSource;
 import titans.noaa.core.NoaaImporter;
+import titans.noaa.core.NoaaVariable;
 
 /**
  *
@@ -30,7 +31,7 @@ public class HrrrImporter extends NoaaImporter {
    * @return 
    */
   @Override
-  protected String onGetGribFileName(ZonedDateTime datetimeref, int fcstHour) {
+  protected String onGetGribFileName(NoaaVariable var, ZonedDateTime datetimeref, int fcstHour) {
     String hourtext = datetimeref //
       .toOffsetDateTime() //
       .atZoneSameInstant(ZoneId.of("UTC")) //

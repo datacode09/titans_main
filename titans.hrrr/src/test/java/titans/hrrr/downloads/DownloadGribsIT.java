@@ -2,6 +2,7 @@ package titans.hrrr.downloads;
 
 import java.io.File;
 import java.util.List;
+import javax.measure.unit.SI;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,6 +10,7 @@ import titans.hrrr.BaseSpringITest;
 import titans.hrrr.core.HrrrImporter;
 import titans.hrrr.core.grib.HrrrGribSource;
 import titans.nam.NoaaParameter;
+import titans.noaa.core.NoaaVariable;
 import titans.noaa.grib.GribFile;
 
 /**
@@ -38,7 +40,8 @@ public class DownloadGribsIT extends BaseSpringITest {
     params.stream().forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();
-      GribFile gribfile = importer.getGribFile(p.datetime, p.fcststep);
+      NoaaVariable var = new NoaaVariable("TMP_2-HTGL", SI.CELSIUS);
+      GribFile gribfile = importer.getGribFile(var, p.datetime, p.fcststep);
       if (gribfile.notExists()) {
         source.download(gribfile);
       }
