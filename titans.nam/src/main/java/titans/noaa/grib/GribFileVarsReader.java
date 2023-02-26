@@ -60,8 +60,13 @@ public class GribFileVarsReader {
   private String getLineForVarName(String varName) {
     ProcessBuilder process = this.createGribInventoryProcess();
     List<String> processOutput = this.getProcessOutput(process);
-    String line = processOutput.stream().filter(l -> this.toVarName(l).equals(varName))
+    String line;
+    if (processOutput.size() > 1) {
+      line = processOutput.stream().filter(l -> this.toVarName(l).equals(varName))
       .findFirst().orElse(null);
+    } else {
+      line = processOutput.get(0); 
+    }
     return line;
   }
 
@@ -126,7 +131,7 @@ public class GribFileVarsReader {
   private ProcessBuilder createGribInventoryProcess() {
     ProcessBuilder process = new ProcessBuilder(
       this.degribExe.getAbsolutePath().replace(".exe", ""),
-      this.gribFile.getAbsolutePath(),
+      this.gribFile.getAbsolutePath().replace(".gz", ""),
       "-I"
     );
     File workingDirectory = gribFile.getParentFile();

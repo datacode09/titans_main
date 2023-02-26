@@ -59,7 +59,8 @@ public abstract class NoaaImporter implements Closeable {
    */
   private NetCdfFile downloadAndExtract(NetCdfExtractor extractor, ZonedDateTime datetimeref, int forecaststep) {
     NetCdfFile netCdfFile;
-    GribFile gribFile = this.downloadGribFile(datetimeref, forecaststep);
+    NoaaVariable var = extractor.getVar();
+    GribFile gribFile = this.downloadGribFile(var, datetimeref, forecaststep);
     netCdfFile = extractor.extract(gribFile);
     return netCdfFile;
   }
@@ -71,8 +72,8 @@ public abstract class NoaaImporter implements Closeable {
    * @param datetimeref
    * @return 
    */
-  private GribFile downloadGribFile(ZonedDateTime datetimeref, int forecaststep) {
-    GribFile gribFile = this.getGribFile(datetimeref, forecaststep);
+  private GribFile downloadGribFile(NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
+    GribFile gribFile = this.getGribFile(var, datetimeref, forecaststep);
     if (gribFile.notExists()) {
       NoaaGribSource source = this.getGribSource();
       source.download(gribFile);
@@ -86,11 +87,11 @@ public abstract class NoaaImporter implements Closeable {
    * @param datetimeref
    * @return
    */
-  public final GribFile getGribFile(ZonedDateTime datetimeref, int forecaststep) {
-    String filename = this.getGribFileName(datetimeref, forecaststep);
+  public final GribFile getGribFile(NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
+    String filename = this.getGribFileName(var, datetimeref, forecaststep);
     File grib = new File(this.gribRootFolder, filename);
     File gribIdx = new File(this.gribRootFolder, filename + ".idx");
-    GribFile result = new GribFile(datetimeref, forecaststep, grib, gribIdx);
+    GribFile result = new GribFile(datetimeref, forecaststep, var, grib, gribIdx);
     return result;
   }
 
@@ -100,8 +101,8 @@ public abstract class NoaaImporter implements Closeable {
    * @param datetimeref
    * @return
    */
-  private String getGribFileName(ZonedDateTime datetimeref, int fcstHour) {
-    String filename = this.onGetGribFileName(datetimeref, fcstHour);
+  private String getGribFileName(NoaaVariable var, ZonedDateTime datetimeref, int fcstHour) {
+    String filename = this.onGetGribFileName(var, datetimeref, fcstHour);
     return filename;
   }
   
@@ -111,7 +112,7 @@ public abstract class NoaaImporter implements Closeable {
    * @param fcstHour
    * @return 
    */
-  protected abstract String onGetGribFileName(ZonedDateTime datetimeref, int fcstHour); 
+  protected abstract String onGetGribFileName(NoaaVariable var, ZonedDateTime datetimeref, int fcstHour); 
 
   /**
    *

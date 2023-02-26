@@ -70,7 +70,7 @@ public class NetCdfFileOrganization {
       .toFormatter();
     String format = this.datetime.format(formatter);
     String varName = var.getGribVarName();
-    String filename = String.format("%s_%s_%03d.nc", varName, format, this.fcststep);
+    String filename = String.format("%s_%s_%03d.nc", varName.replace(".", "_dot_"), format, this.fcststep);
     return filename;
   }
   

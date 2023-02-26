@@ -55,7 +55,8 @@ public abstract class NoaaGribSource {
         + "output file : " + gribFile
         + ", connection : " + gribUrl
         + "}", ex);
-    }
+    } 
+    this.onPostDownLoad(gribFile);
   }
   
   
@@ -98,4 +99,11 @@ public abstract class NoaaGribSource {
    * @return 
    */
   public abstract List<NoaaParameter> getParameters(String parentKey, int minusDays); 
+
+  /**
+   * 
+   * @param gribFile 
+   */
+  protected void onPostDownLoad(GribFile gribFile) {
+  }
 }

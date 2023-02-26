@@ -30,8 +30,8 @@ public class NoaaParameter implements Parameter {
    * @param d
    */
   public NoaaParameter(String parentKey, ZonedDateTime datetime, //
-    ForecastTimeReference d, String namVar, Unit<?> unit) {
-    this(parentKey, datetime.plusHours(d.refhour), d.fcsthourAhead, namVar, unit);
+    ForecastTimeReference d, String noaaVar, Unit<?> unit) {
+    this(parentKey, datetime.plusHours(d.refhour), d.fcsthourAhead, noaaVar, unit);
   }
   
   /**
@@ -39,16 +39,16 @@ public class NoaaParameter implements Parameter {
    * @param parentKey
    * @param datetime
    * @param fcststep
-   * @param namVar 
+   * @param noaaVar
    */
   public NoaaParameter(String parentKey, 
     ZonedDateTime datetime, 
     int fcststep, 
-    String namVar, Unit<?> unit) {
+    String noaaVar, Unit<?> unit) {
     this.parentKey = parentKey;
     this.datetime = datetime;
     this.fcststep = fcststep;
-    this.noaaVar = namVar;
+    this.noaaVar = noaaVar;
     this.unit = unit;
   }
   

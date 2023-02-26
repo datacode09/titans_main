@@ -28,7 +28,17 @@ public class NetCdfExtractor {
     this.subFolderId = subFolderId;
     this.var = var;
   }
+  
+  /**
+   * 
+   * @return 
+   */
+  public NoaaVariable getVar() {
+    return var;
+  }
 
+  
+  
   /**
    *
    * @param gribFile
@@ -80,7 +90,7 @@ public class NetCdfExtractor {
     String messageNum = this.getVarMessageNum(gribFile);
     ProcessBuilder result = new ProcessBuilder(
       this.degribExe.getAbsolutePath().replace(".exe", ""),
-      gribFile.grib.getAbsolutePath(),
+      gribFile.grib.getAbsolutePath().replace(".gz", ""),
       "-msg", messageNum,
       "-C",
       "-NetCDF", "3",
@@ -92,6 +102,7 @@ public class NetCdfExtractor {
     return result;
   }
 
+  
   private static String toMessage(InputStream errorstream) throws IOException {
     return String.join("\n", toListOfLines(errorstream));
   }

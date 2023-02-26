@@ -144,8 +144,12 @@ public class NetCdfFile {
     Unit<? extends Quantity> result;
     try (GridDataset gds = GridDataset.open(file.getAbsolutePath())) {
       VariableDS datavariable = this.getDataVariable(gds);
-      String unitsString = datavariable.getUnitsString(); 
-      result = UnitsUtils.valueOf(unitsString) ;
+      String unitsString = datavariable.getUnitsString();
+      if (unitsString == null) {
+        result = null;
+      } else {
+        result = UnitsUtils.valueOf(unitsString) ;
+      }
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
@@ -188,7 +192,9 @@ public class NetCdfFile {
    * @param namParameter
    * @return
    */
-  public static NetCdfFile create(File baseFolder, int subFolderId, NoaaParameter namParameter) {
+  public static NetCdfFile create(File baseFolder, // 
+    int subFolderId, // 
+    NoaaParameter namParameter) {
     NoaaVariable var = new NoaaVariable(namParameter.noaaVar, namParameter.getUnit());
     String varName = var.getGribVarName();
     NetCdfFileOrganization org = new NetCdfFileOrganization(

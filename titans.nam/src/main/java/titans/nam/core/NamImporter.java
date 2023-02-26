@@ -1,7 +1,5 @@
 package titans.nam.core;
 
-import titans.noaa.core.NoaaGribSource;
-import titans.noaa.core.NoaaImporter;
 import java.io.Closeable;
 import java.io.File;
 import java.text.DecimalFormat;
@@ -9,6 +7,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatterBuilder;
 import titans.nam.grib.NamGribSource;
+import titans.noaa.core.NoaaGribSource;
+import titans.noaa.core.NoaaImporter;
+import titans.noaa.core.NoaaVariable;
 
 /**
  *
@@ -28,13 +29,13 @@ public class NamImporter extends NoaaImporter implements Closeable {
   }
   
   /**
-   * 
+   * MRMS_BrightBandTopHeight_00.00_20220724-000400.grib2.gz
    * @param datetimeref
    * @param fcstHour
    * @return 
    */
   @Override
-  protected String onGetGribFileName(ZonedDateTime datetimeref, int fcstHour) {
+  protected String onGetGribFileName(NoaaVariable var, ZonedDateTime datetimeref, int fcstHour) {
     String hourtext = datetimeref //
       .toOffsetDateTime() //
       .atZoneSameInstant(ZoneId.of("UTC")) //

@@ -12,23 +12,27 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang.mutable.MutableObject;
+import titans.noaa.core.NoaaVariable;
 
 /**
  *
  * @author Ricardo Marquez
  */
 public class GribFile {
-
-  public final File grib;
-  public final File gribIdx;
   public final ZonedDateTime datetimeref;
   public final int fcststep;
+  public final NoaaVariable var;
+  public final File grib;
+  public final File gribIdx;
+  
 
-  public GribFile(ZonedDateTime datetimeref, int fcststep, File grib, File gribIdx) {
+  public GribFile(ZonedDateTime datetimeref, int fcststep, NoaaVariable var, File grib, File gribIdx) {
+    this.datetimeref = datetimeref;
     this.fcststep = fcststep;
+    this.var = var;
     this.grib = grib;
     this.gribIdx = gribIdx;
-    this.datetimeref = datetimeref;
+    
   }
 
   /**
