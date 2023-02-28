@@ -1,5 +1,6 @@
 package rm.titansdata.web.rasters;
 
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
@@ -65,10 +66,13 @@ public class RasterFactorySupplier {
      */
     public Raster createRaster(int projectId, Parameter p) {
       Raster result;
+      Objects.requireNonNull(p, "Parameter cannot be null."); 
       int intValue = Long.valueOf(this.typeId).intValue();
       switch (intValue) {
         case 0:
-          RasterFactory rasterFactory = this.rasterModelsRegistry.get(this.sourceTitle);
+          RasterFactory rasterFactory = Objects //
+            .requireNonNull(this.rasterModelsRegistry.get(this.sourceTitle), 
+            String.format("No raster factory found for '%s'", this.sourceTitle));
           result = rasterFactory.create(projectId, p, bounds, dims);
           break;
         default:

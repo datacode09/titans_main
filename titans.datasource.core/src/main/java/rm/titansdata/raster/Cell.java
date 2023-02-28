@@ -1,10 +1,6 @@
 package rm.titansdata.raster;
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -12,6 +8,11 @@ import java.util.function.Function;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 
 /**
  *
@@ -75,6 +76,11 @@ public class Cell {
     }
     Polygon result = this.map.get(lengths);
     return result;
+  }
+
+  @Override
+  public String toString() {
+    return "{" + " point=" + point + ", ij=" + Arrays.toString(ij) + ", map=" + map + '}';
   }
 
   private static class Lengths {

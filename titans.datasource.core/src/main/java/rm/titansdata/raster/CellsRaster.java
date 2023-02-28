@@ -35,26 +35,31 @@ public class CellsRaster implements Raster {
     double lengthY = bounds.getLengthY();
     this.Ny = Double.valueOf(lengthY / dy.doubleValue(SI.METRE)).intValue() - 1;
     this.data = new double[this.Nx][this.Ny];
-    double minX = this.bounds.getMinX() + dx.doubleValue(SI.METRE)*0.5;
-    double minY = this.bounds.getMinY() + dy.doubleValue(SI.METRE)*0.5;
+    for (int i = 0; i < this.Nx; i++) {
+      for (int j = 0; j < this.Ny; j++) {
+        this.data[i][j] = Double.NaN;
+      }
+    }
+    double minX = this.bounds.getMinX() + dx.doubleValue(SI.METRE) * 0.5;
+    double minY = this.bounds.getMinY() + dy.doubleValue(SI.METRE) * 0.5;
     for (Cell cell : cells) {
-      int i = Double.valueOf((cell.point.getX() - minX) / dx.doubleValue(SI.METRE)).intValue();  
+      int i = Double.valueOf((cell.point.getX() - minX) / dx.doubleValue(SI.METRE)).intValue();
       int j = Double.valueOf((cell.point.getY() - minY) / dy.doubleValue(SI.METRE)).intValue();
       if (this.isValidIndexRange(i, j)) {
         this.data[i][j] = cell.getValue();
-      } 
+      }
     }
   }
-  
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   @Override
   public Unit<? extends Quantity> getUnits() {
     return this.units;
   }
-  
+
   /**
    *
    * @param point
@@ -78,7 +83,7 @@ public class CellsRaster implements Raster {
    */
   private double getValue(int i, int j) {
     double result;
-    if (isValidIndexRange(i, j)) {  
+    if (isValidIndexRange(i, j)) {
       result = this.data[i][j];
     } else {
       result = Double.NaN;

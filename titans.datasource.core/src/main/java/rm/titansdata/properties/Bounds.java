@@ -22,8 +22,8 @@ public class Bounds implements Serializable {
   private final Map<Integer, Point> centers = new HashMap<>();
 
   public Bounds(Point lowerleft, Point upperright) {
-    this.lowerleft = lowerleft;
-    this.upperright = upperright;
+    this.lowerleft = Objects.requireNonNull(lowerleft);
+    this.upperright = Objects.requireNonNull(upperright) ;
   } 
   
   /**

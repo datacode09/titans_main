@@ -15,6 +15,15 @@
   <bean id="version" class="java.lang.String" factory-method="valueOf"> 
     <constructor-arg value="1.0.0"/> 
   </bean>      
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="location">
+      <value>classpath:./app.properties</value>
+    </property>
+  </bean>
+  <bean id="cors-list" class="java.lang.String" factory-method="valueOf"> 
+    <constructor-arg value="${cors}"/>  
+  </bean> 
+  
   <mvc:cors>  
     <mvc:mapping path="/**"  
                  allowed-origins="*"    

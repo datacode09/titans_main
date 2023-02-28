@@ -19,7 +19,7 @@ import rm.titansdata.web.user.session.AuthenticationHandlerInterceptor;
 public class WebConfig implements WebMvcConfigurer {
   
   @Autowired()
-  @Qualifier("cors-list")  
+  @Qualifier("cors-list")    
   private String consumerUiOrigins;  
 
   @Bean

@@ -214,8 +214,10 @@ public class RastersServlet {
     Parameter param = parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
     int projectId = this.getProjectId();
-    RasterCells values = this.rastersValueService.getRasterValues(rasterId, projectId, param, geometry);
-    map.put("values", values);
+    Bounds bounds = this.getBoundsFromProject(); 
+    RasterCells values = this.rastersValueService
+      .getRasterValues(rasterId, projectId, param, geometry, bounds);
+    map.put("values", values.toSrid(srid));
     this.responseHelper.send(map, res);
   }
 
@@ -331,7 +333,7 @@ public class RastersServlet {
   private Bounds getBoundsFromProject() {
     String authToken = SessionManager.getSessionAuthToken();
     ProjectEntity project = this.projectEntity.getValue(authToken);
-    Bounds result = new Bounds(project.lowerleft, project.upperright);
+    Bounds result = project.getBounds();
     return result;
   }
 

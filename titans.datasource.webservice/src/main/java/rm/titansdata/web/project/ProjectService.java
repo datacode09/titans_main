@@ -32,7 +32,7 @@ public class ProjectService {
    * @param project_id
    * @param name 
    */
-  void createProject(int project_id, String name) {
+  public void createProject(int project_id, String name) {
     this.store.createProject(project_id, name);
   }
   
@@ -85,9 +85,19 @@ public class ProjectService {
    * 
    * @return 
    */
-  List<ProjectEntity> getProjects() {
+  public List<ProjectEntity> getProjects() {
     List<ProjectEntity> projects = this.source.getProjects();
     return projects;
+  }
+  
+  /**
+   * 
+   * @return 
+   */
+  public ProjectEntity getProject(int projectId) {
+    List<ProjectEntity> projects = this.source.getProjects();
+    ProjectEntity result = projects.stream().filter(p->p.projectId == projectId).findFirst().orElse(null); 
+    return result;
   }
   
 }

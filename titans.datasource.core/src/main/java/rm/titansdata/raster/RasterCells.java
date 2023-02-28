@@ -42,4 +42,14 @@ public class RasterCells {
   public String toString() {
     return "RasterCells{" + "bounds=" + bounds + ", dims=" + dims + '}';
   }
+  
+  /**
+   * 
+   * @param srid
+   * @return 
+   */
+  public RasterCells toSrid(int srid) {
+    RasterCells result = new RasterCells(bounds.transform(srid), dims, values); 
+    return result; 
+  }
 }

@@ -35,10 +35,12 @@ public class RastersValueService {
    * @param geometry
    * @return
    */
-  public RasterCells getRasterValues(Long rasterId, int projectId, Parameter p, Geometry geometry) {
+  public RasterCells getRasterValues(Long rasterId, int projectId, // 
+    Parameter p, Geometry geometry, Bounds bounds) {
     RasterEntity rasterEntity = this.sourceService.getRaster(rasterId);
     String sourceTitle = rasterEntity.sourceTitle;
-    RasterObj rasterObj = this.getRasterObj(rasterEntity, sourceTitle, projectId, p);
+    
+    RasterObj rasterObj = this.getRasterObj(rasterEntity, sourceTitle, projectId, p, bounds); 
     if (geometry.getGeometryType().equals("Point")) {
       throw new RuntimeException("Does not support 'Point' geometry type");
     }

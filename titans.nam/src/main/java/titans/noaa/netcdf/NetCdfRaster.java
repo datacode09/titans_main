@@ -127,13 +127,15 @@ public class NetCdfRaster implements Closeable {
   /**
    *
    * @param netCdfFile
-   * @throws RuntimeException
    */
-  private void initGridDataset(NetCdfFile netCdfFile) throws RuntimeException {
+  private synchronized void initGridDataset(NetCdfFile netCdfFile) {
     if (!this.gds.containsKey(netCdfFile)) {
+      System.out.println("opening " + netCdfFile.file);
       String filepath = netCdfFile.file.getAbsolutePath();
       try {
-        this.gds.put(netCdfFile, GridDataset.open(filepath)) ;
+        GridDataset open = GridDataset.open(filepath);
+        System.out.println("opened " + netCdfFile.file);
+        this.gds.put(netCdfFile, open) ;
       } catch (IOException ex) {
         throw new RuntimeException(ex);
       }

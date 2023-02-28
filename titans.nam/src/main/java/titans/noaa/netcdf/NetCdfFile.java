@@ -53,8 +53,8 @@ public class NetCdfFile {
       ucar.nc2.Dimension y = domain.get(1);
       int pixelsX = x.getLength();
       int pixelsY = y.getLength();
-      double width = this.getBounds().getLengthX() / pixelsX;
-      double height = this.getBounds().getLengthY() / pixelsY;
+      double width = this.getBounds(gds).getLengthX() / pixelsX;
+      double height = this.getBounds(gds).getLengthY() / pixelsY;
       Measure<Length> measureX = Measure.valueOf(width, SI.METRE);
       Measure<Length> measureY = Measure.valueOf(height, SI.METRE);
       Dimension dimensionx = new Dimension(measureX, pixelsX);
@@ -72,18 +72,27 @@ public class NetCdfFile {
    */
   public Bounds getBounds() {
     try (GridDataset gds = GridDataset.open(file.getAbsolutePath())) {
-      LatLonRect bbox = gds.getBoundingBox();
-      PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.FLOATING);
-      GeometryFactory factory = new GeometryFactory(precisionModel, 4326);
-      Coordinate c1 = new Coordinate(bbox.getLonMin(), bbox.getLatMin());
-      Coordinate c2 = new Coordinate(bbox.getLonMax(), bbox.getLatMax());
-      Point lowerleft = SridUtils.transform(factory.createPoint(c1), 3857);
-      Point upperright = SridUtils.transform(factory.createPoint(c2), 3857);
-      Bounds result = new Bounds(lowerleft, upperright);
-      return result;
+      return this.getBounds(gds);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
+  }
+  
+  /**
+   * 
+   * @param gds
+   * @return 
+   */
+  private Bounds getBounds(final GridDataset gds) {
+    LatLonRect bbox = gds.getBoundingBox();
+    PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.FLOATING);
+    GeometryFactory factory = new GeometryFactory(precisionModel, 4326);
+    Coordinate c1 = new Coordinate(bbox.getLonMin(), bbox.getLatMin());
+    Coordinate c2 = new Coordinate(bbox.getLonMax(), bbox.getLatMax());
+    Point lowerleft = SridUtils.transform(factory.createPoint(c1), 3857);
+    Point upperright = SridUtils.transform(factory.createPoint(c2), 3857);
+    Bounds result = new Bounds(lowerleft, upperright);
+    return result;
   }
 
   /**
@@ -146,7 +155,7 @@ public class NetCdfFile {
       VariableDS datavariable = this.getDataVariable(gds);
       String unitsString = datavariable.getUnitsString();
       if (unitsString == null) {
-        result = null;
+        result = Unit.ONE;
       } else {
         result = UnitsUtils.valueOf(unitsString) ;
       }

@@ -74,12 +74,12 @@ public class RasterObj {
 
   /**
    *
-   * @param p
+   * @param geometry
    * @return
    */
-  public RasterObj getSubsetRaster(String name, Geometry p) {
-    Geometry correctedEnvelope = this.correctEnvelopeSrid(p);
-    List<Cell> cells = this.getCells(correctedEnvelope);
+  public RasterObj getSubsetRaster(String name, Geometry geometry) {
+    Geometry correctedEnvelope = this.correctEnvelopeSrid(geometry);
+    List<Cell> cells = this.getCells(geometry);
     RasterObj result = this.getSubsetRaster(name, correctedEnvelope, cells);
     return result;
   }
@@ -151,12 +151,12 @@ public class RasterObj {
 
   /**
    *
-   * @param envelope
+   * @param geometry
    * @return
    */
-  private List<Cell> getCells(Geometry envelope) {
+  private List<Cell> getCells(Geometry geometry) {
     RasterSearch helper = this.getRasterSearchHelper();
-    List<Cell> cells = helper.getCells(envelope, point -> this.getValue(point));
+    List<Cell> cells = helper.getCells(geometry, point -> this.getValue(point));
     return cells;
   }
   
