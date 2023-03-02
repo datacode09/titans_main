@@ -27,7 +27,7 @@ import ucar.nc2.dt.grid.GridDataset;
  */
 public class NetCdfRaster implements Closeable {
 
-  private Map<NetCdfFile, GridDataset> gds = new HashMap<>();
+  private final Map<NetCdfFile, GridDataset> griddatasetsCache = new HashMap<>();
   
   
   public NetCdfRaster() {
@@ -113,13 +113,13 @@ public class NetCdfRaster implements Closeable {
    */
   private GridDatatype getGridDatatype(NetCdfFile netCdfFile) throws NullPointerException {
     String varName = netCdfFile.getVarName();
-    GridDatatype grid = this.gds.get(netCdfFile).getGrids().stream()
+    GridDatatype grid = this.griddatasetsCache.get(netCdfFile).getGrids().stream()
       .filter((g) -> g.getName().equals(varName))
       .findFirst()
-      .orElse(gds.get(netCdfFile).getGrids().get(0));
+      .orElse(griddatasetsCache.get(netCdfFile).getGrids().get(0));
     if (grid == null) {
       throw new NullPointerException("Netcdf file '"
-        + gds.get(netCdfFile).getNetcdfFile() + "' does not contain variable " + varName);
+        + griddatasetsCache.get(netCdfFile).getNetcdfFile() + "' does not contain variable " + varName);
     }
     return grid;
   }
@@ -129,13 +129,13 @@ public class NetCdfRaster implements Closeable {
    * @param netCdfFile
    */
   private synchronized void initGridDataset(NetCdfFile netCdfFile) {
-    if (!this.gds.containsKey(netCdfFile)) {
+    if (!this.griddatasetsCache.containsKey(netCdfFile)) {
       System.out.println("opening " + netCdfFile.file);
       String filepath = netCdfFile.file.getAbsolutePath();
       try {
         GridDataset open = GridDataset.open(filepath);
         System.out.println("opened " + netCdfFile.file);
-        this.gds.put(netCdfFile, open) ;
+        this.griddatasetsCache.put(netCdfFile, open) ;
       } catch (IOException ex) {
         throw new RuntimeException(ex);
       }
@@ -148,15 +148,15 @@ public class NetCdfRaster implements Closeable {
    */
   @Override
   public void close() throws IOException {
-    if (this.gds == null) {
-      this.gds.forEach( (f, g)->{
+    if (this.griddatasetsCache == null) {
+      this.griddatasetsCache.forEach( (f, g)->{
         try {
           g.close();
         } catch (IOException ex) {
           Logger.getLogger(NetCdfRaster.class.getName()).log(Level.SEVERE, null, ex);
         }
       });
-      this.gds.clear();
+      this.griddatasetsCache.clear();
     }
   }
 

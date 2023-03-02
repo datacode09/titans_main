@@ -1,7 +1,6 @@
 package titans.goes;
 
 import java.io.File;
-import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
 import titans.noaa.core.NoaaNetCdfImporter;
@@ -42,9 +41,8 @@ class Goes18Importer extends NoaaNetCdfImporter {
    * @return
    */
   private String getFileName(String varName, ZonedDateTime datetimeref, int forecaststep) {
-//    String s = "OR_ABI-L1b-RadC-M6C01_G18_s20230020101172_e20230020103548_c20230020103594.nc";
     List<Content> bucket = this.getBucketList(varName, datetimeref, forecaststep);
-    bucket.sort((o1, o2) -> Duration.between(o1.endTime(), datetimeref).compareTo(Duration.between(o2.endTime(), datetimeref)));
+    bucket.sort(Content.getComparator(datetimeref)::compareDates);
     Content content = bucket.stream().findFirst().orElseThrow(RuntimeException::new);
     String result = content.key();
     return result;
@@ -60,10 +58,10 @@ class Goes18Importer extends NoaaNetCdfImporter {
   private String getSubPath(String varName, ZonedDateTime datetimeref, int forecaststep) {
     String[] parts = varName.split("\\$");
     String var = parts[0];
-    String year = String.format("%4d", datetimeref.getYear());
-    String doy = String.format("%3d", datetimeref.getDayOfYear());
-    String hour = String.format("%2d", datetimeref.getHour());
-    String result = String.format("%s/%s/%s/%s", var, year, doy, hour); //ABI-L1b-RadC/2023/002/01/";
+    String year = String.format("%04d", datetimeref.getYear());
+    String doy = String.format("%03d", datetimeref.getDayOfYear());
+    String hour = String.format("%02d", datetimeref.getHour());
+    String result = String.format("%s/%s/%s/%s/", var, year, doy, hour);
     return result;
   }
   
@@ -78,10 +76,12 @@ class Goes18Importer extends NoaaNetCdfImporter {
     String[] parts = varName.split("\\$");
     String var = parts[0];
     String channel = parts[1];
-    String subfilename = String.format("OR_%s-%s_G18", var, channel);
+    BucketListReader reader = new BucketListReader();
+    List<Content> result = reader.read(varName, datetimeref);
+    String vartest = var + "-" + channel; 
+    result.removeIf(c->!c.key().contains(vartest)); 
+    return result;
     
-    //To change body of generated methods, choose Tools | Templates.
-    throw new UnsupportedOperationException("Not supported yet.");
   }
 
 }
