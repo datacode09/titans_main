@@ -1,7 +1,10 @@
 package titans.noaa.netcdf;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 import javax.measure.Measure;
@@ -9,6 +12,7 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.math.DoubleRange;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -31,7 +35,6 @@ import ucar.unidata.geoloc.LatLonRect;
  * @author Ricardo Marquez
  */
 public class NetCdfFile {
-
 
   private final String varName;
   public final File file;
@@ -77,11 +80,11 @@ public class NetCdfFile {
       throw new RuntimeException(ex);
     }
   }
-  
+
   /**
-   * 
+   *
    * @param gds
-   * @return 
+   * @return
    */
   private Bounds getBounds(final GridDataset gds) {
     LatLonRect bbox = gds.getBoundingBox();
@@ -157,14 +160,14 @@ public class NetCdfFile {
       if (unitsString == null) {
         result = Unit.ONE;
       } else {
-        result = UnitsUtils.valueOf(unitsString) ;
+        result = UnitsUtils.valueOf(unitsString);
       }
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
     return result;
   }
-  
+
   /**
    *
    * @return
@@ -190,7 +193,7 @@ public class NetCdfFile {
     String replace = varName.replace("-", "_");
     VariableDS result = (VariableDS) gds.getDataVariable(replace);
     if (result == null) {
-      result = (VariableDS) gds.getDataVariables().get(0); 
+      result = (VariableDS) gds.getDataVariables().get(0);
     }
     return result;
   }
@@ -212,16 +215,48 @@ public class NetCdfFile {
     NetCdfFile instance = new NetCdfFile(varName, file);
     return instance;
   }
-  
-  
+
   /**
-   * 
+   *
    * @param varName
    * @param file
-   * @return 
+   * @return
    */
   public static NetCdfFile test(String varName, File file) {
     return new NetCdfFile(varName, file);
+  }
+
+  /**
+   *
+   * @param inputStream
+   */
+  public void save(InputStream inputStream) {
+    try {
+      this.createFileIfNotExists();
+      FileOutputStream outputStream = this.getFileOutputStream();
+      IOUtils.copy(inputStream, outputStream);
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+  
+  /**
+   * 
+   * @return 
+   */
+  private FileOutputStream getFileOutputStream() {
+    try {
+      return new FileOutputStream(this.file);
+    } catch (FileNotFoundException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  private void createFileIfNotExists() throws IOException {
+    if (!this.exists()) {
+      this.file.getParentFile().mkdirs();
+      this.file.createNewFile();
+    }
   }
 
 }

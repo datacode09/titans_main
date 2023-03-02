@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import titans.hrrr.archive.core.HrrrArchiveGribSource;
-import titans.noaa.core.NoaaImporter;
+import titans.noaa.core.NoaaGribImporter;
 import titans.noaa.core.NoaaVariable;
 import titans.noaa.grib.GribFile;
 
@@ -31,7 +31,7 @@ public class ImportIT extends BaseSpringITest {
    */
   @Test
   public void test() {
-    NoaaImporter importer = this.factory.getImporter(1);
+    NoaaGribImporter importer = this.factory.getImporter(1);
     ZonedDateTime datetimeref = ZonedDateTime.now(ZoneId.of("UTC"))
       .minusMonths(1)
       .truncatedTo(ChronoUnit.DAYS);

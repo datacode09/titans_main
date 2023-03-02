@@ -7,14 +7,14 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatterBuilder;
 import titans.hrrr.core.grib.HrrrGribSource;
 import titans.noaa.core.NoaaGribSource;
-import titans.noaa.core.NoaaImporter;
+import titans.noaa.core.NoaaGribImporter;
 import titans.noaa.core.NoaaVariable;
 
 /**
  *
  * @author Ricardo Marquez
  */
-public class HrrrImporter extends NoaaImporter {
+public class HrrrImporter extends NoaaGribImporter {
   
   /**
    *

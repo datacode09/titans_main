@@ -6,7 +6,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatterBuilder;
 import titans.noaa.core.NoaaGribSource;
-import titans.noaa.core.NoaaImporter;
+import titans.noaa.core.NoaaGribImporter;
 import titans.noaa.core.NoaaVariable;
 
 
@@ -14,7 +14,7 @@ import titans.noaa.core.NoaaVariable;
  *
  * @author Ricardo Marquez
  */
-public class HrrrArchiveImporter extends NoaaImporter {
+public class HrrrArchiveImporter extends NoaaGribImporter {
 
   public HrrrArchiveImporter(File gribRootFolder, File netCdfRootFolder, int subfolderId, File degribExe) {
     super(gribRootFolder, netCdfRootFolder, subfolderId, degribExe);

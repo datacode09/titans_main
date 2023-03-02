@@ -56,7 +56,7 @@ public abstract class NoaaFcstParameterFactory implements ParameterFactory {
    * @return
    */
   @Override
-  public List<Parameter> getParameters(Clazz... clazzes) {
+  public final List<Parameter> getParameters(Clazz... clazzes) {
     String noaaVar = this.getNoaaVar(clazzes);
     Unit<?> unit = this.getUnit(noaaVar);
 
@@ -97,9 +97,21 @@ public abstract class NoaaFcstParameterFactory implements ParameterFactory {
    * @return
    */
   private String getNoaaVar(Clazz[] clazzes) {
-    NoaaVarClazz varClazz = Arrays.stream(clazzes)
+    List<NoaaVarClazz> varClazzes = Arrays.stream(clazzes)
       .filter(c -> c instanceof NoaaVarClazz)
       .map(c -> (NoaaVarClazz) c)
+      .collect(Collectors.toList());
+    String result = this.onGetVarName(varClazzes);
+    return result;
+  }
+
+  /**
+   *
+   * @param varClazzes
+   * @return
+   */
+  private String onGetVarName(List<NoaaVarClazz> varClazzes) {
+    NoaaVarClazz varClazz = varClazzes.stream()
       .findFirst()
       .orElseThrow(RuntimeException::new);
     String result = varClazz.getVarName();
@@ -112,7 +124,7 @@ public abstract class NoaaFcstParameterFactory implements ParameterFactory {
    * @return
    */
   @Override
-  public List<Clazz> getClasses(ClassType classtype) {
+  public final List<Clazz> getClasses(ClassType classtype) {
     List<? extends Clazz> result;
     if (classtype == VALUE_CLASSTYPE) {
       InventoryReader reader = this.getInventoryReader();
@@ -133,7 +145,7 @@ public abstract class NoaaFcstParameterFactory implements ParameterFactory {
    * @return
    */
   @Override
-  public Parameter create(JSONObject obj) {
+  public final Parameter create(JSONObject obj) {
     NoaaParameter param;
     if (obj.has("key")) {
       try {
@@ -160,7 +172,7 @@ public abstract class NoaaFcstParameterFactory implements ParameterFactory {
    * @return
    */
   @Override
-  public List<Clazz> getClasses(JSONArray arr) {
+  public final List<Clazz> getClasses(JSONArray arr) {
     try {
       List<Clazz> result = new ArrayList<>();
       for (int i = 0; i < arr.length(); i++) {

@@ -1,30 +1,36 @@
 package titans.goes;
 
+import java.io.File;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import rm.titansdata.Parameter;
-import rm.titansdata.plugin.RasterFactory;
-import rm.titansdata.properties.Bounds;
-import rm.titansdata.properties.Dimensions;
-import rm.titansdata.raster.Raster;
+import titans.noaa.core.NoaaImporter;
+import titans.noaa.core.NoaaRasterFactory;
 
 /**
  *
  * @author Ricardo Marquez
  */
 @Component
-public class GoesRasterFactory implements RasterFactory {
+public class GoesRasterFactory extends NoaaRasterFactory {
+
+  private final File netCdfRootFolder;
   
-  @Override
-  public String key() {
-    
-    //To change body of generated methods, choose Tools | Templates.
-    throw new UnsupportedOperationException("Not supported yet.");
+  /**
+   * 
+   * @param netCdfRootFolder 
+   */
+  public GoesRasterFactory(
+    @Qualifier("goes.netCdfRootFolder") File netCdfRootFolder) {
+    this.netCdfRootFolder = netCdfRootFolder;
   }
 
   @Override
-  public Raster create(int projectId, Parameter param, Bounds bounds, Dimensions dims) {
-    //To change body of generated methods, choose Tools | Templates.
-    throw new UnsupportedOperationException("Not supported yet.");
+  public String key() {
+    return "GOES-18";
   }
-  
+
+  @Override
+  protected NoaaImporter getImporter(int projectId) {
+    return new Goes18Importer(netCdfRootFolder, projectId);
+  }
 }

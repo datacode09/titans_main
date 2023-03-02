@@ -3,7 +3,7 @@ package titans.mrms;
 import java.io.File;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import titans.noaa.core.NoaaImporter;
+import titans.noaa.core.NoaaGribImporter;
 import titans.noaa.core.NoaaRasterFactory;
 
 /**
@@ -33,7 +33,7 @@ public class MrmsRasterFactory extends NoaaRasterFactory {
    * @return 
    */
   @Override
-  protected NoaaImporter getImporter(int projectId) {
+  protected NoaaGribImporter getImporter(int projectId) {
     return this.importer.setSubfolderId(projectId).build();
   }
 }

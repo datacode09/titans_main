@@ -25,7 +25,7 @@ public class NoaaVarClazz implements Clazz{
    * 
    * @return 
    */
-  public String getVarName() {
+  public final String getVarName() {
     return varName;
   }
   
@@ -34,7 +34,7 @@ public class NoaaVarClazz implements Clazz{
    * @return 
    */
   @Override
-  public String getKey() {
+  public final String getKey() {
     return this.key;
   }
   
@@ -78,7 +78,7 @@ public class NoaaVarClazz implements Clazz{
    * @return 
    */
   @Override
-  public String toJson() {
+  public final String toJson() {
     JSONObject obj = toJSONObj();
     return obj.toString();
   }
@@ -88,7 +88,7 @@ public class NoaaVarClazz implements Clazz{
    * @return
    * @throws JSONException 
    */
-  private JSONObject toJSONObj() {
+  protected JSONObject toJSONObj() {
     try {
       JSONObject obj = new JSONObject();
       obj.append("key", this.getKey());

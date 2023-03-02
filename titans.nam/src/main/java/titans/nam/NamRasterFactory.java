@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import titans.nam.core.NamImporter;
-import titans.noaa.core.NoaaImporter;
+import titans.noaa.core.NoaaGribImporter;
 import titans.noaa.core.NoaaRasterFactory;
 
 /**
@@ -45,7 +45,7 @@ public class NamRasterFactory extends NoaaRasterFactory {
    * @return 
    */
   @Override
-  protected NoaaImporter getImporter(int projectId) {
+  protected NoaaGribImporter getImporter(int projectId) {
     NamImporter result = this.namImporterBuilder //
       .setSubfolderId(projectId)//
       .build(); //

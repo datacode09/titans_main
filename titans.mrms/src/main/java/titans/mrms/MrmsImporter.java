@@ -5,14 +5,14 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatterBuilder;
 import titans.noaa.core.NoaaGribSource;
-import titans.noaa.core.NoaaImporter;
+import titans.noaa.core.NoaaGribImporter;
 import titans.noaa.core.NoaaVariable;
 
 /**
  *
  * @author Ricardo Marquez
  */
-public class MrmsImporter extends NoaaImporter {
+public class MrmsImporter extends NoaaGribImporter {
   
   public MrmsImporter(File gribRootFolder, File netCdfRootFolder, int subfolderId, File degribExe) {
     super(gribRootFolder, netCdfRootFolder, subfolderId, degribExe);
