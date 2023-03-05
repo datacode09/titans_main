@@ -86,13 +86,16 @@ public class Goes18InventoryReader implements InventoryReader {
    * @return 
    */
   private List<NoaaVarClazz> addChannels(List<NoaaVarClazz> list) {
-    List<NoaaVarClazz> result = new ArrayList<>();
+    List<NoaaVarClazz> result = new ArrayList<>(list);
+    List<NoaaVarClazz> copy = new ArrayList<>();
     for (NoaaVarClazz noaaVarClazz : list) {
-      if (noaaVarClazz.getVarName().startsWith("ABI")) {
+      if (noaaVarClazz.getVarName().startsWith("ABI-L1b")) {
         List<NoaaVarClazz> channels = this.getChannels(noaaVarClazz.getVarName());
         result.addAll(channels); 
-      }
+        copy.add(noaaVarClazz); 
+      } 
     }
+    result.removeAll(copy); 
     return result;
   }
   

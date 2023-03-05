@@ -75,13 +75,12 @@ class Goes18Importer extends NoaaNetCdfImporter {
   private List<Content> getBucketList(String varName, ZonedDateTime datetimeref, int forecaststep) {
     String[] parts = varName.split("\\$");
     String var = parts[0];
-    String channel = parts[1];
+    String channel = parts.length == 1 ? "M6" : parts[1];
     BucketListReader reader = new BucketListReader();
     List<Content> result = reader.read(varName, datetimeref);
     String vartest = var + "-" + channel; 
     result.removeIf(c->!c.key().contains(vartest)); 
-    return result;
-    
+    return result;   
   }
 
 }

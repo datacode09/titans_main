@@ -1,21 +1,14 @@
 package titans.noaa.netcdf;
 
+import common.RmExceptions;
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.measure.quantity.Quantity;
-import javax.measure.unit.Unit;
+import java.util.List;
 import org.locationtech.jts.geom.Point;
 import rm.titansdata.SridUtils;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
-import rm.titansdata.properties.Properties;
 import rm.titansdata.raster.BasicRaster;
-import rm.titansdata.raster.Raster;
-import rm.titansdata.raster.RasterObj;
 import ucar.ma2.Array;
 import ucar.nc2.dt.GridCoordSystem;
 import ucar.nc2.dt.GridDatatype;
@@ -25,34 +18,25 @@ import ucar.nc2.dt.grid.GridDataset;
  *
  * @author Ricardo Marquez
  */
-public class NetCdfRaster implements Closeable {
+public final class NetCdfRaster extends BasicRaster implements Closeable {
 
-  private final Map<NetCdfFile, GridDataset> griddatasetsCache = new HashMap<>();
-  
-  
-  public NetCdfRaster() {
+  private final NetCdfFile netCdfFile;
+  private GridDataset griddatasetsCache = null;
+  private Array arr;
+
+  public NetCdfRaster(NetCdfFile netCdfFile, Bounds bounds, Dimensions dims) {
+    super(netCdfFile.getUnits(), bounds, dims);
+    this.netCdfFile = netCdfFile;
   }
 
   /**
    *
-   * @param netCdfFile
+   * @param point
    * @return
    */
-  public RasterObj getRaster(NetCdfFile netCdfFile) {
-    Bounds bounds = netCdfFile.getBounds();
-    Dimensions dims = netCdfFile.getDimensions();
-    NetCdfRaster self = this;
-    Unit<? extends Quantity> units = netCdfFile.getUnits();
-    Raster raster = new BasicRaster(units, bounds, dims) {
-      @Override
-      public double getValue(Point point) {
-        double result = self.getValue(netCdfFile, point);
-        return result;
-      }
-    };
-    Properties properties = new Properties(bounds, dims.x.length, dims.y.length);
-    String varName = netCdfFile.getVarName();
-    RasterObj result = new RasterObj(varName, properties, raster);
+  @Override
+  public double getValue(Point point) {
+    double result = this.getValue(netCdfFile, point);
     return result;
   }
 
@@ -61,11 +45,80 @@ public class NetCdfRaster implements Closeable {
    * @param point
    * @return
    */
-  public double getValue(NetCdfFile netCdfFile, Point point) {
+  private double getValue(NetCdfFile netCdfFile, Point point) {
     this.initGridDataset(netCdfFile);
     GridDatatype grid = this.getGridDatatype(netCdfFile);
     int[] xyIndex = this.getQueryIndices(grid, point);
     double result = this.readValueForIndices(grid, xyIndex);
+    return result;
+  }
+
+  /**
+   *
+   * @throws IOException
+   */
+  @Override
+  public void close() throws IOException {
+    if (this.griddatasetsCache != null) {
+      this.griddatasetsCache.close();
+    }
+  }
+
+  /**
+   *
+   * @param netCdfFile
+   */
+  private synchronized void initGridDataset(NetCdfFile netCdfFile) {
+    if (this.griddatasetsCache == null) {
+      String filepath = netCdfFile.file.getAbsolutePath();
+      try {
+        this.griddatasetsCache = GridDataset.open(filepath);
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+    }
+  }
+
+  /**
+   *
+   * @param grid
+   * @param argpoint
+   * @return
+   */
+  private int[] getQueryIndices(GridDatatype grid, Point argpoint) {
+    Point point = SridUtils.transform(argpoint, 4326);
+    GridCoordSystem gcs = grid.getCoordinateSystem();
+    double lat = point.getY();
+    double lon = point.getX();
+    int[] xyIndex = gcs.findXYindexFromLatLon(lat, lon, null);
+    return xyIndex;
+  }
+
+  /**
+   *
+   * @param netCdfFile
+   * @return
+   * @throws NullPointerException
+   */
+  private GridDatatype getGridDatatype(NetCdfFile netCdfFile) {
+    String varName = netCdfFile.getVarName();
+    List<GridDatatype> list = getGrid();
+    GridDatatype grid = list
+      .stream() //
+      .filter((g) -> g.getName().equals(varName)) //
+      .findFirst() //
+      .orElse(list.get(0));
+    if (grid == null) {
+      throw RmExceptions.create( //
+        "Netcdf file '%s' does not contain variable %s", // 
+        griddatasetsCache.getNetcdfFile(), varName);
+    }
+    return grid;
+  }
+
+  private List<GridDatatype> getGrid() {
+    this.initGridDataset(netCdfFile);
+    List<GridDatatype> result = this.griddatasetsCache.getGrids();
     return result;
   }
 
@@ -78,86 +131,52 @@ public class NetCdfRaster implements Closeable {
    */
   private double readValueForIndices(GridDatatype grid, int[] xyIndex) {
     double value;
-    if (xyIndex[0] == -1 || xyIndex[1] == -1) {
+    int xindex = xyIndex[0];
+    int yindex = xyIndex[1];
+    Array array = this.getCache(grid, xyIndex);
+    if (xindex == -1 || yindex == -1) {
       value = Double.NaN;
     } else {
-      try {
-        Array arr = grid.readDataSlice(1, 1, xyIndex[1], xyIndex[0]);
-        value = arr.getDouble(0);
-        return value;
-      } catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
+      int index = this.getOneDimensionIndex(grid, yindex, xindex);
+      value = array.getDouble(index);
+      return value;
     }
     return value;
-  }
-
-  /**
-   *
-   * @param grid
-   * @param argpoint
-   * @return
-   */
-  private int[] getQueryIndices(GridDatatype grid, Point argpoint) {
-    Point point = SridUtils.transform(argpoint, 4326);
-    GridCoordSystem gcs = grid.getCoordinateSystem();
-    int[] xyIndex = gcs.findXYindexFromLatLon(point.getY(), point.getX(), null);
-    return xyIndex;
-  }
-
-  /**
-   *
-   * @param netCdfFile
-   * @return
-   * @throws NullPointerException
-   */
-  private GridDatatype getGridDatatype(NetCdfFile netCdfFile) throws NullPointerException {
-    String varName = netCdfFile.getVarName();
-    GridDatatype grid = this.griddatasetsCache.get(netCdfFile).getGrids().stream()
-      .filter((g) -> g.getName().equals(varName))
-      .findFirst()
-      .orElse(griddatasetsCache.get(netCdfFile).getGrids().get(0));
-    if (grid == null) {
-      throw new NullPointerException("Netcdf file '"
-        + griddatasetsCache.get(netCdfFile).getNetcdfFile() + "' does not contain variable " + varName);
-    }
-    return grid;
-  }
-
-  /**
-   *
-   * @param netCdfFile
-   */
-  private synchronized void initGridDataset(NetCdfFile netCdfFile) {
-    if (!this.griddatasetsCache.containsKey(netCdfFile)) {
-      System.out.println("opening " + netCdfFile.file);
-      String filepath = netCdfFile.file.getAbsolutePath();
-      try {
-        GridDataset open = GridDataset.open(filepath);
-        System.out.println("opened " + netCdfFile.file);
-        this.griddatasetsCache.put(netCdfFile, open) ;
-      } catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
-    }
   }
   
   /**
    * 
-   * @throws IOException 
+   * @param grid
+   * @param yindex
+   * @param xindex
+   * @return 
    */
-  @Override
-  public void close() throws IOException {
-    if (this.griddatasetsCache == null) {
-      this.griddatasetsCache.forEach( (f, g)->{
-        try {
-          g.close();
-        } catch (IOException ex) {
-          Logger.getLogger(NetCdfRaster.class.getName()).log(Level.SEVERE, null, ex);
-        }
-      });
-      this.griddatasetsCache.clear();
+  private int getOneDimensionIndex(GridDatatype grid, int yindex, int xindex) {
+    int nx = grid.getXDimension().getLength();
+    int index = nx * yindex + xindex;
+    return index;
+  }
+  
+  
+  /**
+   * 
+   * @param grid
+   * @param xyIndex
+   * @return 
+   */
+  private synchronized Array getCache(GridDatatype grid, int[] xyIndex) {
+    int xindex = xyIndex[0];
+    int yindex = xyIndex[1];
+    Array result;
+    try {
+      if (this.arr == null) {
+        this.arr = grid.readDataSlice(0, 0, -1, -1);
+      }
+      result = this.arr;
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
     }
+    return result;
   }
 
 }

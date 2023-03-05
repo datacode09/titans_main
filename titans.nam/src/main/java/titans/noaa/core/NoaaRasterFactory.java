@@ -33,7 +33,7 @@ public abstract class NoaaRasterFactory implements RasterFactory {
       Unit<?> unit = namparam.getUnit();
       NoaaVariable var = new NoaaVariable(varName, unit);
       NoaaImporter importer = this.getImporter(projectId);
-      RasterObj rasterObj = importer.getRaster(var, datetime, fcststep);
+      RasterObj rasterObj = importer.getRaster(var, datetime, fcststep, bounds, dims);
       Raster result = rasterObj.getRaster();
       return result;
     } else {

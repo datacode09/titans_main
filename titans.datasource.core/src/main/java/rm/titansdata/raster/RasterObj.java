@@ -5,6 +5,8 @@ import java.util.Objects;
 import javafx.util.Pair;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Quantity;
+import javax.measure.unit.Unit;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -144,7 +146,8 @@ public class RasterObj {
     Measure<Length> dy = dims.y.length;
     Envelope envelopeInternal = correctedEnvelope.getEnvelopeInternal();
     Properties newproperties = Properties.create(this.getFactory(), envelopeInternal, dx, dy);
-    CellsRaster newraster = new CellsRaster(cells, this.raster.getUnits(), newproperties.getBounds(), dx, dy);
+    Unit<? extends Quantity> units = this.raster.getUnits();
+    CellsRaster newraster = new CellsRaster(cells, units!=null?units:Unit.ONE, newproperties.getBounds(), dx, dy);
     RasterObj result = new RasterObj(name1, newproperties, newraster);
     return result;
   }

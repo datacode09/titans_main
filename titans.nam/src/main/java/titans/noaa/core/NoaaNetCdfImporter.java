@@ -1,22 +1,22 @@
 package titans.noaa.core;
 
 import common.http.RmHttpReader;
-import java.io.Closeable;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.ZonedDateTime;
+import rm.titansdata.properties.Bounds;
+import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.RasterObj;
 import titans.nam.NoaaParameter;
 import titans.noaa.netcdf.NetCdfFile;
-import titans.noaa.netcdf.NetCdfRaster;
+import titans.noaa.netcdf.NetCdfRasterProvider;
 
 /**
  *
  * @author Ricardo Marquez
  */
-public abstract class NoaaNetCdfImporter implements Closeable, NoaaImporter {
-  private final NetCdfRaster rasterLoader = new NetCdfRaster();
+public abstract class NoaaNetCdfImporter implements NoaaImporter {
+  private final NetCdfRasterProvider rasterLoader = new NetCdfRasterProvider();
   private final File netCdfRootFolder;
   private final int subfolderId;
 
@@ -43,6 +43,28 @@ public abstract class NoaaNetCdfImporter implements Closeable, NoaaImporter {
   
   /**
    * 
+   * @param var
+   * @param datetime
+   * @param fcststep
+   * @param bounds
+   * @param dims
+   * @return 
+   */
+  @Override
+  public final RasterObj getRaster(NoaaVariable var, ZonedDateTime datetime, int fcststep, Bounds bounds, Dimensions dims) {
+    NoaaParameter param = new NoaaParameter("GOES-18", datetime, fcststep, var.getGribVarName(), var.getUnit());
+    NetCdfFile netCdfFile = NetCdfFile.create(netCdfRootFolder, this.subfolderId, param);
+    if (!netCdfFile.exists()) {
+      this.downloadAndExtract(netCdfFile, datetime, fcststep); 
+    } 
+    RasterObj result = this.rasterLoader.getRaster(netCdfFile, bounds, dims);
+    return result;
+  }
+  
+  
+  
+  /**
+   * 
    * @param netcdffile
    * @param datetimeref
    * @param forecaststep
@@ -54,15 +76,6 @@ public abstract class NoaaNetCdfImporter implements Closeable, NoaaImporter {
     netcdffile.save(inputStream);
   }
   
-
-  /**
-   *
-   * @throws IOException
-   */
-  @Override
-  public final void close() throws IOException {
-    this.rasterLoader.close();
-  }
 
   /**
    * 

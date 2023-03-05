@@ -3,9 +3,9 @@ package titans.goes;
 import common.http.RmHttpReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +24,7 @@ import org.xml.sax.InputSource;
  * @author Ricardo Marquez
  */
 public class BucketListReader {
+  
   /**
    * 
    */
@@ -69,11 +70,16 @@ public class BucketListReader {
     int doy = datetime.getDayOfYear();
     int hour = datetime.getHour();
     String prefix = String.format("%s/%04d/%03d/%02d/", var.split("\\$")[0], year, doy, hour);
-    Charset charset = Charset.forName("UTF-8");
+    String prefixEncoded;
+    try {
+      prefixEncoded = URLEncoder.encode(prefix, "UTF-8");
+    } catch (UnsupportedEncodingException ex) {
+      throw new RuntimeException(ex); 
+    }
     List<String> lines = new RmHttpReader.Builder(url)
       .setRequestParam("list-type", "2")
       .setRequestParam("delimiter", "/")
-      .setRequestParam("prefix", URLEncoder.encode(prefix, charset))
+      .setRequestParam("prefix", prefixEncoded)
       .readTo(s->s);
     lines = Arrays.asList(prettyPrintByTransformer(lines.get(1), 1, true).split("\n")); 
     return lines;

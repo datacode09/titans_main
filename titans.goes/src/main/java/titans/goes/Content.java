@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 
@@ -101,8 +102,10 @@ public class Content {
     String key = getKey(sublines); 
     int startIndex = key.indexOf("_e") + 2; 
     int endIndex = key.indexOf("_c"); 
-    String datetext = key.substring(startIndex, endIndex); 
-    LocalDateTime local = LocalDateTime.parse(datetext, new DateTimeFormatterBuilder().appendPattern("yyyyDDDHHmmssS").toFormatter()); 
+    String datetext = key.substring(startIndex, endIndex-1);
+    DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern("yyyyDDDHHmmss").toFormatter();
+    formatter.parse(datetext);
+    LocalDateTime local = LocalDateTime.parse(datetext, formatter); 
     ZonedDateTime datetime = ZonedDateTime.of(local, ZoneId.of("UTC"));
     Content result = new Content(key, datetime);
     return result;

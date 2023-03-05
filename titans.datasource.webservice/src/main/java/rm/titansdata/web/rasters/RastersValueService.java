@@ -1,5 +1,7 @@
 package rm.titansdata.web.rasters;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,6 +47,13 @@ public class RastersValueService {
       throw new RuntimeException("Does not support 'Point' geometry type");
     }
     RasterObj subset = rasterObj.getSubsetRaster(sourceTitle, geometry);
+    if (rasterObj.getRaster() instanceof Closeable) {
+      try {
+        ((Closeable) rasterObj.getRaster()).close();
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+    }
     RasterCells result = subset.interleave();
     return result;
   }
@@ -76,9 +85,6 @@ public class RastersValueService {
     return result;
   }
 
-  private RasterObj getRasterObj(RasterEntity rasterEntity, String key, int projectId, Parameter p) {
-    return this.getRasterObj(rasterEntity, key, projectId, p, rasterEntity.getBounds());
-  }
 
   /**
    *

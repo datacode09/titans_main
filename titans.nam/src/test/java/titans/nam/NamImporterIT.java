@@ -31,7 +31,7 @@ public class NamImporterIT {
   public static void before() {
     SridUtils.init();
   }
-  
+
   /**
    *
    * @throws Exception
@@ -50,19 +50,18 @@ public class NamImporterIT {
       .minusHours(3)
       .truncatedTo(ChronoUnit.DAYS);
     int forecastStep = 0;
-    
-    try (NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, 0, degribExe)) {
-      Unit<?> unit = new NamInventoryReader().getUnit(varName);
-      NoaaVariable var = new NoaaVariable(varName, unit);
-      raster = importer.getRaster(var, refdate, forecastStep);
-      ColorMapProvider cmprovider = new NamColorMapProvider(netCdfRootFolder);
-      ForecastTimeReference ref = new ForecastTimeReference(refdate.getHour(), forecastStep);
-      Parameter param = new NoaaParameter(parentKey, refdate, ref, varName, unit);
-      ColorMap cmap = cmprovider.getColorMap(0,  param);
-      RasterImage image = new RasterImage(raster, cmap);
-      File output = new File(gribRootFolder, "image.png");
-      image.writeToFile("png", output);
-    }
+
+    NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, 0, degribExe);
+    Unit<?> unit = new NamInventoryReader().getUnit(varName);
+    NoaaVariable var = new NoaaVariable(varName, unit);
+    raster = importer.getRaster(var, refdate, forecastStep);
+    ColorMapProvider cmprovider = new NamColorMapProvider(netCdfRootFolder);
+    ForecastTimeReference ref = new ForecastTimeReference(refdate.getHour(), forecastStep);
+    Parameter param = new NoaaParameter(parentKey, refdate, ref, varName, unit);
+    ColorMap cmap = cmprovider.getColorMap(0, param);
+    RasterImage image = new RasterImage(raster, cmap);
+    File output = new File(gribRootFolder, "image.png");
+    image.writeToFile("png", output);
     System.out.println("raster = " + raster);
   }
 }

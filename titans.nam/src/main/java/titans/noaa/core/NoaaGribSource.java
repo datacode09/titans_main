@@ -1,5 +1,6 @@
 package titans.noaa.core;
 
+import common.RmTimer;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -46,6 +47,7 @@ public abstract class NoaaGribSource {
    */
   private void doDownload(URL gribUrl, GribFile gribFile) {
     System.out.println("Importing file : " + gribFile.grib);
+    RmTimer timer = RmTimer.start();
     try (OutputStream output = gribFile.getOutputStream()) {
       InputStream inputStream = gribUrl.openStream();
       IOUtils.copy(inputStream, output);
@@ -56,6 +58,7 @@ public abstract class NoaaGribSource {
         + ", connection : " + gribUrl
         + "}", ex);
     } 
+    timer.endAndPrint();
     this.onPostDownLoad(gribFile);
   }
   

@@ -1,21 +1,20 @@
 package titans.nam.core;
 
-import java.io.Closeable;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatterBuilder;
 import titans.nam.grib.NamGribSource;
-import titans.noaa.core.NoaaGribSource;
 import titans.noaa.core.NoaaGribImporter;
+import titans.noaa.core.NoaaGribSource;
 import titans.noaa.core.NoaaVariable;
 
 /**
  *
  * @author Ricardo Marquez
  */
-public class NamImporter extends NoaaGribImporter implements Closeable {
+public class NamImporter extends NoaaGribImporter {
     
   /**
    * 
