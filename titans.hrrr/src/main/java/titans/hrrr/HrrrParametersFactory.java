@@ -8,7 +8,7 @@ import javafx.beans.property.ListProperty;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
-import titans.hrrr.core.grib.HrrrInventoryReader;
+import titans.hrrr.core.grib.HrrrSfcInventoryReader;
 import titans.nam.NoaaFcstParameterFactory;
 import titans.nam.NoaaParameter;
 import titans.noaa.core.FcstDateRange;
@@ -45,7 +45,7 @@ public class HrrrParametersFactory extends NoaaFcstParameterFactory {
 
   @Override
   protected InventoryReader getInventoryReader() {
-    HrrrInventoryReader result = new HrrrInventoryReader();
+    HrrrSfcInventoryReader result = new HrrrSfcInventoryReader();
     return result;
   }
   

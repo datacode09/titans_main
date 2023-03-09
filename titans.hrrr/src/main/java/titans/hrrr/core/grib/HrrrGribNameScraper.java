@@ -31,7 +31,7 @@ public class HrrrGribNameScraper {
     String fullUrl = url + "hrrr." + datetext + "/conus";
     List<NoaaParameter> result = new ArrayList<>();
     String var = "TMP_2-HTGL";
-    Unit<?> unit = new HrrrInventoryReader().getUnit(var);
+    Unit<?> unit = new HrrrSfcInventoryReader().getUnit(var);
     new RmHttpReader.Builder(fullUrl).read((text) -> {
       
       Arrays.stream(text.split("\n")) //

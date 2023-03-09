@@ -15,7 +15,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import titans.hrrr.core.grib.HrrrGribSource;
-import titans.hrrr.core.grib.HrrrInventoryReader;
+import titans.hrrr.core.grib.HrrrSfcInventoryReader;
 import titans.nam.NoaaParameter;
 import titans.nam.grib.NamGribSource;
 import titans.noaa.core.NoaaVarClazz;
@@ -38,7 +38,7 @@ public class HrrrGribSourceIT {
 
   @Test
   public void test02() {
-    HrrrInventoryReader reader = new HrrrInventoryReader();
+    HrrrSfcInventoryReader reader = new HrrrSfcInventoryReader();
     List<NoaaVarClazz> vars = reader.read();
     vars.forEach(System.out::println);
   }

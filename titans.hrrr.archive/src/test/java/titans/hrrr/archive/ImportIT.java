@@ -33,9 +33,9 @@ public class ImportIT extends BaseSpringITest {
   public void test() {
     NoaaGribImporter importer = this.factory.getImporter(1);
     ZonedDateTime datetimeref = ZonedDateTime.now(ZoneId.of("UTC"))
-      .minusMonths(1)
+      .minusMonths(2)
       .truncatedTo(ChronoUnit.DAYS);
-    NoaaVariable var = new NoaaVariable("TMP_2-HTGL", SI.CELSIUS);
+    NoaaVariable var = new NoaaVariable("TMP_5000-ISBL", SI.CELSIUS);
     GribFile gribfile = importer.getGribFile(var, datetimeref, 0);
     HrrrArchiveGribSource source = new HrrrArchiveGribSource();
     source.download(gribfile);

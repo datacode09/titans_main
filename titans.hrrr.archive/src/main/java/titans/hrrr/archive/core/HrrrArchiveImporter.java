@@ -5,8 +5,9 @@ import java.text.DecimalFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatterBuilder;
-import titans.noaa.core.NoaaGribSource;
+import titans.hrrr.core.grib.HrrrCombinedInventoryReader;
 import titans.noaa.core.NoaaGribImporter;
+import titans.noaa.core.NoaaGribSource;
 import titans.noaa.core.NoaaVariable;
 
 
@@ -15,7 +16,14 @@ import titans.noaa.core.NoaaVariable;
  * @author Ricardo Marquez
  */
 public class HrrrArchiveImporter extends NoaaGribImporter {
-
+  
+  /**
+   * 
+   * @param gribRootFolder
+   * @param netCdfRootFolder
+   * @param subfolderId
+   * @param degribExe 
+   */
   public HrrrArchiveImporter(File gribRootFolder, File netCdfRootFolder, int subfolderId, File degribExe) {
     super(gribRootFolder, netCdfRootFolder, subfolderId, degribExe);
   }
@@ -42,8 +50,9 @@ public class HrrrArchiveImporter extends NoaaGribImporter {
         .toFormatter());
     DecimalFormat decimalFormat = new DecimalFormat("00");
     String fcstHourTxt = decimalFormat.format(fcstHour);
-    String filename = String.format("%s\\hrrr.t%sz.wrfsfcf%s.grib2", new Object[]{
-      datetext, hourtext, fcstHourTxt});
+    String prefix = this.getPrefix(var);
+    String filename = String.format("%s\\hrrr.t%sz.%sf%s.grib2", new Object[]{
+      datetext, hourtext, prefix, fcstHourTxt});
     return filename;
   }
 
@@ -54,6 +63,17 @@ public class HrrrArchiveImporter extends NoaaGribImporter {
   @Override
   protected NoaaGribSource getGribSource() {
     HrrrArchiveGribSource result = new HrrrArchiveGribSource();
+    return result;
+  }
+  
+  /**
+   * 
+   * @param var
+   * @return 
+   */
+  private String getPrefix(NoaaVariable var) {
+    HrrrCombinedInventoryReader reader = new HrrrCombinedInventoryReader();
+    String result = reader.getPrefix(var.getGribVarName());
     return result;
   }
   

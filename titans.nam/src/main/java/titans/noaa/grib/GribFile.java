@@ -19,12 +19,12 @@ import titans.noaa.core.NoaaVariable;
  * @author Ricardo Marquez
  */
 public class GribFile {
+
   public final ZonedDateTime datetimeref;
   public final int fcststep;
   public final NoaaVariable var;
   public final File grib;
   public final File gribIdx;
-  
 
   public GribFile(ZonedDateTime datetimeref, int fcststep, NoaaVariable var, File grib, File gribIdx) {
     this.datetimeref = datetimeref;
@@ -32,7 +32,7 @@ public class GribFile {
     this.var = var;
     this.grib = grib;
     this.gribIdx = gribIdx;
-    
+
   }
 
   /**
@@ -64,7 +64,7 @@ public class GribFile {
         @Override
         public void close() throws IOException {
           super.close();
-          FileLock lock =(FileLock) obj.getValue();
+          FileLock lock = (FileLock) obj.getValue();
           if (lock != null && lock.isValid()) {
             lock.close();
           }
@@ -78,13 +78,13 @@ public class GribFile {
   }
 
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   public boolean isNotLocked() {
     return !this.isLocked();
   }
-  
+
   /**
    *
    * @return
@@ -99,7 +99,7 @@ public class GribFile {
       FileLock lock;
       try {
         lock = channel.tryLock();
-      } catch(OverlappingFileLockException ex) {
+      } catch (OverlappingFileLockException ex) {
         return true;
       }
       if (lock == null) {
@@ -108,11 +108,10 @@ public class GribFile {
         lock.release();
         return false;
       }
-    } catch(Exception ex) {
-      throw new RuntimeException(ex); 
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
     }
   }
-  
 
   /**
    *
@@ -173,11 +172,40 @@ public class GribFile {
     return true;
   }
 
+  /**
+   *
+   * @return
+   */
   @Override
   public String toString() {
     return "GribFile{" + "grib=" + grib + ", datetimeref=" + datetimeref + ", fcststep=" + fcststep + '}';
   }
 
-
-
+  /**
+   *
+   * @param subfolderId
+   * @return
+   */
+  public GribFile setSubPath(int subfolderId) {
+    File newgrib = new File(String.format("%s\\%04d", grib.getParent(), subfolderId), grib.getName());
+    File newgribIdx = new File(String.format("%s\\%04d", gribIdx.getParent(), subfolderId), gribIdx.getName());
+    GribFile result = new GribFile(datetimeref, fcststep, var, newgrib, newgribIdx);
+    return result;
+  }
+  
+  /**
+   * 
+   */
+  public void createFile() {
+    if (!this.grib.getParentFile().exists()) {
+      this.grib.getParentFile().mkdirs();
+    }
+    if (!this.grib.exists()) {
+      try {
+        this.grib.createNewFile();
+      } catch (IOException ex) {
+        throw new RuntimeException(ex); 
+      }
+    }
+  }
 }

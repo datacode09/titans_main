@@ -32,25 +32,6 @@ public abstract class NoaaGribImporter implements NoaaImporter {
     this.subfolderId = subfolderId;
     this.degribExe = degribExe;
   }
-
-  /**
-   *
-   * @param forecaststep
-   * @param datetimeref
-   * @return
-   */
-  @Override
-  public final RasterObj getRaster(NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
-    NetCdfFile netCdfFile;
-    NetCdfExtractor extractor = new NetCdfExtractor(this.degribExe, this.netCdfRootFolder, this.subfolderId, var); 
-    if (!extractor.netCdfFileExists(datetimeref, forecaststep)) {
-      netCdfFile = this.downloadAndExtract(extractor, datetimeref, forecaststep); 
-    } else {
-      netCdfFile = extractor.getNetCdfFile(datetimeref, forecaststep);
-    }
-    RasterObj result = this.rasterLoader.getRaster(netCdfFile);
-    return result;
-  } 
   
   /**
    * 
@@ -62,15 +43,22 @@ public abstract class NoaaGribImporter implements NoaaImporter {
    * @return 
    */
   @Override
-  public final RasterObj getRaster(NoaaVariable var, ZonedDateTime datetime, int fcststep, Bounds bounds, Dimensions dims) {
+  public final RasterObj getRaster(NoaaVariable var, // 
+    ZonedDateTime datetime, int fcststep, Bounds bounds, Dimensions dims) {
     NetCdfFile netCdfFile;
     NetCdfExtractor extractor = new NetCdfExtractor(this.degribExe, this.netCdfRootFolder, this.subfolderId, var); 
     if (!extractor.netCdfFileExists(datetime, fcststep)) {
-      netCdfFile = this.downloadAndExtract(extractor, datetime, fcststep); 
+      netCdfFile = this.downloadAndExtract(extractor, bounds, datetime, fcststep);
     } else {
       netCdfFile = extractor.getNetCdfFile(datetime, fcststep);
     }
-    RasterObj result = this.rasterLoader.getRaster(netCdfFile, bounds, dims);
+    RasterObj result;
+    if (bounds == null) {
+      result = this.rasterLoader.getRaster(netCdfFile);
+    } else {
+      result = this.rasterLoader.getRaster(netCdfFile, bounds, dims); 
+    }
+    
     return result;
   }
   
@@ -83,10 +71,11 @@ public abstract class NoaaGribImporter implements NoaaImporter {
    * @param forecaststep
    * @return 
    */
-  private NetCdfFile downloadAndExtract(NetCdfExtractor extractor, ZonedDateTime datetimeref, int forecaststep) {
+  private NetCdfFile downloadAndExtract(NetCdfExtractor extractor, //
+     Bounds bounds, ZonedDateTime datetimeref, int forecaststep) {
     NetCdfFile netCdfFile;
     NoaaVariable var = extractor.getVar();
-    GribFile gribFile = this.downloadGribFile(var, datetimeref, forecaststep);
+    GribFile gribFile = this.downloadGribFile(var, bounds, datetimeref, forecaststep);
     netCdfFile = extractor.extract(gribFile);
     return netCdfFile;
   }
@@ -98,13 +87,42 @@ public abstract class NoaaGribImporter implements NoaaImporter {
    * @param datetimeref
    * @return 
    */
-  private GribFile downloadGribFile(NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
+  private GribFile downloadGribFile(NoaaVariable var, Bounds bounds, // 
+    ZonedDateTime datetimeref, int forecaststep) {
     GribFile gribFile = this.getGribFile(var, datetimeref, forecaststep);
-    if (gribFile.notExists()) {
+    GribFile subPathGribFile = gribFile.setSubPath(subfolderId);
+    GribFile result;
+    if (gribFile.exists()) {
+      result = this.crop(gribFile, bounds, subPathGribFile);
+    } else if (subPathGribFile.exists()){
+      result = subPathGribFile;
+    } else {
       NoaaGribSource source = this.getGribSource();
       source.download(gribFile);
+      result = this.crop(gribFile, bounds, subPathGribFile);
     }
-    return gribFile;
+    return result;
+  }
+  
+  
+  /**
+   * 
+   * @param gribFile
+   * @param bounds
+   * @param subPathGribFile
+   * @return 
+   */
+  private GribFile crop(GribFile gribFile, Bounds bounds, GribFile subPathGribFile) {
+    NoaaGribSource source = this.getGribSource();
+    GribFile result;
+    boolean successful = source.crop(this.degribExe, gribFile, this.subfolderId, bounds);
+    if (successful) {
+      gribFile.delete();
+      result = subPathGribFile;
+    } else {
+      result = gribFile;
+    }
+    return result;
   }
 
   /**

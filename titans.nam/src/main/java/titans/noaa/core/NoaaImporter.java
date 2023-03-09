@@ -11,14 +11,6 @@ import rm.titansdata.raster.RasterObj;
  */
 public interface NoaaImporter {
   
-  /**
-   * 
-   * @param var
-   * @param datetime
-   * @param fcststep
-   * @return 
-   */
-  RasterObj getRaster(NoaaVariable var, ZonedDateTime datetime, int fcststep);
   
   /**
    * 

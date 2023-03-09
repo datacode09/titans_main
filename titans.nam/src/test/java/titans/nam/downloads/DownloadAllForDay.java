@@ -9,8 +9,8 @@ import titans.nam.BaseSpringTest;
 import titans.nam.NoaaParameter;
 import titans.nam.core.NamImporter;
 import titans.nam.core.NamInventoryReader;
-import titans.noaa.core.NoaaVariable;
 import titans.nam.grib.NamGribSource;
+import titans.noaa.core.NoaaVariable;
 
 /**
  *
@@ -40,7 +40,7 @@ public class DownloadAllForDay extends BaseSpringTest {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();
       NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, 0, degribExe);  
-      importer.getRaster(namVariable, p.datetime, p.fcststep);
+      importer.getRaster(namVariable, p.datetime, p.fcststep, null, null);
       System.out.println("elapsed time = " + (System.currentTimeMillis() - tic));
     });
 

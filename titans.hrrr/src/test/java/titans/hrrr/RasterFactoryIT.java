@@ -17,7 +17,7 @@ import rm.titansdata.SridUtils;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimensions;
 import rm.titansdata.raster.Raster;
-import titans.hrrr.core.grib.HrrrInventoryReader;
+import titans.hrrr.core.grib.HrrrSfcInventoryReader;
 import titans.nam.NoaaParameter;
 import titans.noaa.grib.ForecastTimeReference;
 
@@ -52,7 +52,7 @@ public class RasterFactoryIT extends BaseSpringITest {
       .minusDays(1);
     ForecastTimeReference d = new ForecastTimeReference(0, 1);
     String var = "TMP_2-HTGL";
-    Unit<?> unit = new HrrrInventoryReader().getUnit(var);
+    Unit<?> unit = new HrrrSfcInventoryReader().getUnit(var);
     NoaaParameter p = new NoaaParameter("HRRR", datetime, d, var, unit);
     Integer projectId = 0;
     Raster raster = factory.create(projectId, p, b, dims);

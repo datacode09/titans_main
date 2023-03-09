@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import titans.hrrr.BaseSpringITest;
 import titans.hrrr.core.HrrrImporter;
 import titans.hrrr.core.grib.HrrrGribSource;
-import titans.hrrr.core.grib.HrrrInventoryReader;
+import titans.hrrr.core.grib.HrrrSfcInventoryReader;
 import titans.nam.NoaaParameter;
 import titans.noaa.core.NoaaVariable;
 
@@ -41,12 +41,12 @@ public class DownloadAllForDay extends BaseSpringITest {
     int minusDays = 0; 
     List<NoaaParameter> params = source.getParameters(parentKey, minusDays); 
     String varName = "TMP_2-HTGL";
-    Unit<?> unit = new HrrrInventoryReader().getUnit(varName);
+    Unit<?> unit = new HrrrSfcInventoryReader().getUnit(varName);
     NoaaVariable namVariable = new NoaaVariable(varName, unit);
     params.stream().forEach(p -> {
       System.out.println("p = " + p);
       long tic = System.currentTimeMillis();
-      importer.getRaster(namVariable, p.datetime, p.fcststep);      
+      importer.getRaster(namVariable, p.datetime, p.fcststep, null, null);      
       System.out.println("elapsed time = " + (System.currentTimeMillis() - tic));
     });
   }

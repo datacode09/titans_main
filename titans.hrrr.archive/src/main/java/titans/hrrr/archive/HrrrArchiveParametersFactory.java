@@ -12,7 +12,7 @@ import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 import org.springframework.stereotype.Component;
 import rm.titansdata.Parameter;
-import titans.hrrr.core.grib.HrrrInventoryReader;
+import titans.hrrr.core.grib.HrrrCombinedInventoryReader;
 import titans.nam.NoaaFcstParameterFactory;
 import titans.nam.NoaaParameter;
 import titans.noaa.core.FcstDateRange;
@@ -31,7 +31,7 @@ public class HrrrArchiveParametersFactory extends NoaaFcstParameterFactory {
    */
   @Override
   protected InventoryReader getInventoryReader() {
-    return new HrrrInventoryReader();
+    return new HrrrCombinedInventoryReader();
   }
   
   /**

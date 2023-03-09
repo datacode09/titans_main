@@ -24,22 +24,7 @@ public abstract class NoaaNetCdfImporter implements NoaaImporter {
     this.netCdfRootFolder = netCdfRootFolder;
     this.subfolderId = subfolderId;
   }
-    /**
-   *
-   * @param forecaststep
-   * @param datetimeref
-   * @return
-   */
-  @Override
-  public final RasterObj getRaster(NoaaVariable var, ZonedDateTime datetimeref, int forecaststep) {
-    NoaaParameter param = new NoaaParameter("GOES-18", datetimeref, forecaststep, var.getGribVarName(), var.getUnit());
-    NetCdfFile netCdfFile = NetCdfFile.create(netCdfRootFolder, this.subfolderId, param);
-    if (!netCdfFile.exists()) {
-      this.downloadAndExtract(netCdfFile, datetimeref, forecaststep); 
-    } 
-    RasterObj result = this.rasterLoader.getRaster(netCdfFile);
-    return result;
-  }
+  
   
   /**
    * 
@@ -51,7 +36,8 @@ public abstract class NoaaNetCdfImporter implements NoaaImporter {
    * @return 
    */
   @Override
-  public final RasterObj getRaster(NoaaVariable var, ZonedDateTime datetime, int fcststep, Bounds bounds, Dimensions dims) {
+  public final RasterObj getRaster(NoaaVariable var, ZonedDateTime datetime, // 
+    int fcststep, Bounds bounds, Dimensions dims) {
     NoaaParameter param = new NoaaParameter("GOES-18", datetime, fcststep, var.getGribVarName(), var.getUnit());
     NetCdfFile netCdfFile = NetCdfFile.create(netCdfRootFolder, this.subfolderId, param);
     if (!netCdfFile.exists()) {

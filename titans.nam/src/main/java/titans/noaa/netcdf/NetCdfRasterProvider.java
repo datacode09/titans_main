@@ -23,7 +23,8 @@ public class NetCdfRasterProvider {
   public RasterObj getRaster(NetCdfFile netCdfFile) {
     Bounds bounds = netCdfFile.getBounds();
     Dimensions dims = netCdfFile.getDimensions();
-    return getRaster(netCdfFile, bounds, dims);
+    RasterObj result = getRaster(netCdfFile, bounds, dims);
+    return result;
   }
 
   /**

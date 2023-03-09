@@ -1,12 +1,14 @@
 package titans.noaa.core;
 
 import common.RmTimer;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
+import rm.titansdata.properties.Bounds;
 import titans.nam.NoaaParameter;
 import titans.noaa.grib.GribFile;
 
@@ -15,7 +17,7 @@ import titans.noaa.grib.GribFile;
  * @author Ricardo Marquez
  */
 public abstract class NoaaGribSource {
-  
+
   /**
    *
    * @param gribFile
@@ -27,8 +29,8 @@ public abstract class NoaaGribSource {
       this.doDownload(gribUrl, gribFile);
     }
   }
-  
-    /**
+
+  /**
    *
    * @param gribFile
    * @return
@@ -38,8 +40,8 @@ public abstract class NoaaGribSource {
     URL gribUrl = this.toUrlObject(urlText);
     return gribUrl;
   }
-  
-    /**
+
+  /**
    *
    * @param gribFile
    * @param gribUrl
@@ -57,20 +59,18 @@ public abstract class NoaaGribSource {
         + "output file : " + gribFile
         + ", connection : " + gribUrl
         + "}", ex);
-    } 
+    }
     timer.endAndPrint();
     this.onPostDownLoad(gribFile);
   }
-  
-  
+
   private void createGribFileParent(GribFile gribFile) {
     if (!gribFile.grib.getParentFile().exists()) {
       gribFile.grib.getParentFile().mkdirs();
     }
   }
-  
-  
-    /**
+
+  /**
    *
    * @param urlText
    * @return
@@ -86,27 +86,38 @@ public abstract class NoaaGribSource {
     return gribUrl;
   }
 
+  /**
+   *
+   * @param subfolderId
+   * @param bounds
+   * @return
+   */
+  boolean crop(File degribExe, GribFile gribFile, int subfolderId, Bounds bounds) {
+    GribCropper cropper = new GribCropper(degribExe);
+    boolean result = cropper.crop(gribFile, subfolderId, bounds);
+    return result;
+  }
 
   /**
-   * 
+   *
    * @param gribFile
-   * @return 
+   * @return
    */
   public abstract String createUrl(GribFile gribFile);
-  
-  
-  /**
-   * 
-   * @param parentKey
-   * @param minusDays
-   * @return 
-   */
-  public abstract List<NoaaParameter> getParameters(String parentKey, int minusDays); 
 
   /**
-   * 
-   * @param gribFile 
+   *
+   * @param parentKey
+   * @param minusDays
+   * @return
+   */
+  public abstract List<NoaaParameter> getParameters(String parentKey, int minusDays);
+
+  /**
+   *
+   * @param gribFile
    */
   protected void onPostDownLoad(GribFile gribFile) {
   }
+
 }

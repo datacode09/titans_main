@@ -54,7 +54,7 @@ public class NamImporterIT {
     NamImporter importer = new NamImporter(gribRootFolder, netCdfRootFolder, 0, degribExe);
     Unit<?> unit = new NamInventoryReader().getUnit(varName);
     NoaaVariable var = new NoaaVariable(varName, unit);
-    raster = importer.getRaster(var, refdate, forecastStep);
+    raster = importer.getRaster(var, refdate, forecastStep, null, null);
     ColorMapProvider cmprovider = new NamColorMapProvider(netCdfRootFolder);
     ForecastTimeReference ref = new ForecastTimeReference(refdate.getHour(), forecastStep);
     Parameter param = new NoaaParameter(parentKey, refdate, ref, varName, unit);
