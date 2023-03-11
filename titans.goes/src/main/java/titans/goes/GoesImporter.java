@@ -9,14 +9,14 @@ import titans.noaa.core.NoaaNetCdfImporter;
  *
  * @author Ricardo Marquez
  */
-class Goes18Importer extends NoaaNetCdfImporter {
+class GoesImporter extends NoaaNetCdfImporter {
 
   /**
    *
    * @param netCdfRootFolder
    * @param subfolderId
    */
-  public Goes18Importer(File netCdfRootFolder, int subfolderId) {
+  public GoesImporter(File netCdfRootFolder, int subfolderId) {
     super(netCdfRootFolder, subfolderId);
   }
 

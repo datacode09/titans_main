@@ -1,5 +1,6 @@
 package rm.titansdata.raster;
 
+import common.RmTimer;
 import java.util.List;
 import java.util.Objects;
 import javafx.util.Pair;
@@ -80,7 +81,9 @@ public class RasterObj {
    * @return
    */
   public RasterObj getSubsetRaster(String name, Geometry geometry) {
+    RmTimer timer = RmTimer.start();
     Geometry correctedEnvelope = this.correctEnvelopeSrid(geometry);
+    timer.endAndPrint("getting corrected envelope. ");
     List<Cell> cells = this.getCells(geometry);
     RasterObj result = this.getSubsetRaster(name, correctedEnvelope, cells);
     return result;

@@ -31,7 +31,7 @@ public class GoesParameterFactory extends NoaaFcstParameterFactory {
    */
   @Override
   protected InventoryReader getInventoryReader() {
-    return new Goes18InventoryReader();
+    return new GoesInventoryReader();
   }
 
   /**

@@ -1,7 +1,7 @@
 package titans.hrrr.core.grib;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.measure.unit.Unit;
@@ -14,7 +14,7 @@ import titans.noaa.core.NoaaVarClazz;
  */
 public class HrrrCombinedInventoryReader implements InventoryReader {
 
-  private final Map<String, InventoryReader> readers = new HashMap<>();
+  private final Map<String, InventoryReader> readers = new LinkedHashMap<>();
 
   public HrrrCombinedInventoryReader() {
     this.readers.put("wrfsfc", new HrrrSfcInventoryReader()); 

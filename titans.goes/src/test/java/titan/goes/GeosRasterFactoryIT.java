@@ -39,9 +39,9 @@ public class GeosRasterFactoryIT extends BaseSpringITest {
     Measure<Length> dx = Measure.valueOf(1000, SI.METRE);
     Bounds bounds = this.getBounds();
     Dimensions dims = Dimensions.create(bounds, dx, dx);
-    String datetext = "2023-01-03T10:00:00";
+    String datetext = "2023-01-03T11:00:00";
     ZonedDateTime datetime = this.getZonedDateTime(datetext); 
-    String noaaVar = "ABI-L1b-RadC$M6C01";
+    String noaaVar = "ABI-L2-LSTC";
     Parameter p = new NoaaParameter("GOES-18", datetime, -1, noaaVar, Unit.ONE);
     Raster raster = this.factory.create(0, p, bounds, dims);
     Point point = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326)

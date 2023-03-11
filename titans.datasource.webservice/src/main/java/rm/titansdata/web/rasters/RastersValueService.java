@@ -25,11 +25,25 @@ import rm.titansdata.raster.RasterObj;
 @Component
 public class RastersValueService {
 
-  @Autowired
-  private RastersSourceService sourceService;
+  private final RastersSourceService sourceService;
 
-  @Autowired
-  private RasterFactorySupplier supplier;
+  private final RasterFactorySupplier supplier;
+
+  /**
+   * 
+   * @param sourceService
+   * @param supplier 
+   */
+  public RastersValueService( //
+    @Autowired RastersSourceService sourceService, //
+    @Autowired RasterFactorySupplier supplier) {
+    this.sourceService = sourceService;
+    this.supplier = supplier;
+  }
+  
+  
+  
+  
 
   /**
    *
@@ -41,7 +55,6 @@ public class RastersValueService {
     Parameter p, Geometry geometry, Bounds bounds) {
     RasterEntity rasterEntity = this.sourceService.getRaster(rasterId);
     String sourceTitle = rasterEntity.sourceTitle;
-    
     RasterObj rasterObj = this.getRasterObj(rasterEntity, sourceTitle, projectId, p, bounds); 
     if (geometry.getGeometryType().equals("Point")) {
       throw new RuntimeException("Does not support 'Point' geometry type");

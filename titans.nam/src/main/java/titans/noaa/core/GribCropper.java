@@ -38,9 +38,10 @@ public class GribCropper {
     if (!tempgrib.exists()) {
       return false;
     }
-    GribFile target = copyTempFileToSubFolder(gribFile, subfolderId, tempgrib);
+    GribFile target = this.copyTempFileToSubFolder(gribFile, subfolderId, tempgrib);
     tempgrib.delete();
-    return target.exists();
+    boolean result = target.exists();
+    return result;
   }
   
   /**
@@ -49,7 +50,8 @@ public class GribCropper {
    * @return 
    */
   private File getTempGribFile(GribFile gribFile) {
-    String tempgribfilename = "cropped.grb";
+    String basefilename = gribFile.getBaseFileName().replace(".", "-");
+    String tempgribfilename = String.format("cropped_%s.grb", basefilename);
     File tempgrib = new File(gribFile.grib.getParent(), tempgribfilename);
     return tempgrib;
   }

@@ -15,9 +15,9 @@ import titans.noaa.core.NoaaVarClazz;
  *
  * @author Ricardo Marquez
  */
-public class Goes18InventoryReader implements InventoryReader {
+public class GoesInventoryReader implements InventoryReader {
   
-  public Goes18InventoryReader() {
+  public GoesInventoryReader() {
   }
 
   /**

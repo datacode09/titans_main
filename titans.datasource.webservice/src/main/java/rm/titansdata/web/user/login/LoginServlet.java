@@ -46,12 +46,21 @@ public class LoginServlet extends HttpServlet{
     RequestParser parser = new RequestParser(req);
     String email = parser.getString("email");
     String password = req.getHeader("KEY");
-//    if (this.service.isLoggedInByEmail(email)) {
-//      throw new RuntimeException("Email has already been logged in");
-//    }   
     Credentials credentials = new Credentials(email, password);
-    Optional<String> authToken = this.service.loginUser(credentials);
+    Optional<String> authToken ;
+    if (this.service.isLoggedInByEmail(email)) {
+      boolean check = this.service.checkCredentials(credentials);
+      if (check) {
+        authToken = this.service.getAuthToken(email);
+      } else {
+        authToken = Optional.empty();
+      }
+    }  else {
+      authToken = this.service.loginUser(credentials);
+    }
+    
     response.setHeader("AUTH-TOKEN", authToken.orElse(null));
+    
     HashMap<String, Object> map = new HashMap<>();
     map.put("token", authToken.orElse(null));
     this.responseHelper.send(map, response);

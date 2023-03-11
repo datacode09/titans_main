@@ -2,7 +2,7 @@ package titan.goes;
 
 import java.util.List;
 import org.junit.Test;
-import titans.goes.Goes18InventoryReader;
+import titans.goes.GoesInventoryReader;
 import titans.noaa.core.NoaaVarClazz;
 
 /**
@@ -13,8 +13,10 @@ public class GeosInventoryReaderIT {
   
   @Test
   public void test() {
-    Goes18InventoryReader reader = new Goes18InventoryReader();
+    GoesInventoryReader reader = new GoesInventoryReader();
     List<NoaaVarClazz> list = reader.read();
     System.out.println("list = " + list.size());
+    list.forEach(i->System.out.println(i.getVarName()));
+    
   }
 }

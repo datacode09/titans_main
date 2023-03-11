@@ -24,6 +24,9 @@ import org.xml.sax.InputSource;
  * @author Ricardo Marquez
  */
 public class BucketListReader {
+
+  public BucketListReader() {
+  }
   
   /**
    * 
@@ -84,7 +87,14 @@ public class BucketListReader {
     lines = Arrays.asList(prettyPrintByTransformer(lines.get(1), 1, true).split("\n")); 
     return lines;
   }
-  
+    
+  /**
+   * 
+   * @param xmlString
+   * @param indent
+   * @param ignoreDeclaration
+   * @return 
+   */
   public static String prettyPrintByTransformer(String xmlString, int indent, boolean ignoreDeclaration) {
     try {
       InputSource src = new InputSource(new StringReader(xmlString));

@@ -2,6 +2,7 @@ package rm.titansdata.web.user.session;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -85,5 +86,15 @@ public class SessionManager implements ApplicationContextAware {
     ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
     String authToken = attr.getRequest().getHeader("AUTH-TOKEN");
     return authToken;
+  }
+  
+  /**
+   * 
+   * @param email
+   * @return 
+   */
+  public Optional<String> getAuthToken(String email) {
+    Optional<String> result = Optional.ofNullable(this.authorized.get(email));
+    return result;
   }
 }

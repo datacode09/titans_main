@@ -57,4 +57,24 @@ public class LoginService {
   String getEmail(String token) {
     return this.manager.getEmail(token);
   }
+  
+  /**
+   * 
+   * @param credentials
+   * @return 
+   */
+  boolean checkCredentials(Credentials credentials) {
+    Optional<String> response = this.authenticator.authenticate(credentials.email, credentials.password);
+    boolean result = response.isPresent();
+    return result;
+  }
+  
+  /**
+   * 
+   * @param email
+   * @return 
+   */
+  Optional<String> getAuthToken(String email) {
+    return this.manager.getAuthToken(email);
+  }
 }

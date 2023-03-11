@@ -1,5 +1,6 @@
 package rm.titansdata.web.rasters;
 
+import common.RmTimer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import rm.titansdata.plugin.ClassType;
 import rm.titansdata.plugin.Clazz;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.raster.RasterCells;
+import rm.titansdata.web.JsonConverterUtil;
 import rm.titansdata.web.RequestParser;
 import rm.titansdata.web.ResponseHelper;
 import rm.titansdata.web.project.ProjectEntity;
@@ -207,17 +209,46 @@ public class RastersServlet {
     Long rasterId = parser.getLong("rasterId");
     int srid = parser.getInteger("srid");
     Geometry geometry = parser.parseGeometry("geometry", srid);
-     if (srid == 4326) {
-      geometry = SridUtils.transform(geometry, 3857); 
+    if (srid == 4326) {
+      geometry = SridUtils.transform(geometry, 3857);
     }
     JSONObject jsonObject = this.getParameterJson(parser);
     Parameter param = parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
     int projectId = this.getProjectId();
-    Bounds bounds = this.getBoundsFromProject(); 
+    Bounds bounds = this.getBoundsFromProject();
     RasterCells values = this.rastersValueService
       .getRasterValues(rasterId, projectId, param, geometry, bounds);
+    
     map.put("values", values.toSrid(srid));
+    RmTimer timer = RmTimer.start();  
+    String result = JsonConverterUtil.toJson(values);
+    this.responseHelper.sendAsZippedFile(result, res);
+    timer.endAndPrint("sending");
+  }
+
+  /**
+   *
+   */
+  @RequestMapping(
+    path = "/preload",
+    params = {"rasterId", "geometry", "parameter", "srid"}, method = RequestMethod.GET)
+  public void preload(HttpServletRequest req, HttpServletResponse res) {
+    RequestParser parser = new RequestParser(req);
+    Long rasterId = parser.getLong("rasterId");
+    int srid = parser.getInteger("srid");
+    Geometry geometry = parser.parseGeometry("geometry", srid);
+    if (srid == 4326) {
+      geometry = SridUtils.transform(geometry, 3857);
+    }
+    JSONObject jsonObject = this.getParameterJson(parser);
+    Parameter param = parameterFactory.get(jsonObject);
+    
+    int projectId = this.getProjectId();
+    Bounds bounds = this.getBoundsFromProject();
+    this.rastersValueService
+      .getRasterValues(rasterId, projectId, param, geometry, bounds);
+    Map<String, Object> map = new HashMap<>();
     this.responseHelper.send(map, res);
   }
 
@@ -261,9 +292,9 @@ public class RastersServlet {
     int srid = parser.getInteger("srid");
     Point point = (Point) parser.parseGeometry("point", srid);
     if (srid == 4326) {
-      point = SridUtils.transform(point, 3857); 
-    }  
-    JSONArray jsonObject = this.getParametersJsonArray(parser);  
+      point = SridUtils.transform(point, 3857);
+    }
+    JSONArray jsonObject = this.getParametersJsonArray(parser);
     List<Parameter> param = this.parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
     int projectId = this.getProjectId();

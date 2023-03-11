@@ -31,6 +31,6 @@ public class GoesRasterFactory extends NoaaRasterFactory {
 
   @Override
   protected NoaaImporter getImporter(int projectId) {
-    return new Goes18Importer(netCdfRootFolder, projectId);
+    return new GoesImporter(netCdfRootFolder, projectId);
   }
 }
