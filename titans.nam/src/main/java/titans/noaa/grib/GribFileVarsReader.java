@@ -156,9 +156,9 @@ public class GribFileVarsReader {
       }
       InputStream in = p.getInputStream();
       lines = IOUtils.readLines(in, Charset.forName("utf8"));
-      lines.stream().filter(l->l.contains("Error")).findFirst().ifPresent((l)->{
-        throw new RuntimeException(l); 
-      });
+      lines.stream().filter(l->l.contains("Error")).findFirst().ifPresent((errorline)->{
+        throw new RuntimeException(errorline); 
+      });   
       lines.remove(0);
     } catch (Exception ex) {
       throw new RuntimeException(ex);

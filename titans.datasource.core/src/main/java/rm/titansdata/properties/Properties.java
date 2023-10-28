@@ -1,9 +1,9 @@
 package rm.titansdata.properties;
 
-import org.locationtech.jts.geom.Envelope;
-import org.locationtech.jts.geom.GeometryFactory;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.GeometryFactory;
 
 /**
  *
@@ -40,7 +40,7 @@ public class Properties {
    * @param leny
    * @return 
    */
-  public static Properties create(GeometryFactory gf, Envelope envelope, 
+  public static Properties create(GeometryFactory gf, Envelope envelope,//
     Measure<Length> lenx, Measure<Length> leny) {
     Bounds b  = Bounds.fromEnvelope(gf, envelope);
     Properties result = new Properties(b, lenx, leny); 

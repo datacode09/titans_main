@@ -12,7 +12,7 @@ import rm.titansdata.Parameter;
 public interface ParameterFactory {
 
   /**
-   *
+   * 
    * @return
    */
   public String key();
@@ -38,14 +38,13 @@ public interface ParameterFactory {
   public Parameter create(JSONObject obj);
 
   /**
-   *
+   * 
    * @return
    */
   public List<Parameter> getParameters(Clazz... clazzes);
 
-  
   /**
-   * 
+   *  
    * @param arr
    * @return 
    */

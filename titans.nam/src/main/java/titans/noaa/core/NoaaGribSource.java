@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import org.apache.commons.io.IOUtils;
 import rm.titansdata.properties.Bounds;
 import titans.nam.NoaaParameter;
 import titans.noaa.grib.GribFile;
@@ -22,12 +21,14 @@ public abstract class NoaaGribSource {
    *
    * @param gribFile
    */
-  public final void download(GribFile gribFile) {
+  public final GribFile download(GribFile gribFile) {
     URL gribUrl = this.getGribUrl(gribFile);
     this.createGribFileParent(gribFile);
+    GribFile result = gribFile;
     if (!gribFile.exists()) {
-      this.doDownload(gribUrl, gribFile);
+      result = this.doDownload(gribUrl, gribFile);
     }
+    return result;
   }
 
   /**
@@ -47,12 +48,17 @@ public abstract class NoaaGribSource {
    * @param gribUrl
    * @throws RuntimeException
    */
-  private void doDownload(URL gribUrl, GribFile gribFile) {
-    System.out.println("Importing file : " + gribFile.grib);
+  private GribFile doDownload(URL gribUrl, GribFile gribFile) {
     RmTimer timer = RmTimer.start();
     try (OutputStream output = gribFile.getOutputStream()) {
       InputStream inputStream = gribUrl.openStream();
-      IOUtils.copy(inputStream, output);
+      System.out.println("downloading from " + gribUrl);
+
+      int bytesRead;
+      byte[] buffer = new byte[256000];
+      while ((bytesRead = inputStream.read(buffer)) != -1) {
+        output.write(buffer, 0, bytesRead);
+      }
     } catch (Exception ex) {
       gribFile.delete();
       throw new RuntimeException("Error on copying stream.  Check args:{"
@@ -61,7 +67,8 @@ public abstract class NoaaGribSource {
         + "}", ex);
     }
     timer.endAndPrint();
-    this.onPostDownLoad(gribFile);
+    GribFile result = this.onPostDownLoad(gribFile);
+    return result;
   }
 
   private void createGribFileParent(GribFile gribFile) {
@@ -117,7 +124,8 @@ public abstract class NoaaGribSource {
    *
    * @param gribFile
    */
-  protected void onPostDownLoad(GribFile gribFile) {
+  protected GribFile onPostDownLoad(GribFile gribFile) {
+    return gribFile;
   }
 
 }

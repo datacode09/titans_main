@@ -9,18 +9,18 @@ import rm.titansdata.raster.Raster;
  *
  * @author Ricardo Marquez
  */
-public interface RasterFactory {
-  
+public interface RasterFactory {  
   /**
-   * 
+   * A key that corresponds to how the raster factory is identified in factory
    * @return 
    */
   public String key(); 
   
   /**
-   * 
+   * Creates a Raster based on project id, parameter, bounds, and dimensions. 
    * @param bounds
    * @param dims 
+   * @see Raster
    */
   public Raster create(int projectId, Parameter param, Bounds bounds, Dimensions dims); 
 }

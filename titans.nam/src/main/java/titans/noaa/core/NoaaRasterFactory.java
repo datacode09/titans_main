@@ -42,7 +42,10 @@ public abstract class NoaaRasterFactory implements RasterFactory {
   }
 
   /**
-   *
+   * An importer is needed to download data from external sources. 
+   * The importer is responsible for downloading and storing data on the local server. 
+   * The project id can be used for miscellaneous information such as the valid bounds 
+   * and dimensions. 
    * @param projectId
    * @return
    */

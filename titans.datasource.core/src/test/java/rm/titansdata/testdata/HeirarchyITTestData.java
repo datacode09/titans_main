@@ -1,15 +1,15 @@
 package rm.titansdata.testdata;
 
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.PrecisionModel;
 import java.util.HashSet;
 import java.util.Set;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 import rm.titansdata.heirarchy.Heirarchy;
 import rm.titansdata.heirarchy.Node;
 import rm.titansdata.properties.Bounds;
@@ -39,8 +39,8 @@ public class HeirarchyITTestData {
     Point p2 = factory.createPoint(new Coordinate(1566121, 3599665));
     Bounds bounds = Bounds.fromPoints(p1, p2);
     Raster raster = new NullRaster();
-    Measure<Length> dx = Measure.valueOf(1000, SI.METRE);
-    Measure<Length> dy = Measure.valueOf(1000, SI.METRE);
+    Measure<Length> dx = Measure.valueOf(1000d, SI.METRE);
+    Measure<Length> dy = Measure.valueOf(1000d, SI.METRE);
     Properties properties = new Properties(bounds, dx, dy);
     children.add(Node.create(new RasterObj("a", properties, raster)));
     children.add(Node.create(new RasterObj("b", properties, raster)));

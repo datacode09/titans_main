@@ -48,7 +48,8 @@ import titans.nam.NoaaParameter;
     locations = {
       "/dispatcher-servlet.xml", "/applicationContext.xml"
     }
-  ),})
+  ),
+})
 public class RastersValueServiceIT {
 
   @Autowired
@@ -65,7 +66,6 @@ public class RastersValueServiceIT {
   public void setup() throws Exception {
     TestContextManager testContextManager = new TestContextManager(getClass());
     testContextManager.prepareTestInstance(this);
-
   }
 
   @Test

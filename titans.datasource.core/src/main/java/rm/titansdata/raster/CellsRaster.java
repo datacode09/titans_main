@@ -24,7 +24,9 @@ public class CellsRaster implements Raster {
   private final List<Cell> cells;
   private final Unit<? extends Quantity> units;
 
-  public CellsRaster(List<Cell> cells, Unit<? extends Quantity> units, Bounds bounds, Measure<Length> dx, Measure<Length> dy) {
+  public CellsRaster(List<Cell> cells, //
+    Unit<? extends Quantity> units, Bounds bounds, // 
+    Measure<Length> dx, Measure<Length> dy) {
     this.cells = cells;
     this.units = Objects.requireNonNull(units);
     this.bounds = Objects.requireNonNull(bounds);

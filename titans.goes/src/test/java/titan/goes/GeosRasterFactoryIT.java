@@ -36,7 +36,7 @@ public class GeosRasterFactoryIT extends BaseSpringITest {
    */
   @Test
   public void test() {
-    Measure<Length> dx = Measure.valueOf(1000, SI.METRE);
+    Measure<Length> dx = Measure.valueOf(1000d, SI.METRE);
     Bounds bounds = this.getBounds();
     Dimensions dims = Dimensions.create(bounds, dx, dx);
     String datetext = "2023-01-03T11:00:00";

@@ -39,7 +39,7 @@ public class RasterFactoryIT extends BaseSpringITest{
     String parentKey = "MRMS";
     NoaaParameter p = new NoaaParameter(parentKey, datetime, fcstStep, varName, Unit.ONE);
     Bounds bounds = this.getBounds();
-    Measure<Length> dx = Measure.valueOf(1000, SI.METRE);
+    Measure<Length> dx = Measure.valueOf(1000d, SI.METRE);
     Dimensions dims = Dimensions.create(bounds, dx, dx);
     RmTimer timer = RmTimer.start(); 
     Raster raster = this.factory.create(0, p, bounds, dims);

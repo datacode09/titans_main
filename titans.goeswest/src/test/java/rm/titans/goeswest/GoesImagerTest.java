@@ -9,6 +9,7 @@ import org.junit.Test;
  * @author Ricardo Marquez
  */
 public class GoesImagerTest {
+  
   private final File file = new File("C:\\Users\\Ricardo Marquez\\Desktop\\"
       + "OR_ABI-L1b-RadC-M6C01_G17_s20223440031177_e20223440033550_c20223440033577.nc"); 
   

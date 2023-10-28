@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RastersSourceService {
-
+  
   @Autowired
   @Qualifier("titans.db")
   private DbConnection dbconn;
@@ -35,9 +35,9 @@ public class RastersSourceService {
     String query = this.getRastersByUserIdQuery(userId);
     List<Pair<RasterGroupEntity, Long>> list = this.dbconn //
       .executeQuery(query, this::toRasterGroupEntry);
-    Map<RasterGroupEntity, List<Long>> r = list.stream() //
+    Map<RasterGroupEntity, List<Long>> result = list.stream() //
       .collect(Collectors.toMap(p -> p.getKey(), this::toValueList, this::add));
-    return r;
+    return result;
   }
 
   /**
@@ -46,7 +46,8 @@ public class RastersSourceService {
    * @return
    */
   private List<Long> toValueList(Pair<RasterGroupEntity, Long> p) {
-    return Arrays.asList(p.getValue());
+    List<Long> result = Arrays.asList(p.getValue());
+    return result;
   }
 
   /**
@@ -103,7 +104,7 @@ public class RastersSourceService {
    * @return
    */
   public RasterEntity getRaster(Long rasterId) {
-    String query = getRasterQuery(rasterId);
+    String query = this.getRasterQuery(rasterId);
     MutableObject<RasterEntity> obj = new MutableObject<>();
     this.dbconn.executeQuery(query, (rs) -> {
       obj.setValue(this.toRasterEntity(rs));

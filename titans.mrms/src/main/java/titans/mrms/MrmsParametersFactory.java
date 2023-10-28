@@ -38,7 +38,8 @@ public class MrmsParametersFactory extends NoaaFcstParameterFactory {
    */
   @Override
   protected InventoryReader getInventoryReader() {
-    return new MrmsInventoryReader();
+    MrmsInventoryReader result = new MrmsInventoryReader();
+    return result;
   }
 
   /**

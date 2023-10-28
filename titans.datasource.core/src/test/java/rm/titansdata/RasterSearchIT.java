@@ -25,8 +25,8 @@ public class RasterSearchIT {
     Coordinate p1 = new Coordinate(-13964790, 3794999);
     Coordinate p2 = new Coordinate(-12605137, 5224085);
     Bounds bounds = Bounds.fromPoints(p1, p2, 3857);
-    Measure<Length> dx = Measure.valueOf(1, SI.KILOMETRE); 
-    Measure<Length> dy = Measure.valueOf(1, SI.KILOMETRE); 
+    Measure<Length> dx = Measure.valueOf(1d, SI.KILOMETRE); 
+    Measure<Length> dy = Measure.valueOf(1d, SI.KILOMETRE); 
     Dimensions dims= Dimensions.create(bounds, dx, dy);
     RasterSearch search = new RasterSearch(bounds, dims);
     GeometryFactory factory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 3857);

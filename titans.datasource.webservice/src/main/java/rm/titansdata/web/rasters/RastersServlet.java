@@ -298,8 +298,8 @@ public class RastersServlet {
     List<Parameter> param = this.parameterFactory.get(jsonObject);
     Map<String, Object> map = new HashMap<>();
     int projectId = this.getProjectId();
-    Map<Parameter, Double> values = this.rastersValueService.getPointRasterValues( //
-      rasterId, projectId, param, point);
+    Map<Parameter, Double> values = this.rastersValueService //
+      .getPointRasterValues(rasterId, projectId, param, point);
     Map<String, Double> s = values.entrySet().stream()
       .collect(Collectors.toMap(d -> d.getKey().getKey(), d -> d.getValue()));
     map.put("values", s);

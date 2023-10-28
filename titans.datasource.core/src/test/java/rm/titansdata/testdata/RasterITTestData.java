@@ -32,8 +32,8 @@ public class RasterITTestData {
   
   
   private static Properties getProperties(Bounds bounds) {
-    Measure<Length> dx = Measure.valueOf(1, SI.KILOMETRE);
-    Measure<Length> dy = Measure.valueOf(1, SI.KILOMETRE);
+    Measure<Length> dx = Measure.valueOf(1d, SI.KILOMETRE);
+    Measure<Length> dy = Measure.valueOf(1d, SI.KILOMETRE);
     Properties properties = new Properties(bounds, dx, dy);
     return properties;
   }

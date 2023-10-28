@@ -52,11 +52,14 @@ public class MrmsGribSource extends NoaaGribSource {
    * @param gribFile 
    */
   @Override
-  protected void onPostDownLoad(GribFile gribFile) {
+  protected GribFile onPostDownLoad(GribFile gribFile) {
     gribFile.grib.getAbsoluteFile();
     File source = gribFile.grib.getAbsoluteFile();
     File target = new File(source.getParentFile(), source.getName().replace(".gz", ""));
     DecompressGzFile.decompressGzip(source, target);
+    source.delete();
+    GribFile result = new GribFile(gribFile.datetimeref, gribFile.fcststep, gribFile.var, target, gribFile.gribIdx);
+    return result;
   }
   
   

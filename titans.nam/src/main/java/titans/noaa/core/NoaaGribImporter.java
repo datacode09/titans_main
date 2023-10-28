@@ -98,8 +98,11 @@ public abstract class NoaaGribImporter implements NoaaImporter {
       result = subPathGribFile;
     } else {
       NoaaGribSource source = this.getGribSource();
-      source.download(gribFile);
-      result = this.crop(gribFile, bounds, subPathGribFile);
+      result = source.download(gribFile);
+      if (this.onIsGribCroppable()) {
+        result = this.crop(result, bounds, subPathGribFile);
+      }
+      
     }
     return result;
   }
@@ -157,11 +160,18 @@ public abstract class NoaaGribImporter implements NoaaImporter {
    * @return 
    */
   protected abstract String onGetGribFileName(NoaaVariable var, ZonedDateTime datetimeref, int fcstHour); 
-
   
   /**
    * 
    * @return 
    */
   protected abstract NoaaGribSource getGribSource();  
+  
+  /**
+   * 
+   * @return 
+   */
+  protected boolean onIsGribCroppable(){
+    return false;
+  } 
 }

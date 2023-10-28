@@ -31,7 +31,7 @@ import titans.noaa.core.NoaaVarClazz;
  * @author Ricardo Marquez
  */
 public abstract class NoaaFcstParameterFactory implements ParameterFactory {
-
+  
   public static ClassType BASEDATE_CLASSTYPE = new BaseDateClassType();
   public static ClassType FORECAST_CLASSTYPE = new ForecastStepClassType();
   public static ClassType VALUE_CLASSTYPE = new ValueClassType("NOAA_VAR");

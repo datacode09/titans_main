@@ -1,9 +1,9 @@
 package rm.titansdata.web.rasters;
 
-import org.locationtech.jts.geom.Point;
 import javax.measure.Measure;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
+import org.locationtech.jts.geom.Point;
 import rm.titansdata.properties.Bounds;
 import rm.titansdata.properties.Dimension;
 import rm.titansdata.properties.Dimensions;
